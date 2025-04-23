@@ -1,4 +1,4 @@
-package com.outsourcing.outsourcingproject.exception;
+package com.outsourcing.outsourcingproject.common.exception;
 
 public class CustomException extends RuntimeException {
 	public CustomException(String message) {
