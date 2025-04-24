@@ -1,4 +1,55 @@
 package com.outsourcing.outsourcingproject.domain.user.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.outsourcing.outsourcingproject.common.dto.CommonResponse;
+import com.outsourcing.outsourcingproject.common.enums.SuccessCode;
+import com.outsourcing.outsourcingproject.domain.user.dto.DeactivationRequestDto;
+import com.outsourcing.outsourcingproject.domain.user.dto.LoginRequestDto;
+import com.outsourcing.outsourcingproject.domain.user.dto.LoginResponseDto;
+import com.outsourcing.outsourcingproject.domain.user.dto.UpdateRequestDto;
+import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
+import com.outsourcing.outsourcingproject.domain.user.service.UserService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/users")
 public class UserController {
+	private final UserService userService;
+
+	@PostMapping
+	public CommonResponse<Void> signup(@RequestBody UserRequestDto requestDto) {
+		userService.signup(requestDto);
+		return CommonResponse.of(SuccessCode.OK);
+	}
+
+	@PostMapping("/login")
+	public CommonResponse<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto) {
+		return CommonResponse.of(SuccessCode.OK, userService.login(requestDto));
+	}
+
+	@PostMapping("/logout")
+	public CommonResponse<Void> logout() {
+		userService.logout();
+		return CommonResponse.of(SuccessCode.OK);
+	}
+
+	@DeleteMapping
+	public CommonResponse<Void> deactivate(@RequestBody DeactivationRequestDto requestDto) {
+		userService.deactivate(requestDto);
+		return CommonResponse.of(SuccessCode.OK);
+	}
+
+	@PatchMapping
+	public CommonResponse<Void> update(@RequestBody UpdateRequestDto requestDto) {
+		userService.update(requestDto);
+		return CommonResponse.of(SuccessCode.OK);
+	}
 }
