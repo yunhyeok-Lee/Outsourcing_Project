@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,16 +36,17 @@ public class ReviewController {
 	// }
 
 	// 리뷰 수정
-	@PutMapping("/review/{id}")
-	public ResponseEntity<?> updateReview(@PathVariable Long id, ReviewUpdateRequestDto requestDto) {
+	@PatchMapping("/review/{id}")
+	public ResponseEntity<?> updateReview(@PathVariable Long id,
+		@Valid @RequestBody ReviewUpdateRequestDto requestDto) {
 		reviewService.updateReview(id, requestDto);
 		return new ResponseEntity<>("리뷰를 성공적으로 수정했습니다.", HttpStatus.OK);
 	}
 
 	// 리뷰 삭제
 	@PatchMapping("review/{id}")
-	public ResponseEntity<?> deleteReview() {
-		reviewService.deleteReview();
+	public ResponseEntity<?> deleteReview(@PathVariable Long id) {
+		reviewService.deleteReview(id);
 		return new ResponseEntity<>("리뷰를 성공적으로 삭제했습니다.", HttpStatus.OK);
 	}
 }

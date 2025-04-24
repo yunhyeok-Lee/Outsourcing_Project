@@ -43,13 +43,6 @@ public class ReviewService {
 		reviewRepository.save(review);
 	}
 
-	/* 리뷰 수정
-	1.
-	2.
-	*/
-	public void updateReview() {
-	}
-
 	/* 가게 리뷰 조회
 	1.
 	2.
@@ -60,16 +53,31 @@ public class ReviewService {
 
 	}
 
-	/* 리뷰 삭제 (soft)
+	/* 리뷰 수정
 	1.
 	2.
-	3.
-	4.
 	*/
-	public void deleteReview() {
-
-	}
-
 	public void updateReview(Long id, ReviewUpdateRequestDto requestDto) {
+
 	}
+
+	/* 리뷰 삭제 (soft)
+	1. 리뷰 유효성 검사 - 이미 존재하는지 확인 (Boolean 방식 채용했기에 객체 생성해서 확인하는 것보다 상대적으로 메모리 ↓)
+	2. 객체 생성 (유효성 검사에서 걸리면 객체 생성 안 해도 되니까 유효성 검사 이후에 진행하는 것)
+	3. isDeleted 필드 수정 <- setter 생성
+	4. 끝 ?
+	*/
+	public void deleteReview(Long id) {
+
+		boolean exists = reviewRepository.existsById(id);
+		if (!exists) {
+			throw new CustomException(ErrorCode.REVIEW_NOT_FOUND);
+		}
+
+		Review savedReview = reviewRepository.findById(id)
+			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+		reviewRepository.delete(savedReview);
+	}
+
 }

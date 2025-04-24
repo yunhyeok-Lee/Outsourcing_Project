@@ -1,5 +1,8 @@
 package com.outsourcing.outsourcingproject.domain.review.entity;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
 import com.outsourcing.outsourcingproject.domain.order.entity.Order;
 
@@ -18,6 +21,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "reviews")
 @NoArgsConstructor
+@SQLRestriction("is_deleted is false")
+@SQLDelete(sql = "UPDATE REVIEWS SET REVIEWS.is_deleted = true where REVIEWS.review_id = ?")
 public class Review extends BaseEntity {
 
 	@Id
