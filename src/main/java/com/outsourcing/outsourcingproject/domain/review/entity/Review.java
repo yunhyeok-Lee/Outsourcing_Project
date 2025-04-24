@@ -56,4 +56,11 @@ public class Review extends BaseEntity {
 		this.isDeleted = isDeleted;
 		this.order = order;
 	}
+
+	public Review(Double rating, String title, String content, Order order) {
+		this.rating = rating;
+		this.title = title;
+		this.content = content;
+		this.order = order;
+	}
 }

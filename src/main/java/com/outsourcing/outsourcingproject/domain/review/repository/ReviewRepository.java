@@ -6,4 +6,5 @@ import com.outsourcing.outsourcingproject.domain.review.entity.Review;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
+	boolean existsByOrder_Id(Long orderId);
 }

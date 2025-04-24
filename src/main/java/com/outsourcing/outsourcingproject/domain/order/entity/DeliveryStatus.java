@@ -11,6 +11,7 @@ public enum DeliveryStatus {
 
 	WAITING,
 	CONFIRM,
-	REJECTED;
+	REJECTED,
+	COMPLETED;
 
 }

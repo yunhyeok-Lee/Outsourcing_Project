@@ -52,6 +52,14 @@ public class Order extends BaseEntity {
 		this.deliveryStatus = deliveryStatus;
 	}
 
+	public Order(Long id, User user, Store store, Menu menu, DeliveryStatus deliveryStatus) {
+		this.id = id;
+		this.user = user;
+		this.store = store;
+		this.menu = menu;
+		this.deliveryStatus = deliveryStatus;
+	}
+
 	public void waiting() {
 		this.deliveryStatus = DeliveryStatus.WAITING;
 	}

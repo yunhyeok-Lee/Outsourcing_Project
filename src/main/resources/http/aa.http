@@ -1,0 +1,3 @@
+### ㅇㅇ
+# @no-cookie-jar
+POST http://localhost:8080/order/{orderId}/review

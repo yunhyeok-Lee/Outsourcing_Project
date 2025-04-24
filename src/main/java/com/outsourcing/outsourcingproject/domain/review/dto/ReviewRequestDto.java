@@ -8,10 +8,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class ReviewRequestDto {
-	private final String title;
-	private final String content;
-
 	@DecimalMin("1.0")
 	@DecimalMax("5.0")
 	private final Double rating;
+	private final String title;
+	private final String content;
 }
