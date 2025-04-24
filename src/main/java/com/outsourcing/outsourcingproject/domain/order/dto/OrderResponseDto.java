@@ -17,7 +17,7 @@ public class OrderResponseDto {
 	private Long menuId;
 
 	public OrderResponseDto(Order order) {
-		this.orderId = order.getOrderId();
+		this.orderId = order.getId();
 		this.deliveryStatus = order.getDeliveryStatus();
 		this.userId = order.getUser().getId();
 		this.storeId = order.getStore().getId();

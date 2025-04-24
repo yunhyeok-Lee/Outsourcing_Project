@@ -45,6 +45,7 @@ public class JwtUtil {
 			.compact();
 	}
 
+	// Todo: 위조된 토큰, 만료된 토큰에 대해 예외처리 필요
 	// 토큰에서 유저 정보 + 토큰 정보 추출
 	public Claims extractClaims(String token) {
 		return Jwts.parserBuilder()
