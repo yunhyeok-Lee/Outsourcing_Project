@@ -31,6 +31,8 @@ public class Review extends BaseEntity {
 	@Column(nullable = false)
 	private Boolean isDeleted;
 
+	//기본생성자
+
 	// @ManyToOne
 	// @JoinColumn(name = "order_id")
 	// private Order order;

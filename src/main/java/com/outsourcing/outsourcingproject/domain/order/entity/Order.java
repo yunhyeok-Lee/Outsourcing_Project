@@ -27,7 +27,7 @@ public class Order extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long orderId;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY) // order.getUser(); 할 때 쿼리 발생시키기 위함
 	@JoinColumn(name = "user_id")
@@ -37,11 +37,6 @@ public class Order extends BaseEntity {
 	@JoinColumn(name = "store_id")
 	private Store store;
 
-	/* ✏️
-	@OneToOne = 식별자 To 식별자
-		-> 하나의 Order 에 하나의 Menu 주문이 가능하다
-		-> @OneToOne 을 쓰면 하나의 메뉴는 한 번 밖에 주문 못 한다 😅
-	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "menu_id")
 	private Menu menu;
@@ -68,4 +63,5 @@ public class Order extends BaseEntity {
 	public void rejected() {
 		this.deliveryStatus = DeliveryStatus.REJECTED;
 	}
+
 }

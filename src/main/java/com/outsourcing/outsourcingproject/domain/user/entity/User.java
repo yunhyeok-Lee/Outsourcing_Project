@@ -37,7 +37,7 @@ public class User extends BaseEntity {
 	@Column(nullable = false)
 	private String address;
 
-	@Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.STRING)//enum 사용시 꼭 필요
 	@Column(nullable = false)
 	private Authority authority = Authority.USER;
 
