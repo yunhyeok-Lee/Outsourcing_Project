@@ -2,6 +2,7 @@ package com.outsourcing.outsourcingproject.domain.review.service;
 
 import org.springframework.stereotype.Service;
 
+import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
 import com.outsourcing.outsourcingproject.domain.review.dto.ReviewRequestDto;
 import com.outsourcing.outsourcingproject.domain.review.repository.ReviewRepository;
 
@@ -11,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewService {
 	private final ReviewRepository reviewRepository;
-	// private final OrderRepository orderRepository;
+	private final OrderRepository orderRepository;
 
 	// 리뷰 생성
 	public void createReview(ReviewRequestDto requestDto) {

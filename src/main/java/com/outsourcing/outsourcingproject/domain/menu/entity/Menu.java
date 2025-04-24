@@ -1,5 +1,7 @@
 package com.outsourcing.outsourcingproject.domain.menu.entity;
 
+import com.outsourcing.outsourcingproject.domain.store.entity.Store;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;

@@ -1,18 +1,21 @@
 package com.outsourcing.outsourcingproject.domain.review.entity;
 
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
+import com.outsourcing.outsourcingproject.domain.order.entity.Order;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
-@Table(name = "review")
+@Entity
+@Table(name = "reviews")
 public class Review extends BaseEntity {
 
 	@Id
@@ -31,9 +34,12 @@ public class Review extends BaseEntity {
 	@Column(nullable = false)
 	private Boolean isDeleted;
 
-	// @ManyToOne
-	// @JoinColumn(name = "order_id")
-	// private Order order;
+	@ManyToOne
+	@JoinColumn(name = "order_id")
+	private Order order;
+
+	// id 제외한 생성자 반드시 생성!!
+	// 기본 생성자 반드시 생성!!
 
 	//feature/review입니다
 }

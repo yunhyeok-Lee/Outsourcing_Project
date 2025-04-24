@@ -2,6 +2,7 @@ package com.outsourcing.outsourcingproject.domain.review.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,16 +20,15 @@ public class ReviewController {
 	private final ReviewService reviewService;
 
 	// 리뷰 생성
-	@PostMapping("/review")
+	@PostMapping("/order/{orderId}/review")
 	public ResponseEntity<?> createReview(ReviewRequestDto requestDto) {
 		reviewService.createReview(requestDto);
 		return new ResponseEntity<>("리뷰를 성공적으로 생성하였습니다.", HttpStatus.OK);
 	}
 
 	// 가게 리뷰 조회 (최신 순, 별점 별 조회 : 페이징 처리예정)
-	// @GetMapping("/store/{storeId}/review")
+	@GetMapping("/store/{storeId}/review")
 	// public ResponseEntity<?> getStoreReviews() {
-	//
 	// 	StoreReviewResponseDto responseDto =
 	// 	return new ResponseEntity<>(responseDto , HttpStatus.OK);
 	// }
