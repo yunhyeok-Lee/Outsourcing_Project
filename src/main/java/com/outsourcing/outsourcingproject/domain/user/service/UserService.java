@@ -25,10 +25,10 @@ public class UserService {
 	private final JwtUtil jwtUtil;
 
 	/*
-	회원 가입 API
-	1. 이메일 중복 확인
-	2. 비밀번호 암호화
-	3. DB에 User 저장
+	 회원 가입 API
+	 1. 이메일 중복 확인
+	 2. 비밀번호 암호화
+	 3. DB에 User 저장
 	 */
 	public void signup(UserRequestDto requestDto) {
 		if (userRepository.findUserByEmail(requestDto.getEmail()).isPresent()) {
@@ -77,9 +77,10 @@ public class UserService {
 
 	/*
 	회원 탈퇴 API
-	1. Todo: jwt 토큰으로 유저 조회
+	1. Todo: 토큰으로 유저 조회
 	2. Todo: 비밀번호 검증
 	3. Todo: User 테이블의 isDeleted=true로 변경
+	4. Todo: 토큰 만료
 	 */
 	@Transactional
 	public void deactivate(DeactivationRequestDto requestDto) {
@@ -87,10 +88,10 @@ public class UserService {
 
 	/*
 	회원 정보 수정 API
-	Todo
+	1. Todo: 토큰으로 유저 조회
+	2. Todo: 유저 정보 수정
 	 */
 	@Transactional
 	public void update(UpdateRequestDto requestDto) {
-
 	}
 }
