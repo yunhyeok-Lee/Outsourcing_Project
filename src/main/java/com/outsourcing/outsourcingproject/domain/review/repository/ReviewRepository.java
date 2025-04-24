@@ -1,4 +1,7 @@
 package com.outsourcing.outsourcingproject.domain.review.repository;
 
-public class ReviewRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ReviewRepository extends JpaRepository {
+
 }
