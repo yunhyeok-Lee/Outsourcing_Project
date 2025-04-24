@@ -1,8 +1,8 @@
 package com.outsourcing.outsourcingproject.domain.order.entity;
 
-import java.awt.*;
-
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
+import com.outsourcing.outsourcingproject.domain.menu.entity.Menu;
+import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -43,7 +43,7 @@ public class Order extends BaseEntity {
 	private Store store;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "menu_id")
+	@JoinColumn(name = "menu_id", unique = true)
 	private Menu menu;
 
 	@Enumerated(EnumType.STRING)
