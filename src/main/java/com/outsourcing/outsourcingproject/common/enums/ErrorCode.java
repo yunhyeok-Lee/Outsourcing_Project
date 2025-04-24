@@ -3,7 +3,9 @@ package com.outsourcing.outsourcingproject.common.enums;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode implements BaseCode {
-	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다.");
+	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다."),
+	ALREADY_DEACTIVATED_USER(HttpStatus.BAD_REQUEST, "이미 탈퇴한 유저입니다."),
+	CONFLICT_EMAIL(HttpStatus.CONFLICT, "중복된 이메일입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;
