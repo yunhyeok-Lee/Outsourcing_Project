@@ -1,13 +1,13 @@
 package com.outsourcing.outsourcingproject.domain.user.dto;
 
-import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
+
 @Getter
 @AllArgsConstructor
-public class SignupRequestDto {
+public class UserRequestDto {
 	// Todo: 유효성 검증 추가
 	private String email;
 	private String password;

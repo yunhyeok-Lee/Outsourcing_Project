@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LogoutRequestDto {
+public class DeactivationRequestDto {
 	// Todo: 유효성 검증
 	private String password;
 }
