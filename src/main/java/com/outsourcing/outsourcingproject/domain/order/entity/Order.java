@@ -15,7 +15,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,7 +37,12 @@ public class Order extends BaseEntity {
 	@JoinColumn(name = "store_id")
 	private Store store;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	/* ✏️
+	@OneToOne = 식별자 To 식별자
+		-> 하나의 Order 에 하나의 Menu 주문이 가능하다
+		-> @OneToOne 을 쓰면 하나의 메뉴는 한 번 밖에 주문 못 한다 😅
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "menu_id")
 	private Menu menu;
 
@@ -64,5 +68,4 @@ public class Order extends BaseEntity {
 	public void rejected() {
 		this.deliveryStatus = DeliveryStatus.REJECTED;
 	}
-
 }

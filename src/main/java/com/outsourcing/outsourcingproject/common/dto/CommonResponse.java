@@ -11,6 +11,7 @@ import lombok.Getter;
 public class CommonResponse<T> {
 	private final HttpStatus httpStatus;
 	private final String message;
+	// null 인 경우 응답에서 제외할 수 있다 (주석처리하면 null 값 포함해서 응답 반환)
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private final T data;
 

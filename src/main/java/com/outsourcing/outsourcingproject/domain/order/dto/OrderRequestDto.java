@@ -1,6 +1,6 @@
 package com.outsourcing.outsourcingproject.domain.order.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,13 +8,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public class OrderRequestDto {
 
-	@NotBlank(message = "사용자 이름을 입력해주세요.")
-	private String userName;
+	@NotEmpty(message = "주문할 유저 id를 입력해주세요.")
+	private Long userId;
 
-	@NotBlank(message = "가게 이름을 입력해주세요.")
-	private String storeName;
+	@NotEmpty(message = "가게 id를 입력해주세요.")
+	private Long storeId;
 
-	@NotBlank(message = "메뉴 이름을 입력해주세요.")
-	private String menuName;
+	@NotEmpty(message = "메뉴 id를 입력해주세요.")
+	private Long menuId;
 
 }

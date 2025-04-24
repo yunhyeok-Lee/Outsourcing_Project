@@ -12,16 +12,15 @@ public class OrderResponseDto {
 
 	private Long orderId;
 	private DeliveryStatus deliveryStatus;
-	private String userName;
-	private String storeName;
-	private String menuName;
+	private Long userId;
+	private Long storeId;
+	private Long menuId;
 
 	public OrderResponseDto(Order order) {
 		this.orderId = order.getOrderId();
 		this.deliveryStatus = order.getDeliveryStatus();
-		this.userName = order.getUser().getNickname();
-		this.storeName = order.getStore().getName();
-		this.menuName = order.getMenu().getName();
+		this.userId = order.getUser().getId();
+		this.storeId = order.getStore().getId();
+		this.menuId = order.getMenu().getId();
 	}
-
 }

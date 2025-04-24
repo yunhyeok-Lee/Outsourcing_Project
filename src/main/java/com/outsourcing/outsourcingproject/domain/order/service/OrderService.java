@@ -2,8 +2,10 @@ package com.outsourcing.outsourcingproject.domain.order.service;
 
 import org.springframework.stereotype.Service;
 
+import com.outsourcing.outsourcingproject.domain.order.dto.OrderResponseDto;
 import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -18,5 +20,8 @@ public class OrderService {
 	 */
 
 	// 1. 주문 생성
-	
+	@Transactional
+	public OrderResponseDto createOrder() {
+		
+	}
 }
