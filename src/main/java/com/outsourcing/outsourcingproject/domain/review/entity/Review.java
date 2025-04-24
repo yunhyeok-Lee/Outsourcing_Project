@@ -68,4 +68,17 @@ public class Review extends BaseEntity {
 		this.content = content;
 		this.order = order;
 	}
+
+	// 이 친구들 생성자 아니라 메서드임! void 붙여줘야 다른곳에서 쓸 수 있음
+	public void UpdateContent(String content) {
+		this.content = content;
+	}
+
+	public void UpdateRaing(Double rating) {
+		this.rating = rating;
+	}
+
+	public void UpdateTitle(String title) {
+		this.title = title;
+	}
 }
