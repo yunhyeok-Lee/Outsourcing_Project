@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "menus")
 @NoArgsConstructor
-public class MenuEntity {
+public class Menu {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
