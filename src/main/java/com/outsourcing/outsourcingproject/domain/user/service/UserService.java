@@ -2,11 +2,13 @@ package com.outsourcing.outsourcingproject.domain.user.service;
 
 import org.springframework.stereotype.Service;
 
+import com.outsourcing.outsourcingproject.common.config.JwtUtil;
 import com.outsourcing.outsourcingproject.common.config.PasswordEncode;
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.domain.user.dto.DeactivationRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.LoginRequestDto;
+import com.outsourcing.outsourcingproject.domain.user.dto.LoginResponseDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UpdateRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncode passwordEncode;
+	private final JwtUtil jwtUtil;
 
 	/*
 	회원 가입 API
@@ -44,31 +47,39 @@ public class UserService {
 	로그인 API
 	1. 이메일로 유저 조회
 	2. 탈퇴 여부 검증
-	3. Todo: 비밀번호 검증
-	4. Todo: jwt 토큰 발급
+	3. 비밀번호 검증
+	4. Access Token 발급
 	 */
-	public void login(LoginRequestDto requestDto) {
+	public LoginResponseDto login(LoginRequestDto requestDto) {
 		User user = userRepository.findUserByEmail(requestDto.getEmail())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		if (!user.isDeleted()) {
+		if (user.isDeleted()) {
 			throw new CustomException(ErrorCode.ALREADY_DEACTIVATED_USER);
 		}
+
+		if (!passwordEncode.matches(requestDto.getPassword(), user.getPassword())) {
+			throw new CustomException(ErrorCode.INVALID_PASSWORD);
+		}
+
+		String jwtToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getAuthority());
+
+		return new LoginResponseDto(jwtToken);
 	}
 
 	/*
 	로그아웃 API
-	1. Todo: jwt 토큰 회수
+	1. Todo: Access Token 만료
 	 */
 	public void logout() {
+
 	}
 
 	/*
 	회원 탈퇴 API
 	1. Todo: jwt 토큰으로 유저 조회
 	2. Todo: 비밀번호 검증
-	3. Todo: jwt 토큰 회수
-	4. Todo: User 테이블의 isDeleted=true로 변경
+	3. Todo: User 테이블의 isDeleted=true로 변경
 	 */
 	@Transactional
 	public void deactivate(DeactivationRequestDto requestDto) {

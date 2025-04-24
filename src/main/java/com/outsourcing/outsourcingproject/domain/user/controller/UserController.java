@@ -11,6 +11,7 @@ import com.outsourcing.outsourcingproject.common.dto.CommonResponse;
 import com.outsourcing.outsourcingproject.common.enums.SuccessCode;
 import com.outsourcing.outsourcingproject.domain.user.dto.DeactivationRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.LoginRequestDto;
+import com.outsourcing.outsourcingproject.domain.user.dto.LoginResponseDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UpdateRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.service.UserService;
@@ -24,31 +25,30 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping
-	public CommonResponse signup(@RequestBody UserRequestDto requestDto) {
+	public CommonResponse<Void> signup(@RequestBody UserRequestDto requestDto) {
 		userService.signup(requestDto);
 		return CommonResponse.of(SuccessCode.OK);
 	}
 
 	@PostMapping("/login")
-	public CommonResponse login(@RequestBody LoginRequestDto requestDto) {
-		userService.login(requestDto);
-		return CommonResponse.of(SuccessCode.OK);
+	public CommonResponse<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto) {
+		return CommonResponse.of(SuccessCode.OK, userService.login(requestDto));
 	}
 
 	@PostMapping("/logout")
-	public CommonResponse logout() {
+	public CommonResponse<Void> logout() {
 		userService.logout();
 		return CommonResponse.of(SuccessCode.OK);
 	}
 
 	@DeleteMapping
-	public CommonResponse deactivate(@RequestBody DeactivationRequestDto requestDto) {
+	public CommonResponse<Void> deactivate(@RequestBody DeactivationRequestDto requestDto) {
 		userService.deactivate(requestDto);
 		return CommonResponse.of(SuccessCode.OK);
 	}
 
 	@PatchMapping
-	public CommonResponse update(@RequestBody UpdateRequestDto requestDto) {
+	public CommonResponse<Void> update(@RequestBody UpdateRequestDto requestDto) {
 		userService.update(requestDto);
 		return CommonResponse.of(SuccessCode.OK);
 	}
