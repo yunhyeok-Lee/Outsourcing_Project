@@ -22,6 +22,7 @@ public class OrderService {
 	// 1. 주문 생성
 	@Transactional
 	public OrderResponseDto createOrder() {
-		
+
+		return null;
 	}
 }

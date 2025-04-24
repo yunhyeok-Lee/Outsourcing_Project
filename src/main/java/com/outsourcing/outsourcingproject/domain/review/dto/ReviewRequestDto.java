@@ -1,5 +1,7 @@
 package com.outsourcing.outsourcingproject.domain.review.dto;
 
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -8,5 +10,8 @@ import lombok.RequiredArgsConstructor;
 public class ReviewRequestDto {
 	private final String title;
 	private final String content;
-	private final Long rating;
+
+	@DecimalMin("1.0")
+	@DecimalMax("5.0")
+	private final Double rating;
 }

@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,8 +22,8 @@ public class ReviewController {
 
 	// 리뷰 생성
 	@PostMapping("/order/{orderId}/review")
-	public ResponseEntity<?> createReview(ReviewRequestDto requestDto) {
-		reviewService.createReview(requestDto);
+	public ResponseEntity<?> createReview(@PathVariable Long orderId, ReviewRequestDto requestDto) {
+		reviewService.createReview(orderId, requestDto);
 		return new ResponseEntity<>("리뷰를 성공적으로 생성하였습니다.", HttpStatus.OK);
 	}
 
