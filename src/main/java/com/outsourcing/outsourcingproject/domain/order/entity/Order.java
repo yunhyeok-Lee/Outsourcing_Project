@@ -17,17 +17,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "orders")
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+//@Builder -> 생성자 위에다만 builder
 public class Order extends BaseEntity {
 
 	@Id
