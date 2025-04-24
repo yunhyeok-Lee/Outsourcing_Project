@@ -17,7 +17,4 @@ public class OrderRequestDto {
 	@NotBlank(message = "메뉴 이름을 입력해주세요.")
 	private String menuName;
 
-	@NotBlank(message = "주문할 메뉴 수량을 입력해주세요.")
-	private Long menuCount;
-
 }

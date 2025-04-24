@@ -1,6 +1,7 @@
 package com.outsourcing.outsourcingproject.domain.order.dto;
 
 import com.outsourcing.outsourcingproject.domain.order.entity.DeliveryStatus;
+import com.outsourcing.outsourcingproject.domain.order.entity.Order;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +15,13 @@ public class OrderResponseDto {
 	private String userName;
 	private String storeName;
 	private String menuName;
-	private Long menuCount;
+
+	public OrderResponseDto(Order order) {
+		this.orderId = order.getOrderId();
+		this.deliveryStatus = order.getDeliveryStatus();
+		this.userName = order.getUser().getNickname();
+		this.storeName = order.getStore().getName();
+		this.menuName = order.getMenu().getName();
+	}
 
 }
