@@ -1,8 +1,8 @@
 package com.outsourcing.outsourcingproject.domain.order.entity;
 
-import java.awt.*;
-
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
+import com.outsourcing.outsourcingproject.domain.menu.entity.Menu;
+import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -15,24 +15,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "orders")
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Order extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long orderId;
 
 	@ManyToOne(fetch = FetchType.LAZY) // order.getUser(); 할 때 쿼리 발생시키기 위함
 	@JoinColumn(name = "user_id")
@@ -42,13 +37,25 @@ public class Order extends BaseEntity {
 	@JoinColumn(name = "store_id")
 	private Store store;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	/* ✏️
+	@OneToOne = 식별자 To 식별자
+		-> 하나의 Order 에 하나의 Menu 주문이 가능하다
+		-> @OneToOne 을 쓰면 하나의 메뉴는 한 번 밖에 주문 못 한다 😅
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "menu_id")
 	private Menu menu;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private DeliveryStatus deliveryStatus;
+
+	public Order(User user, Store store, Menu menu, DeliveryStatus deliveryStatus) {
+		this.user = user;
+		this.store = store;
+		this.menu = menu;
+		this.deliveryStatus = deliveryStatus;
+	}
 
 	public void waiting() {
 		this.deliveryStatus = DeliveryStatus.WAITING;
@@ -61,5 +68,4 @@ public class Order extends BaseEntity {
 	public void rejected() {
 		this.deliveryStatus = DeliveryStatus.REJECTED;
 	}
-
 }

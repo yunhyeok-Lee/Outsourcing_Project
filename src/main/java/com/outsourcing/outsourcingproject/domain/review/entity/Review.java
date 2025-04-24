@@ -3,15 +3,15 @@ package com.outsourcing.outsourcingproject.domain.review.entity;
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@Entity
 @Table(name = "review")
 public class Review extends BaseEntity {
 
