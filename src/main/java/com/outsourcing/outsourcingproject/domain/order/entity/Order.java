@@ -1,8 +1,8 @@
 package com.outsourcing.outsourcingproject.domain.order.entity;
 
-import java.awt.*;
-
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
+import com.outsourcing.outsourcingproject.domain.menu.entity.Menu;
+import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -17,22 +17,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "orders")
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Order extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long orderId;
 
 	@ManyToOne(fetch = FetchType.LAZY) // order.getUser(); 할 때 쿼리 발생시키기 위함
 	@JoinColumn(name = "user_id")
@@ -49,6 +45,13 @@ public class Order extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private DeliveryStatus deliveryStatus;
+
+	public Order(User user, Store store, Menu menu, DeliveryStatus deliveryStatus) {
+		this.user = user;
+		this.store = store;
+		this.menu = menu;
+		this.deliveryStatus = deliveryStatus;
+	}
 
 	public void waiting() {
 		this.deliveryStatus = DeliveryStatus.WAITING;
