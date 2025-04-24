@@ -52,6 +52,4 @@ public class UserController {
 		userService.update(requestDto);
 		return CommonResponse.of(SuccessCode.OK);
 	}
-
-	// Todo: 유저 정보 조회 API 추가
 }

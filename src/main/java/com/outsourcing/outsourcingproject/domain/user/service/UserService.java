@@ -2,6 +2,7 @@ package com.outsourcing.outsourcingproject.domain.user.service;
 
 import org.springframework.stereotype.Service;
 
+import com.outsourcing.outsourcingproject.common.config.PasswordEncode;
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.domain.user.dto.DeactivationRequestDto;
@@ -18,19 +19,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 	private final UserRepository userRepository;
+	private final PasswordEncode passwordEncode;
 
 	/*
 	회원 가입 API
 	1. 이메일 중복 확인
-	2. Todo: 비밀번호 암호화
+	2. 비밀번호 암호화
 	3. DB에 User 저장
-	Todo: save가 잘 처리됐는지 확인하는 절차 어떻게? (컨트롤러에서 무조건 OK 반환하도록 되어 있어서 확인 절차 꼭 필요)
 	 */
 	public void signup(UserRequestDto requestDto) {
-		userRepository.findUserByEmail(requestDto.getEmail())
-			.orElseThrow(() -> new CustomException(ErrorCode.CONFLICT_EMAIL));
+		if (userRepository.findUserByEmail(requestDto.getEmail()).isPresent()) {
+			throw new CustomException(ErrorCode.CONFLICT_EMAIL);
+		}
 
-		User user = new User(requestDto.getEmail(), requestDto.getPassword(), requestDto.getNickname(),
+		String password = passwordEncode.encode(requestDto.getPassword());
+
+		User user = new User(requestDto.getEmail(), password, requestDto.getNickname(),
 			requestDto.getPhoneNumber(), requestDto.getAddress(), requestDto.getAuthority());
 
 		userRepository.save(user);
