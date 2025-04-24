@@ -1,8 +1,10 @@
 package com.outsourcing.outsourcingproject.domain.store.entity;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
+import com.outsourcing.outsourcingproject.domain.menu.entity.Menu;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -13,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -71,9 +74,9 @@ public class Store extends BaseEntity {
 	}
 
 	// menu 테이블과 일대다 연관관계 설정
-	// @OneToMany(mappedBy = "store")
-	// private List<Menu> menus;
-	//
+	@OneToMany(mappedBy = "store")
+	private List<Menu> menus;
+
 	// @OneToMany(mappedBy = "store")
 	// private List<Order> orders;
 
