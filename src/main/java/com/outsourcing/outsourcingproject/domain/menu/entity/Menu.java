@@ -2,6 +2,7 @@ package com.outsourcing.outsourcingproject.domain.menu.entity;
 
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,4 +27,16 @@ public class Menu {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_id", nullable = false)
 	private Store store;
+
+	@Column(nullable = false)
+	private String name;
+
+	@Column(nullable = false)
+	private String content;
+
+	@Column(nullable = false)
+	private int price;
+
+	@Column(nullable = false)
+	private String menuType;
 }

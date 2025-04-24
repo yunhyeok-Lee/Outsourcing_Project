@@ -1,9 +1,9 @@
 package com.outsourcing.outsourcingproject.domain.user.dto;
 
-import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
 
 @Getter
 @AllArgsConstructor
