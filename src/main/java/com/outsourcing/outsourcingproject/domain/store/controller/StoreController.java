@@ -24,7 +24,6 @@ public class StoreController {
 
 	/*
 	 * 가게 등록 api
-	 * storeRequestDto로 입력 받아 저장한 뒤
 	 * SuccessCode의 status와 message 출력
 	 * */
 	@PostMapping
@@ -38,4 +37,12 @@ public class StoreController {
 			.status(SuccessCode.CREATE_STORE.getStatus())
 			.body(SuccessCode.CREATE_STORE.getMessage());
 	}
+
+	/*
+	 * 가게 조회 api
+	 *
+	//  * */
+	// @PostMapping("/{name}")
+	// public ResponseEntity<StoreResponseDto> findByName
+
 }

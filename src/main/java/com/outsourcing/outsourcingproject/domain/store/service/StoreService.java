@@ -9,6 +9,7 @@ import com.outsourcing.outsourcingproject.domain.menu.repository.MenuRepository;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
+import com.outsourcing.outsourcingproject.domain.store.entity.StoreSatus;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
@@ -43,7 +44,7 @@ public class StoreService {
 			throw new CustomException(ErrorCode.NO_STORE_PERMISSION);
 		}
 
-		// Todo : owner가 등록한 가게 갯수 제한(최대 3개), 삭제 된 가게는 세지 않음
+		// owner가 등록한 가게 갯수 제한(최대 3개), 삭제 된 가게는 세지 않음
 		// isDeleted가 false인 -> 폐업 처리 되지 않은 가게 count
 		int storeCount = storeRepository.countByUserAndIsDeletedFalse(authortyUser);
 
@@ -54,17 +55,18 @@ public class StoreService {
 
 		// Todo : 오픈시간과 마감시간에 따른 영업 상태 설정
 		/*
+		 * initialStatus에 status의 defalt 값 지정
 		 * newStore에 값 저장
 		 * */
-		String initialStatus = "준비중";
+		Boolean initialIsDeleted = false;
 		Store newStore = new Store(
 			storeRequest.getName(),
-			initialStatus,
+			StoreSatus.PREPARING,
 			storeRequest.getOpenTime(),
 			storeRequest.getCloseTime(),
 			storeRequest.getMinOrderAmount(),
 			storeRequest.getAddress(),
-			null,
+			initialIsDeleted,
 			authortyUser
 		);
 

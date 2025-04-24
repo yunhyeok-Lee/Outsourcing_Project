@@ -24,4 +24,10 @@ public class StoreResponseDto {
 		this.minOrderAmount = minOrderAmount;
 		this.address = address;
 	}
+
+	public findStoreResponseDto(Long id, String status, String name) {
+		this.id = id;
+		this.status = status;
+		this.name = name;
+	}
 }

@@ -7,6 +7,4 @@ import com.outsourcing.outsourcingproject.domain.user.entity.User;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
 	int countByUserAndIsDeletedFalse(User user);
-
-	int countByUser(User user);
 }
