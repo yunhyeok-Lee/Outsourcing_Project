@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.outsourcing.outsourcingproject.common.enums.SuccessCode;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
+import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.service.StoreService;
+import com.outsourcing.outsourcingproject.domain.user.entity.User;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +30,12 @@ public class StoreController {
 	@PostMapping
 	public ResponseEntity<String> createStore(
 		//인증된 사용자 정보 가저오기
-		//@Auth?
+		User authortyUser,
 		@Valid @RequestBody StoreRequestDto storeRequestDto) {
-		storeService.createStore(storeRequestDto);
+		StoreResponseDto createdStore = storeService.createStore(authortyUser, storeRequestDto);
 
 		return ResponseEntity
-			.status(SuccessCode.OK.getStatus())
-			.body(SuccessCode.OK.getMessage());
+			.status(SuccessCode.CREATE_STORE.getStatus())
+			.body(SuccessCode.CREATE_STORE.getMessage());
 	}
 }

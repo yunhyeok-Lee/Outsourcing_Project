@@ -1,4 +1,88 @@
 package com.outsourcing.outsourcingproject.domain.store.service;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
+import com.outsourcing.outsourcingproject.common.exception.CustomException;
+import com.outsourcing.outsourcingproject.domain.menu.repository.MenuRepository;
+import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
+import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
+import com.outsourcing.outsourcingproject.domain.store.entity.Store;
+import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
+import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
+import com.outsourcing.outsourcingproject.domain.user.entity.User;
+import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
 public class StoreService {
+	private final StoreRepository storeRepository;
+	private final MenuRepository menuRepository;
+	private final UserRepository userRepository;
+
+	private final int maxStore = 3;
+
+	@Transactional
+	public StoreResponseDto createStore(
+		// 인증된 사용자 권한
+		User authortyUser,
+		StoreRequestDto storeRequest) {
+
+		Store store = new Store();
+
+		// Todo : 인증된 사용자 token으로 로그인 된 사용자 판별
+
+		// 유저 권한 owner가 아닐 경우
+		if (authortyUser.getAuthority() != Authority.OWNER) {
+			// 권한이 없는 경우 예외 발생
+			throw new CustomException(ErrorCode.NO_STORE_PERMISSION);
+		}
+
+		// Todo : owner가 등록한 가게 갯수 제한(최대 3개), 삭제 된 가게는 세지 않음
+		// isDeleted가 false인 -> 폐업 처리 되지 않은 가게 count
+		int storeCount = storeRepository.countByUserAndIsDeletedFalse(authortyUser);
+
+		if (storeCount >= maxStore) {
+			// 최대 개수를 초과한 경우 예외 발생
+			throw new CustomException(ErrorCode.STORE_LIMIT_EXCEEDED);
+		}
+
+		// Todo : 오픈시간과 마감시간에 따른 영업 상태 설정
+		/*
+		 * newStore에 값 저장
+		 * */
+		String initialStatus = "준비중";
+		Store newStore = new Store(
+			storeRequest.getName(),
+			initialStatus,
+			storeRequest.getOpenTime(),
+			storeRequest.getCloseTime(),
+			storeRequest.getMinOrderAmount(),
+			storeRequest.getAddress(),
+			null,
+			authortyUser
+		);
+
+		/*
+		 * newStore에 저장한 값 storeRepository를 통해 db에 저장
+		 * */
+		Store savedStore = storeRepository.save(newStore);
+
+		return new StoreResponseDto(
+			savedStore.getId(),
+			savedStore.getStatus(),
+			savedStore.getName(),
+			savedStore.getOpenTime(),
+			savedStore.getCloseTime(),
+			savedStore.getMinOrderAmount(),
+			savedStore.getAddress()
+		);
+
+	}
+
 }
