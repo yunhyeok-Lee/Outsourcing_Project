@@ -1,6 +1,5 @@
 package com.outsourcing.outsourcingproject.domain.store.entity;
 
-import java.time.LocalTime;
 import java.util.List;
 
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
@@ -24,7 +23,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "stores")
+@Table(name = "store")
 @NoArgsConstructor
 public class Store extends BaseEntity {
 	// id identity 설정
@@ -41,13 +40,13 @@ public class Store extends BaseEntity {
 	private StoreSatus status = StoreSatus.PREPARING;
 
 	@Column(nullable = false)
-	private LocalTime openTime;
+	private String openTime;
 
 	@Column(nullable = false)
-	private LocalTime closeTime;
+	private String closeTime;
 
 	@Column(nullable = false)
-	private int minOrderAmount;
+	private Integer minOrderAmount;
 
 	@Column(nullable = false)
 	private String address;
@@ -67,7 +66,7 @@ public class Store extends BaseEntity {
 	private List<Menu> menus;
 
 	// id를 제외한 생성자
-	public Store(String name, LocalTime openTime, LocalTime closeTime, int minOrderAmount,
+	public Store(String name, String openTime, String closeTime, int minOrderAmount,
 		String address,
 		Boolean isDeleted, User user) {
 		this.name = name;

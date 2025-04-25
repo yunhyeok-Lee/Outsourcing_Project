@@ -1,5 +1,6 @@
 package com.outsourcing.outsourcingproject.domain.store.service;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.entity.StoreSatus;
+import com.outsourcing.outsourcingproject.domain.store.entity.TimeUtil;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
@@ -60,7 +62,10 @@ public class StoreService {
 			throw new CustomException(ErrorCode.STORE_LIMIT_EXCEEDED);
 		}
 
-		// Todo : 오픈시간과 마감시간에 따른 영업 상태 설정
+		// reauest로 가져온 String 형태의 시간데이터 변형
+		LocalTime openTime = TimeUtil.toLocalTime(storeRequest.getOpenTime());
+		LocalTime closeTime = TimeUtil.toLocalTime(storeRequest.getCloseTime());
+
 		/*
 		 * initialStatus에 status의 defalt 값 지정
 		 * newStore에 값 저장
@@ -100,12 +105,6 @@ public class StoreService {
 		//dto를 배열로 or dto에서 배열로
 
 		List<Store> storeList = storeRepository.findByName(name);
-
-		if (storeList.isEmpty()) {
-			// 조회된 가게 없을 경우 예외 발생
-			throw new CustomException(ErrorCode.STORE_NOT_FOUND);
-
-		}
 
 		List<FindStoreResponseDto> responseDtoList = storeList.stream()
 			.map(store -> new FindStoreResponseDto(
