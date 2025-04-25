@@ -33,7 +33,8 @@ public class RoleCheckFilter implements Filter {
 			return;
 		}
 
-		if ("PUT".equalsIgnoreCase(method) || "PATCH".equalsIgnoreCase(method)) {
+		// Store
+		if ("POST".equalsIgnoreCase(method) || "PATCH".equalsIgnoreCase(method)) {
 			if (uri.startsWith("/stores") && !"OWNER".equals(role)) {
 				httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
 				httpResponse.getWriter().write("Forbidden: 사장님만 접근할 수 있습니다.");

@@ -10,6 +10,7 @@ import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepositor
 import com.outsourcing.outsourcingproject.domain.review.repository.ReviewRepository;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
+import com.outsourcing.outsourcingproject.domain.user.entity.User;
 import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,11 @@ public class EntityFetcher {
 	public Store getStoreOrThrow(Long storeId) {
 		return storeRepository.findById(storeId)
 			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+	}
+
+	public User getUserOrThrow(Long userId) {
+		return userRepository.findById(userId)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 	}
 
 }

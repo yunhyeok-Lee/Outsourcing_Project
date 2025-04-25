@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
+import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
 import com.outsourcing.outsourcingproject.domain.store.dto.FindStoreResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreListResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
@@ -27,8 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class StoreService {
 	private final StoreRepository storeRepository;
-	// private final MenuRepository menuRepository;
-	// private final UserRepository userRepository;
+	private final EntityFetcher entityFetcher;
 
 	private static final int MAX_STORE = 3;
 
@@ -41,25 +41,21 @@ public class StoreService {
 	@Transactional
 	public StoreResponseDto createStore(
 		// 인증된 사용자 권한
-		User authortyUser,
+		Long userId,
 		StoreRequestDto storeRequest) {
 
-		// // 유저 권한 owner가 아닐 경우
-		// if (authortyUser.getAuthority() != Authority.OWNER) {
-		// 	// 권한이 없는 경우 예외 발생
-		// 	throw new CustomException(ErrorCode.NO_STORE_PERMISSION);
-		// }
+		User user = entityFetcher.getUserOrThrow(userId);
 
 		// owner가 등록한 가게 갯수 제한(최대 3개), 삭제 된 가게는 세지 않음
 		// isDeleted가 false인 -> 폐업 처리 되지 않은 가게 count
-		int storeCount = storeRepository.countByUserAndIsDeletedFalse(authortyUser);
+		int storeCount = storeRepository.countByUser_IdAndIsDeletedFalse(userId);
 
 		if (storeCount >= MAX_STORE) {
 			// 최대 개수를 초과한 경우 예외 발생
 			throw new CustomException(ErrorCode.STORE_LIMIT_EXCEEDED);
 		}
 
-		// reauest로 가져온 String 형태의 시간데이터 변형
+		// request로 가져온 String 형태의 시간데이터 변형
 		LocalTime openTime = TimeUtil.toLocalTime(storeRequest.getOpenTime());
 		LocalTime closeTime = TimeUtil.toLocalTime(storeRequest.getCloseTime());
 
@@ -74,7 +70,7 @@ public class StoreService {
 			.minOrderAmount(storeRequest.getMinOrderAmount())
 			.address(storeRequest.getAddress())
 			.isDeleted(false)
-			.user(authortyUser)
+			.user(user)
 			.build();
 
 		/*
@@ -91,7 +87,6 @@ public class StoreService {
 			savedStore.getMinOrderAmount(),
 			savedStore.getAddress()
 		);
-
 	}
 
 	/*
@@ -126,7 +121,6 @@ public class StoreService {
 		return StoreSatus.PREPARING;
 	}
 
-
 	/*
 	 * id에 해당하는 가게 정보 수정
 	 * */
@@ -138,7 +132,7 @@ public class StoreService {
 	// 		requestDto.getOpenTime(),
 	// 		requestDto.getCloseTime(),
 	// 		requestDto.getMinOrderAmount()
-	// 		);
+	// 	);
 	//
 	// 	return new StoreResponseDto(
 	// 		savedStore.getId(),
