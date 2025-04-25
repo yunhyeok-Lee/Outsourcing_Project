@@ -9,6 +9,8 @@ import com.outsourcing.outsourcingproject.domain.user.entity.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,8 +36,9 @@ public class Store extends BaseEntity {
 	@Column(nullable = false)
 	private String name;
 
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private String status;
+	private StoreSatus status = StoreSatus.PREPARING;
 
 	@Column(nullable = false)
 	private LocalTime openTime;
@@ -59,12 +62,15 @@ public class Store extends BaseEntity {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
+	// menu 테이블과 일대다 연관관계 설정
+	@OneToMany(mappedBy = "store")
+	private List<Menu> menus;
+
 	// id를 제외한 생성자
-	public Store(String name, String status, LocalTime openTime, LocalTime closeTime, int minOrderAmount,
+	public Store(String name, LocalTime openTime, LocalTime closeTime, int minOrderAmount,
 		String address,
 		Boolean isDeleted, User user) {
 		this.name = name;
-		this.status = status;
 		this.openTime = openTime;
 		this.closeTime = closeTime;
 		this.minOrderAmount = minOrderAmount;
@@ -72,12 +78,5 @@ public class Store extends BaseEntity {
 		this.isDeleted = isDeleted;
 		this.user = user;
 	}
-
-	// menu 테이블과 일대다 연관관계 설정
-	@OneToMany(mappedBy = "store")
-	private List<Menu> menus;
-
-	// @OneToMany(mappedBy = "store")
-	// private List<Order> orders;
 
 }
