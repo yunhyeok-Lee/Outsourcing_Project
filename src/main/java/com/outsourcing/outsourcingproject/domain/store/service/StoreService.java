@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.domain.store.dto.FindStoreResponseDto;
@@ -16,7 +17,6 @@ import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.entity.StoreSatus;
 import com.outsourcing.outsourcingproject.domain.store.entity.TimeUtil;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
-import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
 
 import lombok.RequiredArgsConstructor;
@@ -44,13 +44,11 @@ public class StoreService {
 		User authortyUser,
 		StoreRequestDto storeRequest) {
 
-		// Todo : 인증된 사용자 token으로 로그인 된 사용자 판별
-
-		// 유저 권한 owner가 아닐 경우
-		if (authortyUser.getAuthority() != Authority.OWNER) {
-			// 권한이 없는 경우 예외 발생
-			throw new CustomException(ErrorCode.NO_STORE_PERMISSION);
-		}
+		// // 유저 권한 owner가 아닐 경우
+		// if (authortyUser.getAuthority() != Authority.OWNER) {
+		// 	// 권한이 없는 경우 예외 발생
+		// 	throw new CustomException(ErrorCode.NO_STORE_PERMISSION);
+		// }
 
 		// owner가 등록한 가게 갯수 제한(최대 3개), 삭제 된 가게는 세지 않음
 		// isDeleted가 false인 -> 폐업 처리 되지 않은 가게 count

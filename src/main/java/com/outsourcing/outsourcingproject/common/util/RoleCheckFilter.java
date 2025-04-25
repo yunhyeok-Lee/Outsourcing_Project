@@ -19,6 +19,9 @@ public class RoleCheckFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
 		HttpServletResponse httpResponse = (HttpServletResponse)response;
 
+		// 요청 메서드를 확인
+		String method = httpRequest.getMethod();
+
 		// JwtAuthenticationFilter에서 setAttribute("authority") 했던거를 꺼내옴.
 		String role = (String)httpRequest.getAttribute("authority");
 		String uri = httpRequest.getRequestURI();
@@ -30,11 +33,15 @@ public class RoleCheckFilter implements Filter {
 			return;
 		}
 
-		if (uri.startsWith("/stores") && !"OWNER".equals(role)) {
-			httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			httpResponse.getWriter().write("Forbidden: 사장님만 가게를 생성할 수 있습니다.");
-			return;
+		if ("PUT".equalsIgnoreCase(method) || "PATCH".equalsIgnoreCase(method)) {
+			if (uri.startsWith("/stores") && !"OWNER".equals(role)) {
+				httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				httpResponse.getWriter().write("Forbidden: 사장님만 접근할 수 있습니다.");
+				return;
+			}
 		}
+
+		// Todo : put이나 pathch만 필터가 적용되도록 설정
 
 		chain.doFilter(request, response); // 통과
 	}
