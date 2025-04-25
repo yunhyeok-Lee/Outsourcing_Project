@@ -1,5 +1,9 @@
 package com.outsourcing.outsourcingproject.domain.order.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +18,7 @@ import com.outsourcing.outsourcingproject.domain.order.dto.OrderResponseDto;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderStatusRequestDto;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderStatusResponseDto;
 import com.outsourcing.outsourcingproject.domain.order.entity.DeliveryStatus;
+import com.outsourcing.outsourcingproject.domain.order.entity.Order;
 import com.outsourcing.outsourcingproject.domain.order.service.OrderService;
 
 import jakarta.validation.Valid;
@@ -40,7 +45,14 @@ public class OrderController {
 			orderService.createOrder(requestDto));
 	}
 
-	// 2. 주문 상태 변경 API
+	// 2. storeId 로 주문 목록 조회 with 상태
+	@GetMapping("/{storeId}")
+	public CommonResponse<List<Order>> findOrderByStoreId(Long storeId) {
+		List<Order> orderList = orderService.getOrderList(storeId);
+		return CommonResponse.of(SuccessCode.GET_ORDER_LIST_SUCCESS, orderList);
+	}
+
+	// 3. 주문 상태 변경 API
 	@PatchMapping("/{id}")
 	public CommonResponse<OrderStatusResponseDto> handleRequest(@PathVariable Long id, @RequestBody @Valid
 	OrderStatusRequestDto orderStatusRequestDto) {
@@ -48,6 +60,9 @@ public class OrderController {
 		return CommonResponse.of(SuccessCode.ORDER_SENT_SUCCESS, orderService.handleRequest(id, deliveryStatus));
 	}
 
-	// 3. storeId 로 주문 목록 조회 with 상태
+	// 4. 주문 취소
+	@DeleteMapping("/{id}")
+
+
 
 }

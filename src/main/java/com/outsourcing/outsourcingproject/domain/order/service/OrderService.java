@@ -52,7 +52,14 @@ public class OrderService {
 
 	}
 
-	// 2. 주문 상태 변경
+	// 2. storeId 로 주문 목록 조회 with 상태
+	@Transactional
+	public List<Order> getOrderList(Long storeId) {
+		entityFetcher.getStoreOrThrow(storeId);
+		return orderRepository.findAll();
+	}
+
+	// 3. 주문 상태 변경
 	@Transactional
 	public OrderStatusResponseDto handleRequest(Long orderId, DeliveryStatus deliveryStatus) {
 		Order order = entityFetcher.getOrderOrThrow(orderId);
@@ -62,17 +69,10 @@ public class OrderService {
 		return new OrderStatusResponseDto(orderId, deliveryStatus);
 	}
 
-	// 3. storeId 로 주문 목록 조회 with 상태
-	@Transactional
-	public List<Order> getConfirmedOrder() {
-		return null;
-	}
-
 	// 4. 주문 취소
 	@Transactional
 	public String cancelOrder(Long orderId) {
-		Order order = orderRepository.findById(orderId)
-			.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+		Order order = entityFetcher.getOrderOrThrow(orderId);
 		orderRepository.delete(order);
 		return "주문 요청이 취소되었습니다.";
 	}
