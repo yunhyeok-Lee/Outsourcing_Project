@@ -4,9 +4,10 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
@@ -16,7 +17,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 
 @Component
 public class JwtUtil {
@@ -59,5 +59,15 @@ public class JwtUtil {
 		} catch (JwtException e) {
 			throw new CustomException(ErrorCode.INVALID_SIGNATURE);
 		}
+	}
+
+	// 유저 ID 추출
+	public Long getUserIdFromToken(String token) {
+		return Long.parseLong(extractClaims(token).getSubject());
+	}
+
+	// 권한 추출
+	public String getAuthorityFromToken(String token) {
+		return extractClaims(token).get("authority", String.class);
 	}
 }
