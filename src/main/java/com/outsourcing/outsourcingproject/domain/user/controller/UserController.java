@@ -31,11 +31,11 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping
-	public CommonResponse<LoginResponseDto> signup(@RequestBody @Valid UserRequestDto requestDto,
+	public CommonResponse<Void> signup(@RequestBody @Valid UserRequestDto requestDto,
 		HttpServletResponse response) {
 		LoginResponseDto dto = userService.signup(requestDto);
 		response.setHeader("Authorization", dto.getToken());
-		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, dto);
+		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS);
 	}
 
 	@PostMapping("/login")
