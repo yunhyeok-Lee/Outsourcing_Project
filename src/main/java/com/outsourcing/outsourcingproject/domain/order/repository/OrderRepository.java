@@ -10,7 +10,7 @@ import com.outsourcing.outsourcingproject.domain.order.entity.Order;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-	List<Order> findByStoreIdAndStatus(Long storeId, DeliveryStatus deliveryStatus);
+	List<Order> findByOrderIdAndStatus(Long orderId, DeliveryStatus deliveryStatus);
 
 	Optional<Order> findOrderByUserId(Long orderId, Long userId);
 

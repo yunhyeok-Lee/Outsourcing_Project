@@ -1,11 +1,13 @@
 package com.outsourcing.outsourcingproject.domain.order.service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
+import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderByMenuResponseDto;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderByStoreResponseDto;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderByUserResponseDto;
@@ -22,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderService {
 	private final OrderRepository orderRepository;
+	private final EntityFetcher entityFetcher;
 
 	/*
 	1. 주문 요청 생성
@@ -54,10 +57,9 @@ public class OrderService {
 
 	// 2. 주문 수락, 거절
 	@Transactional
-	public String handleRequest(Long orderId, String action) {
+	public String handleRequest(Long orderId, DeliveryStatus deliveryStatus) {
 
-		Order order = orderRepository.findById(orderId)
-			.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+		Order order = entityFetcher.getOrderOrThrow(orderId);
 
 		/* ✏️
 		action.toUpperCase() : 문자열을 모두 대문자로 변환해주는 Java 메서드
@@ -65,30 +67,30 @@ public class OrderService {
 		"Reject" → "REJECT"
 		"wAiTiNg" → "WAITING"
 		 */
-		switch (action.toUpperCase()) {
-			case "WAITING":
+		switch (deliveryStatus) {
+			case WAITING:
 				order.waiting();
 				return "주문 접수 대기 상태입니다.";
-			case "CONFIRMED":
+			case CONFIRMED:
 				order.confirm();
 				return "주문이 접수되었습니다.";
-			case "REJECTED":
+			case REJECTED:
 				order.reject();
-				return "주문이 접수가 거절되었습니다.";
+				return "주문 접수가 거절되었습니다.";
 			default:
 				throw new CustomException(ErrorCode.INVALID_ORDER_REQUEST);
 		}
 	}
 
-	// 3. 주문 단건 조회
+	// 3. 주문 목록 조회
 	@Transactional
-	public void getConfirmedOrder(
-		Long storeId,
+	public List<Order> getConfirmedOrder(
+		Long orderId,
 		OrderByUserResponseDto userDto,
 		OrderByStoreResponseDto storeDto,
 		OrderByMenuResponseDto menuDto) {
 
-		return orderRepository.findByStoreIdAndStatus(storeId, DeliveryStatus.CONFIRMED)
+		return orderRepository.findByOrderIdAndStatus(orderId, DeliveryStatus.CONFIRMED)
 			.stream()
 			.map(OrderByUserResponseDto::new)
 			.map(OrderByStoreResponseDto::new)

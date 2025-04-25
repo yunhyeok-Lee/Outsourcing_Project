@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public class OrderByStoreResponseDto {
 
-	private Long storeId;
-	private String storeName;
+	private final Long storeId;
+	private final String storeName;
 
 	public OrderByStoreResponseDto(Store store) {
 		this.storeId = store.getId();

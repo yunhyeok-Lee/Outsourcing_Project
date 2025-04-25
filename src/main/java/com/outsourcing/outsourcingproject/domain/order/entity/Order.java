@@ -44,14 +44,13 @@ public class Order extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private DeliveryStatus deliveryStatus;
+	private DeliveryStatus deliveryStatus = DeliveryStatus.WAITING;
 
 	@Builder
-	public Order(User user, Store store, Menu menu, DeliveryStatus deliveryStatus) {
+	public Order(User user, Store store, Menu menu) {
 		this.user = user;
 		this.store = store;
 		this.menu = menu;
-		this.deliveryStatus = deliveryStatus;
 	}
 
 	public void waiting() {
@@ -64,6 +63,10 @@ public class Order extends BaseEntity {
 
 	public void reject() {
 		this.deliveryStatus = DeliveryStatus.REJECTED;
+	}
+
+	public void complete() {
+		this.deliveryStatus = DeliveryStatus.COMPLETED;
 	}
 
 }
