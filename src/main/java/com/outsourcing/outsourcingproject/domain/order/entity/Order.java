@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -45,6 +46,7 @@ public class Order extends BaseEntity {
 	@Column(nullable = false)
 	private DeliveryStatus deliveryStatus;
 
+	@Builder
 	public Order(User user, Store store, Menu menu, DeliveryStatus deliveryStatus) {
 		this.user = user;
 		this.store = store;
@@ -57,10 +59,10 @@ public class Order extends BaseEntity {
 	}
 
 	public void confirm() {
-		this.deliveryStatus = DeliveryStatus.CONFIRM;
+		this.deliveryStatus = DeliveryStatus.CONFIRMED;
 	}
 
-	public void rejected() {
+	public void reject() {
 		this.deliveryStatus = DeliveryStatus.REJECTED;
 	}
 
