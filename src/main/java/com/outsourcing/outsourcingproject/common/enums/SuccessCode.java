@@ -7,7 +7,8 @@ public enum SuccessCode implements BaseCode {
 	OK(HttpStatus.OK, "요청이 성공적으로 처리되었습니다."),
 
 	//STORE
-	CREATE_STORE(HttpStatus.OK, "가게가 생성되었습니다.");
+	CREATE_STORE(HttpStatus.OK, "가게가 생성되었습니다."),
+	GET_STORE_LIST(HttpStatus.OK, "가게가 조회되었습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;

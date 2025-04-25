@@ -10,7 +10,8 @@ public enum ErrorCode implements BaseCode {
 
 	//store errorCode
 	NO_STORE_PERMISSION(HttpStatus.UNAUTHORIZED, "가게를 등록할 권한이 없습니다."),
-	STORE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "생성 가능한 가게 수를 초과하였습니다.");
+	STORE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "생성 가능한 가게 수를 초과하였습니다."),
+	STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "조회된 가게가 없습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;

@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
-import com.outsourcing.outsourcingproject.domain.menu.repository.MenuRepository;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
@@ -13,7 +12,6 @@ import com.outsourcing.outsourcingproject.domain.store.entity.StoreSatus;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
-import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,18 +21,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class StoreService {
 	private final StoreRepository storeRepository;
-	private final MenuRepository menuRepository;
-	private final UserRepository userRepository;
+	// private final MenuRepository menuRepository;
+	// private final UserRepository userRepository;
 
 	private final int maxStore = 3;
 
+	/*
+	 * 가게를 생성
+	 * 토큰을 통해 인증된 사용자
+	 * 권한 설정이 owner인 사용자만 생성가능
+	 * 폐업한 가게를 제외하고 최대 3개까지 생성가능
+	 * */
 	@Transactional
 	public StoreResponseDto createStore(
 		// 인증된 사용자 권한
 		User authortyUser,
 		StoreRequestDto storeRequest) {
-
-		Store store = new Store();
 
 		// Todo : 인증된 사용자 token으로 로그인 된 사용자 판별
 
@@ -77,7 +79,7 @@ public class StoreService {
 
 		return new StoreResponseDto(
 			savedStore.getId(),
-			savedStore.getStatus(),
+			StoreSatus.PREPARING,
 			savedStore.getName(),
 			savedStore.getOpenTime(),
 			savedStore.getCloseTime(),
@@ -86,5 +88,29 @@ public class StoreService {
 		);
 
 	}
+
+	/*
+	 * 가게 이름으로 다건 조회
+	 * */
+	// public FindStoreResponseDto findByName(String name) {
+	//
+	// 	List<Store> storeList = storeRepository.findByName(name);
+	//
+	// 	if (storeList.isEmpty()) {
+	// 		// 조회된 가게 없을 경우 예외 발생
+	// 		throw new CustomException(ErrorCode.STORE_NOT_FOUND);
+	//
+	// 	}
+	//
+	// 	List<FindStoreResponseDto> responseDtoList = storeList.stream()
+	// 		.map(store -> new FindStoreResponseDto(
+	// 			store.getId(),
+	// 			store.getStatus(),
+	// 			store.getName()
+	// 		))
+	// 		.collect(Collectors.toList());
+	//
+	// 	return responseDtoList;
+	// }
 
 }

@@ -5,10 +5,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.outsourcing.outsourcingproject.common.enums.SuccessCode;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
+import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.store.service.StoreService;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
 
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class StoreController {
 
 	private final StoreService storeService;
+	private final StoreRepository storeRepository;
 
 	/*
 	 * 가게 등록 api
@@ -28,6 +31,7 @@ public class StoreController {
 	 * */
 	@PostMapping
 	public ResponseEntity<String> createStore(
+		@SessionAttribute(name = "user_id") Long id,
 		//인증된 사용자 정보 가저오기
 		User authortyUser,
 		@Valid @RequestBody StoreRequestDto storeRequestDto) {
@@ -40,9 +44,13 @@ public class StoreController {
 
 	/*
 	 * 가게 조회 api
-	 *
-	//  * */
+	 * name을 통해 사용자 조회
+	 * 가게명으로 여러건의 가게 조회
+	 */
 	// @PostMapping("/{name}")
-	// public ResponseEntity<StoreResponseDto> findByName
+	// public ResponseEntity<List<FindStoreResponseDto>> findByName(@PathVariable String name) {
+	// 	List<FindStoreResponseDto> findStoreResponseDto = storeService.findByName(name);
+	// 	return ResponseEntity.ok(findStoreResponseDto);
+	// }
 
 }
