@@ -4,10 +4,15 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
+import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
+import com.outsourcing.outsourcingproject.domain.order.dto.OrderRequestDto;
+import com.outsourcing.outsourcingproject.domain.order.dto.OrderResponseDto;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderStatusResponseDto;
 import com.outsourcing.outsourcingproject.domain.order.entity.DeliveryStatus;
 import com.outsourcing.outsourcingproject.domain.order.entity.Order;
+import com.outsourcing.outsourcingproject.domain.order.entity.OrderEntities;
 import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
 
 import jakarta.transaction.Transactional;
@@ -27,26 +32,29 @@ public class OrderService {
 	 */
 
 	// 1. 주문 생성
-	// @Transactional
-	// public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
-	// 	// 주문 요청 중복 확인
-	// 	if (orderRepository.findOrderByUserId(orderRequestDto.getUserId()).isPresent()) {
-	// 		throw new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT);
-	// 	}
-	//
-	// 	// 새로운 주문 생성
-	// 	Order order = Order.builder()
-	// 		.user(user)
-	// 		.store(store)
-	// 		.menu(menu)
-	// 		.deliveryStatus(DeliveryStatus.WAITING)
-	// 		.build();
-	//
-	// 	orderRepository.save(order);
-	//
-	// 	return new OrderResponseDto(order);
-	//
-	// }
+	@Transactional
+	public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, String token) {
+
+		// 주문 요청 중복 확인
+		orderRepository.findOrderByUserId(orderRequestDto.getUserId())
+			.orElseThrow(() -> new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT));
+
+		// 엔티티 조회
+		OrderEntities entities = entityFetcher.fetchOrderEntities(orderRequestDto);
+
+		// 새로운 주문 생성
+		Order order = Order.builder()
+			.user(entities.user())
+			.store(entities.store())
+			.menu(entities.menu())
+			.deliveryStatus(DeliveryStatus.WAITING)
+			.build();
+
+		orderRepository.save(order);
+
+		return new OrderResponseDto(order);
+
+	}
 
 	// 2. storeId 로 주문 목록 조회 with 상태
 	@Transactional
@@ -55,22 +63,21 @@ public class OrderService {
 		return orderRepository.findAll();
 	}
 
-	// 3. 주문 상태 변경
+	// 3. 주문 상태 변경 API
 	@Transactional
-	public OrderStatusResponseDto handleRequest(Long orderId, DeliveryStatus deliveryStatus) {
+	public OrderStatusResponseDto handleRequest(Long orderId, DeliveryStatus deliveryStatus, String token) {
 		Order order = entityFetcher.getOrderOrThrow(orderId);
 
-		// 사용자가 보낸 딜리버리스테이터스로 오더 엔티티 수정
+		// 사용자가 보낸 deliverytStatus 로 Order 엔티티 수정
 		order.updateDeliveryStatus(deliveryStatus);
 		return new OrderStatusResponseDto(orderId, deliveryStatus);
 	}
 
 	// 4. 주문 취소
 	@Transactional
-	public String cancelOrder(Long orderId) {
+	public void deleteOrder(Long orderId) {
 		Order order = entityFetcher.getOrderOrThrow(orderId);
 		orderRepository.delete(order);
-		return "주문 요청이 취소되었습니다.";
 	}
 
 }
