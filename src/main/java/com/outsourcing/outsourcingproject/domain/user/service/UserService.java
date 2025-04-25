@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
+import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
 import com.outsourcing.outsourcingproject.common.util.JwtUtil;
 import com.outsourcing.outsourcingproject.common.util.PasswordEncode;
 import com.outsourcing.outsourcingproject.domain.user.dto.DeactivationRequestDto;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 	private final UserRepository userRepository;
+	private final EntityFetcher entityFetcher;
 	private final PasswordEncode passwordEncode;
 	private final JwtUtil jwtUtil;
 
@@ -61,8 +63,7 @@ public class UserService {
 	3. Access Token 발급
 	 */
 	public LoginResponseDto login(LoginRequestDto requestDto) {
-		User user = userRepository.findUserByEmailAndIsDeleted(requestDto.getEmail(), false)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		User user = entityFetcher.getUserOrThrow(requestDto.getEmail(), false);
 
 		if (!passwordEncode.matches(requestDto.getPassword(), user.getPassword())) {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
@@ -91,7 +92,7 @@ public class UserService {
 	@Transactional
 	public void deactivate(DeactivationRequestDto requestDto, String token) {
 		Long userId = jwtUtil.getUserIdFromToken(token);
-		User user = userRepository.findUserById(userId);
+		User user = entityFetcher.getUserOrThrow(userId);
 
 		if (!passwordEncode.matches(requestDto.getPassword(), user.getPassword())) {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
@@ -109,7 +110,7 @@ public class UserService {
 	@Transactional
 	public void update(UpdateRequestDto requestDto, String token) {
 		Long userId = jwtUtil.getUserIdFromToken(token);
-		User user = userRepository.findUserById(userId);
+		User user = entityFetcher.getUserOrThrow(userId);
 
 		if (!passwordEncode.matches(requestDto.getPassword(), user.getPassword())) {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
@@ -122,7 +123,8 @@ public class UserService {
 	유저 정보 조회 API
 	 */
 	public UserResponseDto findById(Long id) {
-		User user = userRepository.findUserById(id);
+		User user = entityFetcher.getUserOrThrow(id);
+
 		UserResponseDto responseDto = UserResponseDto.builder()
 			.id(user.getId())
 			.email(user.getEmail())
@@ -135,6 +137,7 @@ public class UserService {
 			.updatedAt(user.getUpdatedAt())
 			.isDeleted(user.isDeleted())
 			.build();
+
 		return responseDto;
 	}
 }
