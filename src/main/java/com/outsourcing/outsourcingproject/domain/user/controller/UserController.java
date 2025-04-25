@@ -27,29 +27,29 @@ public class UserController {
 	@PostMapping
 	public CommonResponse<Void> signup(@RequestBody UserRequestDto requestDto) {
 		userService.signup(requestDto);
-		return CommonResponse.of(SuccessCode.OK);
+		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS);
 	}
 
 	@PostMapping("/login")
 	public CommonResponse<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto) {
-		return CommonResponse.of(SuccessCode.OK, userService.login(requestDto));
+		return CommonResponse.of(SuccessCode.LOGIN_SUCCESS, userService.login(requestDto));
 	}
 
 	@PostMapping("/logout")
 	public CommonResponse<Void> logout() {
 		userService.logout();
-		return CommonResponse.of(SuccessCode.OK);
+		return CommonResponse.of(SuccessCode.LOGOUT_SUCCESS);
 	}
 
 	@DeleteMapping
 	public CommonResponse<Void> deactivate(@RequestBody DeactivationRequestDto requestDto) {
 		userService.deactivate(requestDto);
-		return CommonResponse.of(SuccessCode.OK);
+		return CommonResponse.of(SuccessCode.USER_DEACTIVATE_SUCCESS);
 	}
 
 	@PatchMapping
 	public CommonResponse<Void> update(@RequestBody UpdateRequestDto requestDto) {
 		userService.update(requestDto);
-		return CommonResponse.of(SuccessCode.OK);
+		return CommonResponse.of(SuccessCode.USER_UPDATE_SUCCESS);
 	}
 }
