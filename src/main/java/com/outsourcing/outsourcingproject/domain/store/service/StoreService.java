@@ -14,6 +14,7 @@ import com.outsourcing.outsourcingproject.domain.store.dto.FindStoreResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreListResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
+import com.outsourcing.outsourcingproject.domain.store.dto.UpdateStoreRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.entity.StoreSatus;
 import com.outsourcing.outsourcingproject.domain.store.entity.TimeUtil;
@@ -113,6 +114,35 @@ public class StoreService {
 		return new StoreListResponseDto(responseDtoList);
 	}
 
+	/*
+	 * id에 해당하는 가게 정보 수정
+	 * */
+	public StoreResponseDto updateStore(Long id, UpdateStoreRequestDto requestDto) {
+
+		Store store = entityFetcher.getStoreOrThrow(id);
+
+		Store newStore = store.updateStore(
+			requestDto.getOpenTime(),
+			requestDto.getCloseTime(),
+			requestDto.getMinOrderAmount()
+		);
+
+		Store updatedStore = storeRepository.save(newStore);
+		LocalTime now = LocalTime.now();
+		StoreSatus status = getStoreStatus(store.getOpenTime(), store.getCloseTime(), now);
+
+		return new StoreResponseDto(
+			updatedStore.getId(),
+			status,
+			updatedStore.getName(),
+			updatedStore.getOpenTime(),
+			updatedStore.getCloseTime(),
+			updatedStore.getMinOrderAmount(),
+			updatedStore.getAddress()
+		);
+
+	}
+
 	// opentime과 closetime 비교해 status 변경
 	private StoreSatus getStoreStatus(LocalTime open, LocalTime close, LocalTime now) {
 		if (open.isBefore(now) && close.isAfter(now)) {
@@ -120,29 +150,5 @@ public class StoreService {
 		}
 		return StoreSatus.PREPARING;
 	}
-
-	/*
-	 * id에 해당하는 가게 정보 수정
-	 * */
-	// public StoreResponseDto updateStore(Long id, UpdateStoreRequestDto requestDto) {
-	//
-	// 	Store store = storeRepository.findById(id);
-	//
-	// 	store.updateStore(
-	// 		requestDto.getOpenTime(),
-	// 		requestDto.getCloseTime(),
-	// 		requestDto.getMinOrderAmount()
-	// 	);
-	//
-	// 	return new StoreResponseDto(
-	// 		savedStore.getId(),
-	// 		StoreSatus.PREPARING,
-	// 		savedStore.getName(),
-	// 		savedStore.getOpenTime(),
-	// 		savedStore.getCloseTime(),
-	// 		savedStore.getMinOrderAmount(),
-	// 		savedStore.getAddress()
-	// 	);
-	// }
 
 }
