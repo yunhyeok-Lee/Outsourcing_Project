@@ -40,7 +40,7 @@ public class UserService {
 
 		User user = User.builder()
 			.email(requestDto.getEmail())
-			.password(requestDto.getPassword())
+			.password(password)
 			.nickname(StringUtils.isBlank(requestDto.getNickname()) ? "익명의 사용자" : requestDto.getNickname())
 			.phoneNumber(requestDto.getPhoneNumber())
 			.address(requestDto.getAddress())
@@ -68,6 +68,7 @@ public class UserService {
 		}
 
 		String jwtToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getAuthority());
+
 		return new LoginResponseDto(jwtToken);
 	}
 

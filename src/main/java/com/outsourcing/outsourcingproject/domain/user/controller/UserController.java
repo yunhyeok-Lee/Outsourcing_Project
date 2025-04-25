@@ -16,6 +16,7 @@ import com.outsourcing.outsourcingproject.domain.user.dto.UpdateRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.service.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -26,13 +27,18 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping
-	public CommonResponse<LoginResponseDto> signup(@RequestBody @Valid UserRequestDto requestDto) {
-		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, userService.signup(requestDto));
+	public CommonResponse<LoginResponseDto> signup(@RequestBody @Valid UserRequestDto requestDto,
+		HttpServletResponse response) {
+		LoginResponseDto dto = userService.signup(requestDto);
+		response.setHeader("Authorization", dto.getToken());
+		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, dto);
 	}
 
 	@PostMapping("/login")
-	public CommonResponse<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto requestDto) {
-		return CommonResponse.of(SuccessCode.LOGIN_SUCCESS, userService.login(requestDto));
+	public CommonResponse<Void> login(@RequestBody @Valid LoginRequestDto requestDto, HttpServletResponse response) {
+		LoginResponseDto dto = userService.login(requestDto);
+		response.setHeader("Authorization", dto.getToken());
+		return CommonResponse.of(SuccessCode.LOGIN_SUCCESS);
 	}
 
 	@PostMapping("/logout")
