@@ -14,6 +14,8 @@ import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
 import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
+import io.jsonwebtoken.Claims;
+import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -35,11 +37,16 @@ public class UserService {
 		if (userRepository.findUserByEmail(requestDto.getEmail()).isPresent()) {
 			throw new CustomException(ErrorCode.CONFLICT_EMAIL);
 		}
-
 		String password = passwordEncode.encode(requestDto.getPassword());
 
-		User user = new User(requestDto.getEmail(), password, requestDto.getNickname(),
-			requestDto.getPhoneNumber(), requestDto.getAddress(), requestDto.getAuthority());
+		User user = User.builder()
+			.email(requestDto.getEmail())
+			.password(password)
+			.nickname(StringUtils.isBlank(requestDto.getNickname()) ? "익명의 사용자" : requestDto.getNickname())
+			.phoneNumber(requestDto.getPhoneNumber())
+			.address(requestDto.getAddress())
+			.authority(requestDto.getAuthority())
+			.build();
 
 		userRepository.save(user);
 
@@ -49,30 +56,26 @@ public class UserService {
 
 	/*
 	로그인 API
-	1. 이메일로 유저 조회
-	2. 탈퇴 여부 검증
-	3. 비밀번호 검증
-	4. Access Token 발급
+	1. 이메일로 탈퇴하지 않은 상태의 유저 조회
+	2. 비밀번호 검증
+	3. Access Token 발급
 	 */
 	public LoginResponseDto login(LoginRequestDto requestDto) {
-		User user = userRepository.findUserByEmail(requestDto.getEmail())
+		User user = userRepository.findUserByEmailAndIsDeleted(requestDto.getEmail(), false)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-		if (user.isDeleted()) {
-			throw new CustomException(ErrorCode.ALREADY_DEACTIVATED_USER);
-		}
 
 		if (!passwordEncode.matches(requestDto.getPassword(), user.getPassword())) {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
 		}
 
 		String jwtToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getAuthority());
+
 		return new LoginResponseDto(jwtToken);
 	}
 
 	/*
 	로그아웃 API
-	1. Todo: Access Token 만료
+	1. Todo: 토큰 만료
 	 */
 	public void logout() {
 
@@ -80,21 +83,40 @@ public class UserService {
 
 	/*
 	회원 탈퇴 API
-	1. Todo: 토큰으로 유저 조회
-	2. Todo: 비밀번호 검증
-	3. Todo: User 테이블의 isDeleted=true로 변경
+	1. 토큰으로 유저 조회
+	2. 비밀번호 검증
+	3. User 테이블의 isDeleted=true로 변경
 	4. Todo: 토큰 만료
 	 */
 	@Transactional
-	public void deactivate(DeactivationRequestDto requestDto) {
+	public void deactivate(DeactivationRequestDto requestDto, String token) {
+		Claims claims = jwtUtil.extractClaims(token);
+		Long userId = Long.valueOf(claims.getSubject());
+		User user = userRepository.findUserById(userId);
+
+		if (!passwordEncode.matches(requestDto.getPassword(), user.getPassword())) {
+			throw new CustomException(ErrorCode.INVALID_PASSWORD);
+		}
+
+		user.updateDeletedStatus();
 	}
 
 	/*
 	회원 정보 수정 API
-	1. Todo: 토큰으로 유저 조회
-	2. Todo: 유저 정보 수정
+	1. 토큰으로 유저 조회
+	2. 비밀번호 검증
+	3. 유저 정보 수정
 	 */
 	@Transactional
-	public void update(UpdateRequestDto requestDto) {
+	public void update(UpdateRequestDto requestDto, String token) {
+		Claims claims = jwtUtil.extractClaims(token);
+		Long userId = Long.valueOf(claims.getSubject());
+		User user = userRepository.findUserById(userId);
+
+		if (!passwordEncode.matches(requestDto.getPassword(), user.getPassword())) {
+			throw new CustomException(ErrorCode.INVALID_PASSWORD);
+		}
+
+		user.updateUserInfo(requestDto.getNickname(), requestDto.getPassword(), requestDto.getAddress());
 	}
 }

@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +17,7 @@ import com.outsourcing.outsourcingproject.domain.user.dto.UpdateRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.service.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -26,13 +28,18 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping
-	public CommonResponse<LoginResponseDto> signup(@RequestBody @Valid UserRequestDto requestDto) {
-		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, userService.signup(requestDto));
+	public CommonResponse<LoginResponseDto> signup(@RequestBody @Valid UserRequestDto requestDto,
+		HttpServletResponse response) {
+		LoginResponseDto dto = userService.signup(requestDto);
+		response.setHeader("Authorization", dto.getToken());
+		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, dto);
 	}
 
 	@PostMapping("/login")
-	public CommonResponse<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto requestDto) {
-		return CommonResponse.of(SuccessCode.LOGIN_SUCCESS, userService.login(requestDto));
+	public CommonResponse<Void> login(@RequestBody @Valid LoginRequestDto requestDto, HttpServletResponse response) {
+		LoginResponseDto dto = userService.login(requestDto);
+		response.setHeader("Authorization", dto.getToken());
+		return CommonResponse.of(SuccessCode.LOGIN_SUCCESS);
 	}
 
 	@PostMapping("/logout")
@@ -42,14 +49,16 @@ public class UserController {
 	}
 
 	@DeleteMapping
-	public CommonResponse<Void> deactivate(@RequestBody @Valid DeactivationRequestDto requestDto) {
-		userService.deactivate(requestDto);
+	public CommonResponse<Void> deactivate(@RequestBody @Valid DeactivationRequestDto requestDto,
+		@RequestHeader("Authorization") String token) {
+		userService.deactivate(requestDto, token);
 		return CommonResponse.of(SuccessCode.USER_DEACTIVATE_SUCCESS);
 	}
 
 	@PatchMapping
-	public CommonResponse<Void> update(@RequestBody @Valid UpdateRequestDto requestDto) {
-		userService.update(requestDto);
+	public CommonResponse<Void> update(@RequestBody @Valid UpdateRequestDto requestDto,
+		@RequestHeader("Authorization") String token) {
+		userService.update(requestDto, token);
 		return CommonResponse.of(SuccessCode.USER_UPDATE_SUCCESS);
 	}
 }

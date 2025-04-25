@@ -4,6 +4,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,7 +34,7 @@ public class User extends BaseEntity {
 	private String password;
 
 	@Column(nullable = false)
-	private String nickname = "익명의 사용자";
+	private String nickname;
 
 	@Column(nullable = false)
 	private String phoneNumber;
@@ -47,6 +49,7 @@ public class User extends BaseEntity {
 	@Column(nullable = false)
 	private boolean isDeleted = false;
 
+	@Builder
 	public User(String email, String password, String nickname, String phoneNumber, String address,
 		Authority authority) {
 		this.email = email;
@@ -55,5 +58,23 @@ public class User extends BaseEntity {
 		this.phoneNumber = phoneNumber;
 		this.address = address;
 		this.authority = authority;
+	}
+
+	public void updateDeletedStatus() {
+		this.isDeleted = true;
+	}
+
+	public void updateUserInfo(String nickname, String password, String address) {
+		if (!StringUtils.isBlank(nickname)) {
+			this.nickname = nickname;
+		}
+		// Todo: 단순히 검증용 비밀번호였는지, 변경의사가 있는지 구분하기 위한 필드 필요
+		if (!StringUtils.isBlank(password)) {
+			this.nickname = password;
+		}
+
+		if (!StringUtils.isBlank(address)) {
+			this.nickname = address;
+		}
 	}
 }
