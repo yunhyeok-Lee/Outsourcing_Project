@@ -1,5 +1,8 @@
 package com.outsourcing.outsourcingproject.domain.menu.entity;
 
+import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
+import com.outsourcing.outsourcingproject.domain.store.entity.Store;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,17 +12,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
-import com.outsourcing.outsourcingproject.domain.store.entity.Store;
-
 @Entity
 @Getter
-@Table(name = "/stores/{storesId}/menu")// 뒤에 s 를 붙이는 경우는 예약어인 경우에만!! 예를들면 users 와같은거만
+@Table(name = "menu")// 뒤에 s 를 붙이는 경우는 예약어인 경우에만!! 예를들면 users 와같은거만
 @NoArgsConstructor
 public class Menu extends BaseEntity {
 
