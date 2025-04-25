@@ -1,5 +1,7 @@
 package com.outsourcing.outsourcingproject.domain.store.dto;
 
+import java.time.LocalTime;
+
 import com.outsourcing.outsourcingproject.domain.store.entity.StoreSatus;
 
 import lombok.Getter;
@@ -9,13 +11,13 @@ public class StoreResponseDto {
 	private final Long id;
 	private final StoreSatus status;
 	private final String name;
-	private final String openTime;
-	private final String closeTime;
+	private final LocalTime openTime;
+	private final LocalTime closeTime;
 	private final Integer minOrderAmount;
 	private final String address;
 
-	public StoreResponseDto(Long id, StoreSatus status, String name, String openTime,
-		String closeTime, Integer minOrderAmount, String address) {
+	public StoreResponseDto(Long id, StoreSatus status, String name, LocalTime openTime,
+		LocalTime closeTime, Integer minOrderAmount, String address) {
 		this.id = id;
 		this.status = status;
 		this.name = name;

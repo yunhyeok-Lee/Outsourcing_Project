@@ -1,5 +1,6 @@
 package com.outsourcing.outsourcingproject.domain.store.entity;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
@@ -18,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,10 +42,10 @@ public class Store extends BaseEntity {
 	private StoreSatus status = StoreSatus.PREPARING;
 
 	@Column(nullable = false)
-	private String openTime;
+	private LocalTime openTime;
 
 	@Column(nullable = false)
-	private String closeTime;
+	private LocalTime closeTime;
 
 	@Column(nullable = false)
 	private Integer minOrderAmount;
@@ -66,7 +68,8 @@ public class Store extends BaseEntity {
 	private List<Menu> menus;
 
 	// id를 제외한 생성자
-	public Store(String name, String openTime, String closeTime, int minOrderAmount,
+	@Builder
+	public Store(String name, LocalTime openTime, LocalTime closeTime, int minOrderAmount,
 		String address,
 		Boolean isDeleted, User user) {
 		this.name = name;
@@ -76,6 +79,12 @@ public class Store extends BaseEntity {
 		this.address = address;
 		this.isDeleted = isDeleted;
 		this.user = user;
+	}
+
+	public void updateStore(LocalTime openTime, LocalTime closeTime, Integer minOrderAmount) {
+		this.openTime = openTime;
+		this.closeTime = closeTime;
+		this.minOrderAmount = minOrderAmount;
 	}
 
 }

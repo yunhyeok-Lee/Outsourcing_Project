@@ -45,9 +45,9 @@ public class StoreService {
 		User authortyUser,
 		StoreRequestDto storeRequest) {
 
-		// Todo : 인증된 사용자 token으로 로그인 된 사용자 판별
-
-		// 유저 권한 owner가 아닐 경우
+		//  Todo : 인증된 사용자 token으로 로그인 된 사용자 판별
+		//
+		// // 유저 권한 owner가 아닐 경우
 		if (authortyUser.getAuthority() != Authority.OWNER) {
 			// 권한이 없는 경우 예외 발생
 			throw new CustomException(ErrorCode.NO_STORE_PERMISSION);
@@ -70,16 +70,15 @@ public class StoreService {
 		 * initialStatus에 status의 defalt 값 지정
 		 * newStore에 값 저장
 		 * */
-		Boolean initialIsDeleted = false;
-		Store newStore = new Store(
-			storeRequest.getName(),
-			storeRequest.getOpenTime(),
-			storeRequest.getCloseTime(),
-			storeRequest.getMinOrderAmount(),
-			storeRequest.getAddress(),
-			initialIsDeleted,
-			authortyUser
-		);
+		Store newStore = Store.builder()
+			.name(storeRequest.getName())
+			.openTime(openTime)
+			.closeTime(closeTime)
+			.minOrderAmount(storeRequest.getMinOrderAmount())
+			.address(storeRequest.getAddress())
+			.isDeleted(false)
+			.user(authortyUser)
+			.build();
 
 		/*
 		 * newStore에 저장한 값 storeRepository를 통해 db에 저장
@@ -116,5 +115,29 @@ public class StoreService {
 
 		return new StoreListResponseDto(responseDtoList);
 	}
+
+	/*
+	 * id에 해당하는 가게 정보 수정
+	 * */
+	// public StoreResponseDto updateStore(Long id, UpdateStoreRequestDto requestDto) {
+	//
+	// 	Store store = storeRepository.findById(id);
+	//
+	// 	store.updateStore(
+	// 		requestDto.getOpenTime(),
+	// 		requestDto.getCloseTime(),
+	// 		requestDto.getMinOrderAmount()
+	// 		);
+	//
+	// 	return new StoreResponseDto(
+	// 		savedStore.getId(),
+	// 		StoreSatus.PREPARING,
+	// 		savedStore.getName(),
+	// 		savedStore.getOpenTime(),
+	// 		savedStore.getCloseTime(),
+	// 		savedStore.getMinOrderAmount(),
+	// 		savedStore.getAddress()
+	// 	);
+	// }
 
 }
