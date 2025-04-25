@@ -116,7 +116,9 @@ public class UserService {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
 		}
 
-		user.updateUserInfo(requestDto.getNickname(), requestDto.getNewPassword(), requestDto.getAddress());
+		String encodedNewPw = passwordEncode.encode(requestDto.getNewPassword());
+
+		user.updateUserInfo(requestDto.getNickname(), encodedNewPw, requestDto.getAddress());
 	}
 
 	/*
