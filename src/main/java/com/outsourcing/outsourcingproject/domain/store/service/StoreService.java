@@ -110,5 +110,4 @@ public class StoreService {
 
 		return new StoreListResponseDto(responseDtoList);
 	}
-
 }

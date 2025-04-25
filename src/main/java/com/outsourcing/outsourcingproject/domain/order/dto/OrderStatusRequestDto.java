@@ -7,8 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class OrderStatusResponseDto {
+public class OrderStatusRequestDto {
 
-	private final Long id;
 	private final DeliveryStatus deliveryStatus;
 }
