@@ -1,5 +1,7 @@
 package com.outsourcing.outsourcingproject.domain.review.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,6 +11,7 @@ import com.outsourcing.outsourcingproject.domain.order.entity.Order;
 import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
 import com.outsourcing.outsourcingproject.domain.review.dto.ReviewRequestDto;
 import com.outsourcing.outsourcingproject.domain.review.dto.ReviewUpdateRequestDto;
+import com.outsourcing.outsourcingproject.domain.review.dto.StoreReviewResponseDto;
 import com.outsourcing.outsourcingproject.domain.review.entity.Review;
 import com.outsourcing.outsourcingproject.domain.review.repository.ReviewRepository;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
@@ -52,26 +55,27 @@ public class ReviewService {
 	2. 가게 리뷰 유효성 검사 - 존재하는지  <<- review not found 예외 처리가 맞을지 그냥 빈 리스트 조회가 맞을지 고민
 	3. 가게 ID 기반 리뷰 리스트 가져오기
 	4.
-	// */
-	// public StoreReviewPageResponseDto getStoreReviews(Long storeId, Pageable pageable) {
-	// 	boolean exists = storeRepository.existsById(storeId);
-	// 	if (!exists) {
-	// 		throw new CustomException(ErrorCode.STORE_NOT_FOUND);
-	// 	}
-	//
-	// 	boolean reviewExists = reviewRepository.existsByStore_Id(storeId);
-	// 	if (!reviewExists) {
-	// 		throw new CustomException(ErrorCode.REVIEW_NOT_FOUND);
-	// 	}
-	//
-	// 	Page<Review> reviewList = reviewRepository.findByStoreId(storeId, pageable);
-	//
-	// 	List<StoreReviewResponseDto> storeReviewResponseList = reviewList.getContent().stream()
-	// 		.map(StoreReviewResponseDto::new)
-	// 		.toList();
-	//
-	// 	return null;
-	// }
+	*/
+	public Page<StoreReviewResponseDto> getStoreReviews(Long storeId, Pageable pageable) {
+		boolean exists = storeRepository.existsById(storeId);
+		if (!exists) {
+			throw new CustomException(ErrorCode.STORE_NOT_FOUND);
+		}
+
+		boolean reviewExists = reviewRepository.existsByStore_Id(storeId);
+		if (!reviewExists) {
+			throw new CustomException(ErrorCode.REVIEW_NOT_FOUND);
+		}
+
+		// 가져온 가게 아이디에 해당하는 리뷰 page 객체로 받아오기
+		Page<Review> reviewList = reviewRepository.findByStoreId(storeId, pageable);
+
+		// 받아온 리뷰들을 DTO 객체에 눌러 담기 (Entity -> Dto 변환 작업)
+		Page<StoreReviewResponseDto> storeReviewResponseList = reviewList
+			.map(StoreReviewResponseDto::new);
+
+		return storeReviewResponseList;
+	}
 
 	/* 리뷰 수정
 	0. Transactional 처리

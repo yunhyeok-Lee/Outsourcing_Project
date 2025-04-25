@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "stores")
+@Table(name = "store")
 @NoArgsConstructor
 public class Store extends BaseEntity {
 	// id identity 설정
