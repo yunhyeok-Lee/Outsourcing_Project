@@ -4,6 +4,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -57,5 +58,23 @@ public class User extends BaseEntity {
 		this.phoneNumber = phoneNumber;
 		this.address = address;
 		this.authority = authority;
+	}
+
+	public void updateDeletedStatus() {
+		this.isDeleted = true;
+	}
+
+	public void updateUserInfo(String nickname, String password, String address) {
+		if (!StringUtils.isBlank(nickname)) {
+			this.nickname = nickname;
+		}
+		// Todo: 단순히 검증용 비밀번호였는지, 변경의사가 있는지 구분하기 위한 필드 필요
+		if (!StringUtils.isBlank(password)) {
+			this.nickname = password;
+		}
+
+		if (!StringUtils.isBlank(address)) {
+			this.nickname = address;
+		}
 	}
 }

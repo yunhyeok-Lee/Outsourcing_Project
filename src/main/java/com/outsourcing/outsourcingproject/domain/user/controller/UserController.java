@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,14 +49,16 @@ public class UserController {
 	}
 
 	@DeleteMapping
-	public CommonResponse<Void> deactivate(@RequestBody @Valid DeactivationRequestDto requestDto) {
-		userService.deactivate(requestDto);
+	public CommonResponse<Void> deactivate(@RequestBody @Valid DeactivationRequestDto requestDto,
+		@RequestHeader("Authorization") String token) {
+		userService.deactivate(requestDto, token);
 		return CommonResponse.of(SuccessCode.USER_DEACTIVATE_SUCCESS);
 	}
 
 	@PatchMapping
-	public CommonResponse<Void> update(@RequestBody @Valid UpdateRequestDto requestDto) {
-		userService.update(requestDto);
+	public CommonResponse<Void> update(@RequestBody @Valid UpdateRequestDto requestDto,
+		@RequestHeader("Authorization") String token) {
+		userService.update(requestDto, token);
 		return CommonResponse.of(SuccessCode.USER_UPDATE_SUCCESS);
 	}
 }
