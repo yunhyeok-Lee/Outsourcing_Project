@@ -1,5 +1,9 @@
 package com.outsourcing.outsourcingproject.domain.review.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,8 +13,11 @@ import com.outsourcing.outsourcingproject.domain.order.entity.Order;
 import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
 import com.outsourcing.outsourcingproject.domain.review.dto.ReviewRequestDto;
 import com.outsourcing.outsourcingproject.domain.review.dto.ReviewUpdateRequestDto;
+import com.outsourcing.outsourcingproject.domain.review.dto.StoreReviewPageResponseDto;
+import com.outsourcing.outsourcingproject.domain.review.dto.StoreReviewResponseDto;
 import com.outsourcing.outsourcingproject.domain.review.entity.Review;
 import com.outsourcing.outsourcingproject.domain.review.repository.ReviewRepository;
+import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,10 +26,11 @@ import lombok.RequiredArgsConstructor;
 public class ReviewService {
 	private final ReviewRepository reviewRepository;
 	private final OrderRepository orderRepository;
+	private final StoreRepository storeRepository;
 
 	/* 리뷰 생성
 	1. Order 객체 생성(유효성 검사)
-	2. 주문 유효성 검사 - 이미 존재하는지
+	2. 리뷰 유효성 검사 - 이미 존재하는지
 	3. 주문 유효성 검사 - 배달 완료 상태인지
 	4. DB에 SAVE
 	*/
@@ -46,13 +54,29 @@ public class ReviewService {
 	}
 
 	/* 가게 리뷰 조회
-	1.
-	2.
-	3.
+	1. 가게 유효성 검사 - 존재하는지
+	2. 가게 리뷰 유효성 검사 - 존재하는지  <<- review not found 예외 처리가 맞을지 그냥 빈 리스트 조회가 맞을지 고민
+	3. 가게 ID 기반 리뷰 리스트 가져오기
 	4.
 	*/
-	public void getStoreReviews() {
+	public StoreReviewPageResponseDto getStoreReviews(Long storeId, Pageable pageable) {
+		boolean exists = storeRepository.existsById(storeId);
+		if (!exists) {
+			throw new CustomException(ErrorCode.STORE_NOT_FOUND);
+		}
 
+		boolean reviewExists = reviewRepository.existsByStore_Id(storeId);
+		if (!reviewExists) {
+			throw new CustomException(ErrorCode.REVIEW_NOT_FOUND);
+		}
+
+		Page<Review> reviewList = reviewRepository.findByStoreId(storeId, pageable);
+
+		List<StoreReviewResponseDto> storeReviewResponseList = reviewList.getContent().stream()
+			.map(StoreReviewResponseDto::new)
+			.toList();
+		
+		return null;
 	}
 
 	/* 리뷰 수정

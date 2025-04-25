@@ -10,6 +10,9 @@ public enum ErrorCode implements BaseCode {
 	CONFLICT_EMAIL(HttpStatus.CONFLICT, "중복된 이메일입니다."),
 	INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다."),
 
+	// STORE
+	STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "가게가 존재하지 않습니다."),
+
 	// ORDER
 	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문이 존재하지 않습니다."),
 	NOT_COMPLETED_ORDER(HttpStatus.BAD_REQUEST, "배달이 완료되지 않았습니다."),

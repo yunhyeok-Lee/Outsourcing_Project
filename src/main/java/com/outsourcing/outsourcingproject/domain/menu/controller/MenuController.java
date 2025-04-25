@@ -1,7 +1,6 @@
 package com.outsourcing.outsourcingproject.domain.menu.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,8 +27,8 @@ public class MenuController {
 		return ResponseEntity.ok(responseDto);
 	}
 
-	@PatchMapping("/menus/{id}")
-	public ResponseEntity<MenuResponseDto> updateMenu(
+	//@PatchMapping("/menus/{id}")
+	//public ResponseEntity<MenuResponseDto> updateMenu(
 	//
 	// )
 }
