@@ -68,7 +68,7 @@ public class User extends BaseEntity {
 		if (!StringUtils.isBlank(nickname)) {
 			this.nickname = nickname;
 		}
-		// Todo: 단순히 검증용 비밀번호였는지, 변경의사가 있는지 구분하기 위한 필드 필요
+		
 		if (!StringUtils.isBlank(password)) {
 			this.nickname = password;
 		}

@@ -11,6 +11,7 @@ public enum SuccessCode implements BaseCode {
 	LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃 되었습니다."),
 	USER_DEACTIVATE_SUCCESS(HttpStatus.OK, "회원탈퇴 되었습니다."),
 	USER_UPDATE_SUCCESS(HttpStatus.OK, "회원정보가 수정되었습니다."),
+	FIND_USER_SUCCESS(HttpStatus.FOUND, "회원정보가 조회되었습니다."),
 
 	// Store
 	CREATE_STORE(HttpStatus.OK, "가게가 생성되었습니다."),

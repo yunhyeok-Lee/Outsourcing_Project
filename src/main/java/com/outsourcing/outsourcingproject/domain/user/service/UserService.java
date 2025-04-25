@@ -11,6 +11,7 @@ import com.outsourcing.outsourcingproject.domain.user.dto.LoginRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.LoginResponseDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UpdateRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
+import com.outsourcing.outsourcingproject.domain.user.dto.UserResponseDto;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
 import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
@@ -114,6 +115,26 @@ public class UserService {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
 		}
 
-		user.updateUserInfo(requestDto.getNickname(), requestDto.getPassword(), requestDto.getAddress());
+		user.updateUserInfo(requestDto.getNickname(), requestDto.getNewPassword(), requestDto.getAddress());
+	}
+
+	/*
+	유저 정보 조회 API
+	 */
+	public UserResponseDto findById(Long id) {
+		User user = userRepository.findUserById(id);
+		UserResponseDto responseDto = UserResponseDto.builder()
+			.id(user.getId())
+			.email(user.getEmail())
+			.password(user.getPassword())
+			.nickname(user.getNickname())
+			.phoneNumber(user.getPhoneNumber())
+			.address(user.getAddress())
+			.authority(user.getAuthority())
+			.createdAt(user.getCreatedAt())
+			.updatedAt(user.getUpdatedAt())
+			.isDeleted(user.isDeleted())
+			.build();
+		return responseDto;
 	}
 }

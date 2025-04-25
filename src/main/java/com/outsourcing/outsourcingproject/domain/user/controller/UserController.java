@@ -1,7 +1,9 @@
 package com.outsourcing.outsourcingproject.domain.user.controller;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -15,6 +17,7 @@ import com.outsourcing.outsourcingproject.domain.user.dto.LoginRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.LoginResponseDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UpdateRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
+import com.outsourcing.outsourcingproject.domain.user.dto.UserResponseDto;
 import com.outsourcing.outsourcingproject.domain.user.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -60,5 +63,10 @@ public class UserController {
 		@RequestHeader("Authorization") String token) {
 		userService.update(requestDto, token);
 		return CommonResponse.of(SuccessCode.USER_UPDATE_SUCCESS);
+	}
+
+	@GetMapping
+	public CommonResponse<UserResponseDto> findById(@PathVariable Long id) {
+		return CommonResponse.of(SuccessCode.FIND_USER_SUCCESS, userService.findById(id));
 	}
 }
