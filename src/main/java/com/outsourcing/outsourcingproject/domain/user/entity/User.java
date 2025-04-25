@@ -1,5 +1,7 @@
 package com.outsourcing.outsourcingproject.domain.user.entity;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -15,6 +17,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@DynamicUpdate
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {

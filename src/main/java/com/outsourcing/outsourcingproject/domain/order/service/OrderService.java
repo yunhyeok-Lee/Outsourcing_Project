@@ -34,26 +34,26 @@ public class OrderService {
 	 */
 
 	// 1. 주문 생성
-	@Transactional
-	public OrderResponseDto createOrder(Long orderId, OrderRequestDto orderRequestDto) {
-		// 주문 요청 중복 확인
-		if (orderRepository.findOrderByUserId(orderId, orderRequestDto.getUserId()).isPresent()) {
-			throw new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT);
-		}
-
-		// 새로운 주문 생성
-		Order order = Order.builder()
-			.user(user)
-			.store(store)
-			.menu(menu)
-			.deliveryStatus(DeliveryStatus.WAITING)
-			.build();
-
-		orderRepository.save(order);
-
-		return new OrderResponseDto(order);
-
-	}
+	// @Transactional
+	// public OrderResponseDto createOrder(Long orderId, OrderRequestDto orderRequestDto) {
+	// 	// 주문 요청 중복 확인
+	// 	if (orderRepository.findOrderByUserId(orderId, orderRequestDto.getUserId()).isPresent()) {
+	// 		throw new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT);
+	// 	}
+	//
+	// 	// 새로운 주문 생성
+	// 	Order order = Order.builder()
+	// 		.user(user)
+	// 		.store(store)
+	// 		.menu(menu)
+	// 		.deliveryStatus(DeliveryStatus.WAITING)
+	// 		.build();
+	//
+	// 	orderRepository.save(order);
+	//
+	// 	return new OrderResponseDto(order);
+	//
+	// }
 
 	// 2. 주문 수락, 거절
 	@Transactional
@@ -82,21 +82,21 @@ public class OrderService {
 		}
 	}
 
-	// 3. 주문 목록 조회
-	@Transactional
-	public List<Order> getConfirmedOrder(
-		Long orderId,
-		OrderByUserResponseDto userDto,
-		OrderByStoreResponseDto storeDto,
-		OrderByMenuResponseDto menuDto) {
-
-		return orderRepository.findByOrderIdAndStatus(orderId, DeliveryStatus.CONFIRMED)
-			.stream()
-			.map(OrderByUserResponseDto::new)
-			.map(OrderByStoreResponseDto::new)
-			.map(OrderByMenuResponseDto::new)
-			.collect(Collectors.toList());
-	}
+	// // 3. 주문 목록 조회
+	// @Transactional
+	// public List<Order> getConfirmedOrder(
+	// 	Long orderId,
+	// 	OrderByUserResponseDto userDto,
+	// 	OrderByStoreResponseDto storeDto,
+	// 	OrderByMenuResponseDto menuDto) {
+	//
+	// 	return orderRepository.findByOrderIdAndStatus(orderId, DeliveryStatus.CONFIRMED)
+	// 		.stream()
+	// 		.map(OrderByUserResponseDto::new)
+	// 		.map(OrderByStoreResponseDto::new)
+	// 		.map(OrderByMenuResponseDto::new)
+	// 		.collect(Collectors.toList());
+	// }
 
 	// 4. 주문 취소
 	@Transactional
