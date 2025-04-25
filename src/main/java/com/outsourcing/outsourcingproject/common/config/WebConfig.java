@@ -3,9 +3,10 @@ package com.outsourcing.outsourcingproject.common.config;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.outsourcing.outsourcingproject.common.util.JwtAuthenticationFilter;
+
+import com.outsourcing.outsourcingproject.common.filter.JwtAuthenticationFilter;
+import com.outsourcing.outsourcingproject.common.filter.RoleCheckFilter;
 import com.outsourcing.outsourcingproject.common.util.JwtUtil;
-import com.outsourcing.outsourcingproject.common.util.RoleCheckFilter;
 
 @Configuration
 public class WebConfig {

@@ -39,7 +39,7 @@ public class OrderController {
 	4. 주문 요청 취소
 	 */
 
-	// 1. 주문 요청 생성 API
+	// 1. 주문 요청 생성 API (사용자만 권한 있음)
 	@PostMapping
 	public CommonResponse<OrderResponseDto> createOrder(@RequestBody @Valid OrderRequestDto requestDto,
 		@RequestHeader("Authorization") String token) {
@@ -54,7 +54,7 @@ public class OrderController {
 		return CommonResponse.of(SuccessCode.GET_ORDER_LIST_SUCCESS, orderList);
 	}
 
-	// 3. 주문 상태 변경 API
+	// 3. 주문 상태 변경 API (사장님만 권한 있음)
 	@PatchMapping("/{id}")
 	public CommonResponse<OrderStatusResponseDto> handleRequest(
 		@PathVariable Long id,
