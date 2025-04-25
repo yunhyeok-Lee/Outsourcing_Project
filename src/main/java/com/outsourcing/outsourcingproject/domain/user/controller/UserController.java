@@ -65,7 +65,7 @@ public class UserController {
 		return CommonResponse.of(SuccessCode.USER_UPDATE_SUCCESS);
 	}
 
-	@GetMapping
+	@GetMapping("/{id}")
 	public CommonResponse<UserResponseDto> findById(@PathVariable Long id) {
 		return CommonResponse.of(SuccessCode.FIND_USER_SUCCESS, userService.findById(id));
 	}

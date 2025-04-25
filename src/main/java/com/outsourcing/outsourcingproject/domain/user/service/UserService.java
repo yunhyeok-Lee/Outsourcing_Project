@@ -128,7 +128,6 @@ public class UserService {
 		UserResponseDto responseDto = UserResponseDto.builder()
 			.id(user.getId())
 			.email(user.getEmail())
-			.password(user.getPassword())
 			.nickname(user.getNickname())
 			.phoneNumber(user.getPhoneNumber())
 			.address(user.getAddress())
