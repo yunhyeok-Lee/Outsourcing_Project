@@ -29,8 +29,9 @@ public class UserService {
 	 1. 이메일 중복 확인
 	 2. 비밀번호 암호화
 	 3. DB에 User 저장
+	 4. 회원가입 시 바로 로그인처리 되도록 토큰 발급
 	 */
-	public void signup(UserRequestDto requestDto) {
+	public LoginResponseDto signup(UserRequestDto requestDto) {
 		if (userRepository.findUserByEmail(requestDto.getEmail()).isPresent()) {
 			throw new CustomException(ErrorCode.CONFLICT_EMAIL);
 		}
@@ -41,6 +42,9 @@ public class UserService {
 			requestDto.getPhoneNumber(), requestDto.getAddress(), requestDto.getAuthority());
 
 		userRepository.save(user);
+
+		String jwtToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getAuthority());
+		return new LoginResponseDto(jwtToken);
 	}
 
 	/*
@@ -63,7 +67,6 @@ public class UserService {
 		}
 
 		String jwtToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getAuthority());
-
 		return new LoginResponseDto(jwtToken);
 	}
 
@@ -72,7 +75,7 @@ public class UserService {
 	1. Todo: Access Token 만료
 	 */
 	public void logout() {
-		
+
 	}
 
 	/*

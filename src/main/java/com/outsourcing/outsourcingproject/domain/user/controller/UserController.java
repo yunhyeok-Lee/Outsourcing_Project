@@ -26,9 +26,8 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping
-	public CommonResponse<Void> signup(@RequestBody @Valid UserRequestDto requestDto) {
-		userService.signup(requestDto);
-		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS);
+	public CommonResponse<LoginResponseDto> signup(@RequestBody @Valid UserRequestDto requestDto) {
+		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, userService.signup(requestDto));
 	}
 
 	@PostMapping("/login")
