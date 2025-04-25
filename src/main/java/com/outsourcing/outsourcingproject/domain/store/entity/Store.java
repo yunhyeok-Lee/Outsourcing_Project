@@ -62,12 +62,15 @@ public class Store extends BaseEntity {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
+	// menu 테이블과 일대다 연관관계 설정
+	@OneToMany(mappedBy = "store")
+	private List<Menu> menus;
+
 	// id를 제외한 생성자
-	public Store(String name, StoreSatus status, LocalTime openTime, LocalTime closeTime, int minOrderAmount,
+	public Store(String name, LocalTime openTime, LocalTime closeTime, int minOrderAmount,
 		String address,
 		Boolean isDeleted, User user) {
 		this.name = name;
-		this.status = status;
 		this.openTime = openTime;
 		this.closeTime = closeTime;
 		this.minOrderAmount = minOrderAmount;
@@ -75,9 +78,5 @@ public class Store extends BaseEntity {
 		this.isDeleted = isDeleted;
 		this.user = user;
 	}
-
-	// menu 테이블과 일대다 연관관계 설정
-	@OneToMany(mappedBy = "store")
-	private List<Menu> menus;
 
 }

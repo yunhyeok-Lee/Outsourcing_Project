@@ -8,6 +8,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class StoreListResponseDto {
-	private List<FindStoreResponseDto> store;
+	private final List<FindStoreResponseDto> store;
 
 }

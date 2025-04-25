@@ -29,7 +29,7 @@ public class StoreService {
 	// private final MenuRepository menuRepository;
 	// private final UserRepository userRepository;
 
-	private final int maxStore = 3;
+	private static final int MAX_STORE = 3;
 
 	/*
 	 * 가게를 생성
@@ -55,7 +55,7 @@ public class StoreService {
 		// isDeleted가 false인 -> 폐업 처리 되지 않은 가게 count
 		int storeCount = storeRepository.countByUserAndIsDeletedFalse(authortyUser);
 
-		if (storeCount >= maxStore) {
+		if (storeCount >= MAX_STORE) {
 			// 최대 개수를 초과한 경우 예외 발생
 			throw new CustomException(ErrorCode.STORE_LIMIT_EXCEEDED);
 		}
@@ -68,7 +68,6 @@ public class StoreService {
 		Boolean initialIsDeleted = false;
 		Store newStore = new Store(
 			storeRequest.getName(),
-			StoreSatus.PREPARING,
 			storeRequest.getOpenTime(),
 			storeRequest.getCloseTime(),
 			storeRequest.getMinOrderAmount(),
