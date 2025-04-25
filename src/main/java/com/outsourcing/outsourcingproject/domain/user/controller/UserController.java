@@ -16,6 +16,7 @@ import com.outsourcing.outsourcingproject.domain.user.dto.UpdateRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.service.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,13 +26,13 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping
-	public CommonResponse<Void> signup(@RequestBody UserRequestDto requestDto) {
+	public CommonResponse<Void> signup(@RequestBody @Valid UserRequestDto requestDto) {
 		userService.signup(requestDto);
 		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS);
 	}
 
 	@PostMapping("/login")
-	public CommonResponse<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto) {
+	public CommonResponse<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto requestDto) {
 		return CommonResponse.of(SuccessCode.LOGIN_SUCCESS, userService.login(requestDto));
 	}
 
@@ -42,13 +43,13 @@ public class UserController {
 	}
 
 	@DeleteMapping
-	public CommonResponse<Void> deactivate(@RequestBody DeactivationRequestDto requestDto) {
+	public CommonResponse<Void> deactivate(@RequestBody @Valid DeactivationRequestDto requestDto) {
 		userService.deactivate(requestDto);
 		return CommonResponse.of(SuccessCode.USER_DEACTIVATE_SUCCESS);
 	}
 
 	@PatchMapping
-	public CommonResponse<Void> update(@RequestBody UpdateRequestDto requestDto) {
+	public CommonResponse<Void> update(@RequestBody @Valid UpdateRequestDto requestDto) {
 		userService.update(requestDto);
 		return CommonResponse.of(SuccessCode.USER_UPDATE_SUCCESS);
 	}
