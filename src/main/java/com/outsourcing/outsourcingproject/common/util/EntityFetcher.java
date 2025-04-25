@@ -8,6 +8,7 @@ import com.outsourcing.outsourcingproject.domain.menu.repository.MenuRepository;
 import com.outsourcing.outsourcingproject.domain.order.entity.Order;
 import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
 import com.outsourcing.outsourcingproject.domain.review.repository.ReviewRepository;
+import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
@@ -26,6 +27,11 @@ public class EntityFetcher {
 	public Order getOrderOrThrow(Long orderId) {
 		return orderRepository.findById(orderId)
 			.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+	}
+
+	public Store getStoreOrThrow(Long storeId) {
+		return storeRepository.findById(storeId)
+			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 	}
 
 }

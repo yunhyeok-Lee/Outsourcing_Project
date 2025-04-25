@@ -4,11 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
-import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
-import com.outsourcing.outsourcingproject.domain.order.dto.OrderRequestDto;
-import com.outsourcing.outsourcingproject.domain.order.dto.OrderResponseDto;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderStatusResponseDto;
 import com.outsourcing.outsourcingproject.domain.order.entity.DeliveryStatus;
 import com.outsourcing.outsourcingproject.domain.order.entity.Order;
@@ -31,26 +27,26 @@ public class OrderService {
 	 */
 
 	// 1. 주문 생성
-	@Transactional
-	public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
-		// 주문 요청 중복 확인
-		if (orderRepository.findOrderByUserId(orderRequestDto.getUserId()).isPresent()) {
-			throw new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT);
-		}
-
-		// 새로운 주문 생성
-		Order order = Order.builder()
-			.user(user)
-			.store(store)
-			.menu(menu)
-			.deliveryStatus(DeliveryStatus.WAITING)
-			.build();
-
-		orderRepository.save(order);
-
-		return new OrderResponseDto(order);
-
-	}
+	// @Transactional
+	// public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
+	// 	// 주문 요청 중복 확인
+	// 	if (orderRepository.findOrderByUserId(orderRequestDto.getUserId()).isPresent()) {
+	// 		throw new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT);
+	// 	}
+	//
+	// 	// 새로운 주문 생성
+	// 	Order order = Order.builder()
+	// 		.user(user)
+	// 		.store(store)
+	// 		.menu(menu)
+	// 		.deliveryStatus(DeliveryStatus.WAITING)
+	// 		.build();
+	//
+	// 	orderRepository.save(order);
+	//
+	// 	return new OrderResponseDto(order);
+	//
+	// }
 
 	// 2. storeId 로 주문 목록 조회 with 상태
 	@Transactional
