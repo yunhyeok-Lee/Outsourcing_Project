@@ -1,10 +1,15 @@
 package com.outsourcing.outsourcingproject.domain.store.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
+import com.outsourcing.outsourcingproject.domain.store.dto.FindStoreResponseDto;
+import com.outsourcing.outsourcingproject.domain.store.dto.StoreListResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
@@ -92,25 +97,26 @@ public class StoreService {
 	/*
 	 * 가게 이름으로 다건 조회
 	 * */
-	// public FindStoreResponseDto findByName(String name) {
-	//
-	// 	List<Store> storeList = storeRepository.findByName(name);
-	//
-	// 	if (storeList.isEmpty()) {
-	// 		// 조회된 가게 없을 경우 예외 발생
-	// 		throw new CustomException(ErrorCode.STORE_NOT_FOUND);
-	//
-	// 	}
-	//
-	// 	List<FindStoreResponseDto> responseDtoList = storeList.stream()
-	// 		.map(store -> new FindStoreResponseDto(
-	// 			store.getId(),
-	// 			store.getStatus(),
-	// 			store.getName()
-	// 		))
-	// 		.collect(Collectors.toList());
-	//
-	// 	return responseDtoList;
-	// }
+	public StoreListResponseDto findByName(String name) {
+		//dto를 배열로 or dto에서 배열로
+
+		List<Store> storeList = storeRepository.findByName(name);
+
+		if (storeList.isEmpty()) {
+			// 조회된 가게 없을 경우 예외 발생
+			throw new CustomException(ErrorCode.STORE_NOT_FOUND);
+
+		}
+
+		List<FindStoreResponseDto> responseDtoList = storeList.stream()
+			.map(store -> new FindStoreResponseDto(
+				store.getId(),
+				store.getStatus(),
+				store.getName()
+			))
+			.collect(Collectors.toList());
+
+		return new StoreListResponseDto(responseDtoList);
+	}
 
 }
