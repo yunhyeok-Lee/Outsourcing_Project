@@ -27,6 +27,7 @@ public class JwtAuthenticationFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
 		HttpServletResponse httpResponse = (HttpServletResponse)response;
 
+		// 요청 Header에서 "Authorization" 이라는 토큰을 꺼낸다.
 		String authHeader = httpRequest.getHeader("Authorization");
 
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -43,12 +44,13 @@ public class JwtAuthenticationFilter implements Filter {
 				chain.doFilter(request, response); // 다음 필터로
 				return;
 
+				// 토큰에 문제가 있다면 401, UNAUTHORIZED 응답
 			} catch (CustomException e) {
 				httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				httpResponse.getWriter().write("Invalid token");
 				return;
 			}
-
+			// header 가 없는 경우 401, UNAUTHORIZED 응답
 		} else {
 			httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			httpResponse.getWriter().write("Missing Authorization header");
