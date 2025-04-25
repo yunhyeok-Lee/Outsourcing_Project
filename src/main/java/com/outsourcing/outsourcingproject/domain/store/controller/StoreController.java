@@ -1,6 +1,7 @@
 package com.outsourcing.outsourcingproject.domain.store.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.outsourcing.outsourcingproject.common.enums.SuccessCode;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreListResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
-import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.store.service.StoreService;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
@@ -50,7 +50,7 @@ public class StoreController {
 		User authortyUser,
 		@Valid @RequestBody StoreRequestDto storeRequestDto) {
 
-		StoreResponseDto createdStore = storeService.createStore(authortyUser, storeRequestDto);
+		storeService.createStore(authortyUser, storeRequestDto);
 
 		return ResponseEntity
 			.status(SuccessCode.CREATE_STORE.getStatus())
@@ -62,10 +62,22 @@ public class StoreController {
 	 * name을 통해 사용자 조회
 	 * 가게명으로 여러건의 가게 조회
 	 */
-	@PostMapping("/{name}")
+	@GetMapping("/{name}")
 	public ResponseEntity<StoreListResponseDto> findByName(@PathVariable String name) {
 		StoreListResponseDto storeListResponseDto = storeService.findByName(name);
 		return ResponseEntity.ok(storeListResponseDto);
 	}
+
+	/*
+	 * 가게 정보 수정 api
+	 * name을 통해 사용자 조회
+	 * 가게명으로 여러건의 가게 조회
+	 */
+	// @PatchMapping("/{id}")
+	// public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long id,
+	// 	@RequestBody UpdateStoreRequestDto updateStoreRequestDto) {
+	// 	StoreResponseDto storeResponseDto = storeService.updateStore(id, updateStoreRequestDto);
+	// 	return ResponseEntity.ok(storeResponseDto);
+	// }
 
 }

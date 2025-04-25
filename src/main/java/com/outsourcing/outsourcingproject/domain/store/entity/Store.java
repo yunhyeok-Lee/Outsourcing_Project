@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -47,7 +48,7 @@ public class Store extends BaseEntity {
 	private LocalTime closeTime;
 
 	@Column(nullable = false)
-	private int minOrderAmount;
+	private Integer minOrderAmount;
 
 	@Column(nullable = false)
 	private String address;
@@ -67,6 +68,7 @@ public class Store extends BaseEntity {
 	private List<Menu> menus;
 
 	// id를 제외한 생성자
+	@Builder
 	public Store(String name, LocalTime openTime, LocalTime closeTime, int minOrderAmount,
 		String address,
 		Boolean isDeleted, User user) {
@@ -77,6 +79,12 @@ public class Store extends BaseEntity {
 		this.address = address;
 		this.isDeleted = isDeleted;
 		this.user = user;
+	}
+
+	public void updateStore(LocalTime openTime, LocalTime closeTime, Integer minOrderAmount) {
+		this.openTime = openTime;
+		this.closeTime = closeTime;
+		this.minOrderAmount = minOrderAmount;
 	}
 
 }

@@ -12,9 +12,9 @@ public class UpdateStoreRequestDto {
 	//patch를 통해 입력된 값만 수정
 	private final LocalTime openTime;
 	private final LocalTime closeTime;
-	private final int minOrderAmount;
+	private final Integer minOrderAmount;
 
-	public UpdateStoreRequestDto(LocalTime openTime, LocalTime closeTime, int minOrderAmount) {
+	public UpdateStoreRequestDto(LocalTime openTime, LocalTime closeTime, Integer minOrderAmount) {
 		this.openTime = openTime;
 		this.closeTime = closeTime;
 		this.minOrderAmount = minOrderAmount;

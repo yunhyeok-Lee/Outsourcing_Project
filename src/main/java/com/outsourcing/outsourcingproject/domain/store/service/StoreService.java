@@ -1,10 +1,8 @@
 package com.outsourcing.outsourcingproject.domain.store.service;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,9 +14,13 @@ import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.entity.StoreSatus;
+import com.outsourcing.outsourcingproject.domain.store.entity.TimeUtil;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -59,21 +61,23 @@ public class StoreService {
 			throw new CustomException(ErrorCode.STORE_LIMIT_EXCEEDED);
 		}
 
-		// Todo : 오픈시간과 마감시간에 따른 영업 상태 설정
+		// reauest로 가져온 String 형태의 시간데이터 변형
+		LocalTime openTime = TimeUtil.toLocalTime(storeRequest.getOpenTime());
+		LocalTime closeTime = TimeUtil.toLocalTime(storeRequest.getCloseTime());
+
 		/*
 		 * initialStatus에 status의 defalt 값 지정
 		 * newStore에 값 저장
 		 * */
-		Boolean initialIsDeleted = false;
-		Store newStore = new Store(
-			storeRequest.getName(),
-			storeRequest.getOpenTime(),
-			storeRequest.getCloseTime(),
-			storeRequest.getMinOrderAmount(),
-			storeRequest.getAddress(),
-			initialIsDeleted,
-			authortyUser
-		);
+		Store newStore = Store.builder()
+			.name(storeRequest.getName())
+			.openTime(openTime)
+			.closeTime(closeTime)
+			.minOrderAmount(storeRequest.getMinOrderAmount())
+			.address(storeRequest.getAddress())
+			.isDeleted(false)
+			.user(authortyUser)
+			.build();
 
 		/*
 		 * newStore에 저장한 값 storeRepository를 통해 db에 저장
@@ -110,4 +114,29 @@ public class StoreService {
 
 		return new StoreListResponseDto(responseDtoList);
 	}
+
+	/*
+	 * id에 해당하는 가게 정보 수정
+	 * */
+	// public StoreResponseDto updateStore(Long id, UpdateStoreRequestDto requestDto) {
+	//
+	// 	Store store = storeRepository.findById(id);
+	//
+	// 	store.updateStore(
+	// 		requestDto.getOpenTime(),
+	// 		requestDto.getCloseTime(),
+	// 		requestDto.getMinOrderAmount()
+	// 		);
+	//
+	// 	return new StoreResponseDto(
+	// 		savedStore.getId(),
+	// 		StoreSatus.PREPARING,
+	// 		savedStore.getName(),
+	// 		savedStore.getOpenTime(),
+	// 		savedStore.getCloseTime(),
+	// 		savedStore.getMinOrderAmount(),
+	// 		savedStore.getAddress()
+	// 	);
+	// }
+
 }

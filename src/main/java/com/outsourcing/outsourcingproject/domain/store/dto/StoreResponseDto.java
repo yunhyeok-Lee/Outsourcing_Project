@@ -13,11 +13,11 @@ public class StoreResponseDto {
 	private final String name;
 	private final LocalTime openTime;
 	private final LocalTime closeTime;
-	private final int minOrderAmount;
+	private final Integer minOrderAmount;
 	private final String address;
 
 	public StoreResponseDto(Long id, StoreSatus status, String name, LocalTime openTime,
-		LocalTime closeTime, int minOrderAmount, String address) {
+		LocalTime closeTime, Integer minOrderAmount, String address) {
 		this.id = id;
 		this.status = status;
 		this.name = name;
