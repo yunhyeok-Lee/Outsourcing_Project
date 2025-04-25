@@ -98,20 +98,34 @@ public class StoreService {
 	 * 가게 이름으로 다건 조회
 	 * */
 	public StoreListResponseDto findByName(String name) {
-		//dto를 배열로 or dto에서 배열로
 
 		List<Store> storeList = storeRepository.findByName(name);
 
+		LocalTime now = LocalTime.now();
+
 		List<FindStoreResponseDto> responseDtoList = storeList.stream()
-			.map(store -> new FindStoreResponseDto(
-				store.getId(),
-				store.getStatus(),
-				store.getName()
-			))
+			.map(store -> {
+				// status 변경
+				StoreSatus status = getStoreStatus(store.getOpenTime(), store.getCloseTime(), now);
+				return new FindStoreResponseDto(
+					store.getId(),
+					status,
+					store.getName()
+				);
+			})
 			.collect(Collectors.toList());
 
 		return new StoreListResponseDto(responseDtoList);
 	}
+
+	// opentime과 closetime 비교해 status 변경
+	private StoreSatus getStoreStatus(LocalTime open, LocalTime close, LocalTime now) {
+		if (open.isBefore(now) && close.isAfter(now)) {
+			return StoreSatus.OPEN;
+		}
+		return StoreSatus.PREPARING;
+	}
+
 
 	/*
 	 * id에 해당하는 가게 정보 수정

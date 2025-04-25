@@ -41,8 +41,6 @@ public class RoleCheckFilter implements Filter {
 			}
 		}
 
-		// Todo : put이나 pathch만 필터가 적용되도록 설정
-
 		chain.doFilter(request, response); // 통과
 	}
 }
