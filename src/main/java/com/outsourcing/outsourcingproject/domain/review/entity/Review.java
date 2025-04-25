@@ -1,7 +1,12 @@
 package com.outsourcing.outsourcingproject.domain.review.entity;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
 import com.outsourcing.outsourcingproject.domain.order.entity.Order;
+import com.outsourcing.outsourcingproject.domain.store.entity.Store;
+import com.outsourcing.outsourcingproject.domain.user.entity.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,10 +17,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "reviews")
+@NoArgsConstructor
+@SQLRestriction("is_deleted is false")
+@SQLDelete(sql = "UPDATE REVIEWS SET REVIEWS.is_deleted = true where REVIEWS.review_id = ?")
 public class Review extends BaseEntity {
 
 	@Id
@@ -23,7 +32,7 @@ public class Review extends BaseEntity {
 	private Long id;
 
 	@Column(nullable = false)
-	private Long rating;
+	private Double rating;
 
 	@Column(nullable = false)
 	private String title;
@@ -38,4 +47,50 @@ public class Review extends BaseEntity {
 	@JoinColumn(name = "order_id")
 	private Order order;
 
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
+
+	@ManyToOne
+	@JoinColumn(name = "store_id")
+	private Store store;
+
+	public Review(Long id, Double rating, String title, String content, Boolean isDeleted, Order order, User user,
+		Store store) {
+		this.id = id;
+		this.rating = rating;
+		this.title = title;
+		this.content = content;
+		this.isDeleted = isDeleted;
+		this.order = order;
+		this.user = user;
+		this.store = store;
+	}
+
+	public Review(Double rating, String title, String content, Order order) {
+		this.rating = rating;
+		this.title = title;
+		this.content = content;
+		this.order = order;
+	}
+
+	public Review(Long id, Double rating, String title, String content) {
+		this.id = id;
+		this.rating = rating;
+		this.title = title;
+		this.content = content;
+	}
+
+	// 이 친구들 생성자 아니라 메서드임! void 붙여줘야 다른곳에서 쓸 수 있음
+	public void UpdateContent(String content) {
+		this.content = content;
+	}
+
+	public void UpdateRaing(Double rating) {
+		this.rating = rating;
+	}
+
+	public void UpdateTitle(String title) {
+		this.title = title;
+	}
 }
