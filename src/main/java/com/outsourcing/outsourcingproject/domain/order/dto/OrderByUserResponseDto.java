@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public class OrderByUserResponseDto {
 
-	private Long userId;
-	private String userName;
+	private final Long userId;
+	private final String userName;
 
 	public OrderByUserResponseDto(User user) {
 		this.userId = user.getId();

@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -43,13 +44,13 @@ public class Order extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private DeliveryStatus deliveryStatus;
+	private DeliveryStatus deliveryStatus = DeliveryStatus.WAITING;
 
-	public Order(User user, Store store, Menu menu, DeliveryStatus deliveryStatus) {
+	@Builder
+	public Order(User user, Store store, Menu menu) {
 		this.user = user;
 		this.store = store;
 		this.menu = menu;
-		this.deliveryStatus = deliveryStatus;
 	}
 
 	public void waiting() {
@@ -57,11 +58,15 @@ public class Order extends BaseEntity {
 	}
 
 	public void confirm() {
-		this.deliveryStatus = DeliveryStatus.CONFIRM;
+		this.deliveryStatus = DeliveryStatus.CONFIRMED;
 	}
 
-	public void rejected() {
+	public void reject() {
 		this.deliveryStatus = DeliveryStatus.REJECTED;
+	}
+
+	public void complete() {
+		this.deliveryStatus = DeliveryStatus.COMPLETED;
 	}
 
 }

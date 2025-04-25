@@ -1,4 +1,4 @@
-package com.outsourcing.outsourcingproject.common.config;
+package com.outsourcing.outsourcingproject.common.util;
 
 import java.security.Key;
 import java.util.Base64;

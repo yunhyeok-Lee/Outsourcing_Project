@@ -5,12 +5,14 @@ public enum DeliveryStatus {
 
 	/*
 	WAITING: 대기 상태,
-	CONFIRM: 수락,
-	REJECTED: 거절
+	CONFIRMED: 수락,
+	REJECTED: 거절,
+	COMPLETED: 배달 완료
 	 */
 
 	WAITING,
-	CONFIRM,
-	REJECTED;
+	CONFIRMED,
+	REJECTED,
+	COMPLETED;
 
 }

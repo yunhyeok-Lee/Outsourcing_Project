@@ -2,10 +2,10 @@ package com.outsourcing.outsourcingproject.domain.user.service;
 
 import org.springframework.stereotype.Service;
 
-import com.outsourcing.outsourcingproject.common.config.JwtUtil;
-import com.outsourcing.outsourcingproject.common.config.PasswordEncode;
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
+import com.outsourcing.outsourcingproject.common.util.JwtUtil;
+import com.outsourcing.outsourcingproject.common.util.PasswordEncode;
 import com.outsourcing.outsourcingproject.domain.user.dto.DeactivationRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.LoginRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.LoginResponseDto;

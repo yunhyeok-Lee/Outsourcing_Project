@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public class OrderByMenuResponseDto {
 
-	private Long menuId;
-	private String menuName;
+	private final Long menuId;
+	private final String menuName;
 
 	public OrderByMenuResponseDto(Menu menu) {
 		this.menuId = menu.getId();
