@@ -3,9 +3,11 @@ package com.outsourcing.outsourcingproject.domain.store.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.domain.store.dto.FindStoreResponseDto;
@@ -17,9 +19,6 @@ import com.outsourcing.outsourcingproject.domain.store.entity.StoreSatus;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -100,12 +99,6 @@ public class StoreService {
 		//dto를 배열로 or dto에서 배열로
 
 		List<Store> storeList = storeRepository.findByName(name);
-
-		if (storeList.isEmpty()) {
-			// 조회된 가게 없을 경우 예외 발생
-			throw new CustomException(ErrorCode.STORE_NOT_FOUND);
-
-		}
 
 		List<FindStoreResponseDto> responseDtoList = storeList.stream()
 			.map(store -> new FindStoreResponseDto(
