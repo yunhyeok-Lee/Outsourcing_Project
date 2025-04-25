@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,7 +33,7 @@ public class User extends BaseEntity {
 	private String password;
 
 	@Column(nullable = false)
-	private String nickname = "익명의 사용자";
+	private String nickname;
 
 	@Column(nullable = false)
 	private String phoneNumber;
@@ -47,6 +48,7 @@ public class User extends BaseEntity {
 	@Column(nullable = false)
 	private boolean isDeleted = false;
 
+	@Builder
 	public User(String email, String password, String nickname, String phoneNumber, String address,
 		Authority authority) {
 		this.email = email;

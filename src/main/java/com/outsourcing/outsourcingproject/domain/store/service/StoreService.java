@@ -101,12 +101,6 @@ public class StoreService {
 
 		List<Store> storeList = storeRepository.findByName(name);
 
-		if (storeList.isEmpty()) {
-			// 조회된 가게 없을 경우 예외 발생
-			throw new CustomException(ErrorCode.STORE_NOT_FOUND);
-
-		}
-
 		List<FindStoreResponseDto> responseDtoList = storeList.stream()
 			.map(store -> new FindStoreResponseDto(
 				store.getId(),

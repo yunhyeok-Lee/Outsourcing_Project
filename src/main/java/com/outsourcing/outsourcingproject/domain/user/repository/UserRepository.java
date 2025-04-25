@@ -8,4 +8,6 @@ import com.outsourcing.outsourcingproject.domain.user.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	Optional<User> findUserByEmail(String email);
+
+	Optional<User> findUserByEmailAndIsDeleted(String email, boolean deleted);
 }

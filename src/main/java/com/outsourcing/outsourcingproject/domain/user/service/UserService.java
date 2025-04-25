@@ -14,6 +14,7 @@ import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
 import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -35,11 +36,16 @@ public class UserService {
 		if (userRepository.findUserByEmail(requestDto.getEmail()).isPresent()) {
 			throw new CustomException(ErrorCode.CONFLICT_EMAIL);
 		}
-
 		String password = passwordEncode.encode(requestDto.getPassword());
 
-		User user = new User(requestDto.getEmail(), password, requestDto.getNickname(),
-			requestDto.getPhoneNumber(), requestDto.getAddress(), requestDto.getAuthority());
+		User user = User.builder()
+			.email(requestDto.getEmail())
+			.password(requestDto.getPassword())
+			.nickname(StringUtils.isBlank(requestDto.getNickname()) ? "익명의 사용자" : requestDto.getNickname())
+			.phoneNumber(requestDto.getPhoneNumber())
+			.address(requestDto.getAddress())
+			.authority(requestDto.getAuthority())
+			.build();
 
 		userRepository.save(user);
 
@@ -49,18 +55,13 @@ public class UserService {
 
 	/*
 	로그인 API
-	1. 이메일로 유저 조회
-	2. 탈퇴 여부 검증
-	3. 비밀번호 검증
-	4. Access Token 발급
+	1. 이메일로 탈퇴하지 않은 상태의 유저 조회
+	2. 비밀번호 검증
+	3. Access Token 발급
 	 */
 	public LoginResponseDto login(LoginRequestDto requestDto) {
-		User user = userRepository.findUserByEmail(requestDto.getEmail())
+		User user = userRepository.findUserByEmailAndIsDeleted(requestDto.getEmail(), false)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-		if (user.isDeleted()) {
-			throw new CustomException(ErrorCode.ALREADY_DEACTIVATED_USER);
-		}
 
 		if (!passwordEncode.matches(requestDto.getPassword(), user.getPassword())) {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
