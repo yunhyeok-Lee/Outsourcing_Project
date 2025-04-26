@@ -68,13 +68,13 @@ public class User extends BaseEntity {
 		if (!StringUtils.isBlank(nickname)) {
 			this.nickname = nickname;
 		}
-		
+
 		if (!StringUtils.isBlank(password)) {
-			this.nickname = password;
+			this.password = password;
 		}
 
 		if (!StringUtils.isBlank(address)) {
-			this.nickname = address;
+			this.address = address;
 		}
 	}
 }
