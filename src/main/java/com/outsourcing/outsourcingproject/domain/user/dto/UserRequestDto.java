@@ -1,5 +1,6 @@
 package com.outsourcing.outsourcingproject.domain.user.dto;
 
+import com.outsourcing.outsourcingproject.common.enums.ValidEnum;
 import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
 
 import jakarta.validation.constraints.Email;
@@ -31,6 +32,6 @@ public class UserRequestDto {
 	@Size(max = 100, message = "주소는 최대 100자여야 합니다.")
 	private final String address;
 
-	// Todo: 입력값에 대해 정합성 관리 필요
+	@ValidEnum(enumClass = Authority.class, message = "권한 정보가 유효하지 않습니다.")
 	private final Authority authority;
 }
