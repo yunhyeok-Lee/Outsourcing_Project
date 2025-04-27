@@ -19,7 +19,6 @@ import com.outsourcing.outsourcingproject.common.util.JwtUtil;
 import com.outsourcing.outsourcingproject.common.util.PasswordEncode;
 import com.outsourcing.outsourcingproject.domain.user.dto.DeactivationRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
-import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
 import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
@@ -47,8 +46,8 @@ class UserServiceTest {
 	void 이메일이_중복되면_CustomException() {
 		// given
 		String email = "abc@gmail.com";
-		UserRequestDto dto = new UserRequestDto(email, "pw", "nick", "010-0000-0000", "address", Authority.USER);
-		User user = new User(email, "password", "nickname", "010-0000-0000", "address", Authority.USER);
+		UserRequestDto dto = new UserRequestDto(email, "pw", "nick", "010-0000-0000", "address", "USER");
+		User user = new User(email, "password", "nickname", "010-0000-0000", "address", "USER");
 
 		// Stubbing
 		when(userRepository.findUserByEmail(email)).thenReturn(Optional.of(user));
@@ -77,7 +76,7 @@ class UserServiceTest {
 		DeactivationRequestDto dto = new DeactivationRequestDto("rawPassword");
 		String token = "token";
 		Long userId = 1L;
-		User user = new User("email", "password", "nickname", "010-0000-0000", "address", Authority.USER);
+		User user = new User("email", "password", "nickname", "010-0000-0000", "address", "USER");
 
 		// Stubbing
 		when(jwtUtil.getUserIdFromToken(token)).thenReturn(userId);
@@ -93,8 +92,8 @@ class UserServiceTest {
 	void nickname이_null이면_기본값_저장() {
 		// given
 		UserRequestDto dto = new UserRequestDto("email@gmail.com", "pw", null, "010-0000-0000", "address",
-			Authority.USER);
-		User user = new User("email", "password", "nickname", "010-0000-0000", "address", Authority.USER);
+			"USER");
+		User user = new User("email", "password", "nickname", "010-0000-0000", "address", "USER");
 
 		// Stubbing
 		when(userRepository.findUserByEmail("email@gmail.com")).thenReturn(Optional.empty());
@@ -117,7 +116,7 @@ class UserServiceTest {
 		DeactivationRequestDto dto = new DeactivationRequestDto("pw");
 		String token = "token";
 		Long id = 1L;
-		User user = new User("email", "password", "nickname", "010-0000-0000", "address", Authority.USER);
+		User user = new User("email", "password", "nickname", "010-0000-0000", "address", "USER");
 
 		//Stubbing
 		when(jwtUtil.getUserIdFromToken(token)).thenReturn(id);
