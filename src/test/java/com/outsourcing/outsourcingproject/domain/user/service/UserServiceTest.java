@@ -100,7 +100,7 @@ class UserServiceTest {
 		when(userRepository.findUserByEmail("email@gmail.com")).thenReturn(Optional.empty());
 		when(passwordEncode.encode(dto.getPassword())).thenReturn("encodedPassword");
 		when(userRepository.save(any(User.class))).thenReturn(user);
-		when(jwtUtil.createToken(any(), any(), any())).thenReturn("token");
+		when(jwtUtil.createToken(any(), any())).thenReturn("token");
 
 		// when
 		userService.signup(dto);
