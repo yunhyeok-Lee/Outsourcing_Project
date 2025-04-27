@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "review")
 @NoArgsConstructor
-@SQLRestriction("is_deleted is false")
+@SQLRestriction("is_deleted = false")
 @SQLDelete(sql = "UPDATE REVIEW SET REVIEW.is_deleted = true where REVIEW.review_id = ?")
 public class Review extends BaseEntity {
 

@@ -1,5 +1,7 @@
 package com.outsourcing.outsourcingproject.domain.store.dto;
 
+import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;
+
 import lombok.Getter;
 
 import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;

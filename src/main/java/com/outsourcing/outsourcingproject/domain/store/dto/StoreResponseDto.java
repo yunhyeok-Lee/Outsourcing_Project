@@ -2,10 +2,10 @@ package com.outsourcing.outsourcingproject.domain.store.dto;
 
 import java.time.LocalTime;
 
+import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;
+
 import lombok.Builder;
 import lombok.Getter;
-
-import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;
 
 @Getter
 public class StoreResponseDto {
