@@ -92,4 +92,9 @@ public class Store extends BaseEntity {
 		return this;
 	}
 
+	public void deleteStore() {
+		this.isDeleted = true;
+		this.status = StoreSatus.CLOSED;
+	}
+
 }
