@@ -2,6 +2,8 @@ package com.outsourcing.outsourcingproject.domain.order.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,10 +43,11 @@ public class OrderController {
 
 	// 1. 주문 요청 생성 API (사용자만 권한 있음)
 	@PostMapping
-	public CommonResponse<OrderResponseDto> createOrder(@RequestBody @Valid OrderRequestDto requestDto,
+	public ResponseEntity<CommonResponse<OrderResponseDto>> createOrder(@RequestBody @Valid OrderRequestDto requestDto,
 		@RequestHeader("Authorization") String token) {
-		return CommonResponse.of(SuccessCode.SENDING_ORDER_SUCCESS,
-			orderService.createOrder(requestDto, token));
+		return new ResponseEntity<>(
+			CommonResponse.of(SuccessCode.SENDING_ORDER_SUCCESS, orderService.createOrder(requestDto, token)),
+			HttpStatus.OK);
 	}
 
 	// 2. storeId 로 주문 목록 조회 with 상태

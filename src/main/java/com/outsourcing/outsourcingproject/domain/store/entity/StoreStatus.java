@@ -1,6 +1,6 @@
 package com.outsourcing.outsourcingproject.domain.store.entity;
 
-public enum StoreSatus {
+public enum StoreStatus {
 	/*
 	OPEN : 영업중
 	PREPARING : 준비중
@@ -9,5 +9,4 @@ public enum StoreSatus {
 	OPEN,
 	PREPARING,
 	CLOSED
-
 }
