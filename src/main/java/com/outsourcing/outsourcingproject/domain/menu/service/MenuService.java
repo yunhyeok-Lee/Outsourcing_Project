@@ -1,9 +1,17 @@
 package com.outsourcing.outsourcingproject.domain.menu.service;
 
+import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
+import com.outsourcing.outsourcingproject.common.exception.CustomException;
+import com.outsourcing.outsourcingproject.domain.menu.dto.MenuRequestDto;
+import com.outsourcing.outsourcingproject.domain.menu.dto.MenuResponseDto;
+import com.outsourcing.outsourcingproject.domain.menu.entity.Menu;
 import com.outsourcing.outsourcingproject.domain.menu.repository.MenuRepository;
+import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 
 @Service
@@ -13,25 +21,56 @@ public class MenuService {
 	private final MenuRepository menuRepository;
 	private final StoreRepository storeRepository;
 
-	// public MenuResponseDto createMenu(Long storesId, MenuRequestDto requestDto, UserPrincipal userPrincipal) {
-	// 	// 사장님인지 확인
-	// 	if (!userPrincipal.getAuthority().equals("OWNER")) {
-	// 		throw new UnauthorizedException("사장님만 메뉴를 등록할 수 있습니다.");
-	// 	}
+	/*
+	 메뉴 생성 Service
+	 */
+	@Transactional
+	public MenuResponseDto createMenu(Long userId, String authority, MenuRequestDto menuRequestDto) {
+
+		if (!"OWNER".equals(authority)) {
+			throw new CustomException(ErrorCode.NO_AUTHORITY);
+		}
+
+		Store store = storeRepository.findById(storeId)
+			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+
+		Menu menu = Menu.builder()
+			.store(store)
+			.name(menuRequestDto.getName())
+			.price(menuRequestDto.getPrice())
+			.content(menuRequestDto.getContent())
+			.menuType()
+			.isDeleted(false)
+			.build();
+
+		menuRepository.save(menu);
+
+		return new MenuResponseDto(
+			menu.getId(),
+			menu.getName(),
+			menu.getContent(),
+			menu.getPrice(),
+			menu.getCreatedAt(),
+			menu.getUpdatedAt()
+		);
+	}
+
+	// /*
+	// 메뉴 수정 Service
+	//  */
+	// @Transactional
+	// public MenuResponseDto updateMenu(Long userId, String authoreity, Long id, MenuRequestDto menuRequestDto) {
 	//
-	// 	// 가게 확인
-	// 	Store sotre = storeRepository.findById(storesId)
-	// 		.orElseThrow(() -> new NotFoundException("가게가 존재하지 않습니다."));
+	// 	Menu menu = menuRepository.findById(id)
+	// 		.orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 	//
-	// 	// 가게 주인 확인
-	// 	if (!store.getOwnerId().equals(userPrincipal.getUserId())) {
-	// 		throw new ForbiddenException("본인 가게에만 등록 가능합니다.");
-	// 	}
+	// 	menu.updateMenu(menuRequestDto.getName(), menuRequestDto.getPrice(), menuRequestDto.getContent());
 	//
-	// 	// 메뉴 생성 및 저장
-	// 	Menu menu = new Menu(requestDto.getName(), requestDto.getContent(), requestDto.getPrice(), store);
-	// 	menuRepository.save(menu);
-	//
-	// 	return new MenuResponseDto(menu);
+	// 	return new MenuResponseDto(menu.getId(), menu.getName(), menu.getContent(), menu.getPrice());
 	// }
+	//
+	// public void deleteMenu(Long userId, String authoreity, Long id) {
+	//
+	// }
+
 }
