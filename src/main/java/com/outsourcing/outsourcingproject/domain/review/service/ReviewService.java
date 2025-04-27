@@ -2,11 +2,14 @@ package com.outsourcing.outsourcingproject.domain.review.service;
 
 import java.util.Objects;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
+import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
 import com.outsourcing.outsourcingproject.common.util.JwtUtil;
 import com.outsourcing.outsourcingproject.domain.order.entity.DeliveryStatus;
 import com.outsourcing.outsourcingproject.domain.order.entity.Order;
@@ -14,6 +17,7 @@ import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepositor
 import com.outsourcing.outsourcingproject.domain.review.dto.OwnerReviewRequestDto;
 import com.outsourcing.outsourcingproject.domain.review.dto.ReviewRequestDto;
 import com.outsourcing.outsourcingproject.domain.review.dto.ReviewUpdateRequestDto;
+import com.outsourcing.outsourcingproject.domain.review.dto.StoreReviewResponseDto;
 import com.outsourcing.outsourcingproject.domain.review.entity.Review;
 import com.outsourcing.outsourcingproject.domain.review.repository.ReviewRepository;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
@@ -31,6 +35,7 @@ public class ReviewService {
 	private final StoreRepository storeRepository;
 	private final UserRepository userRepository;
 	private final JwtUtil jwtUtil;
+	private final EntityFetcher entityFetcher;
 
 	/* 리뷰 생성
 	1. Order 객체 생성(주문 유효성 검사)  // 입력받은 주문이 DB에 존재하는지 검사하면서 객체 생성 <- 주문 배달 상태와 리뷰 생성 자격 검증 위해 객체 꺼내야 함
@@ -42,35 +47,28 @@ public class ReviewService {
 	@Transactional
 	public void createReview(Long orderId, ReviewRequestDto requestDto, String token) {
 
-		boolean exists = reviewRepository.existsByOrderId(orderId);  // <- JPA에서 Order_Id 인식 못함 <- 수정
+		// boolean exists = reviewRepository.existsByOrderId();
 
-		if (exists) {
-			throw new CustomException(ErrorCode.ALREADY_REVIEW_EXISTS);
-		}
-
-		Order order = orderRepository.findById(orderId)
-			.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+		Order order = entityFetcher.getOrderOrThrow(orderId);
 
 		if (!order.getDeliveryStatus().equals(DeliveryStatus.COMPLETED)) {
 			throw new CustomException(ErrorCode.NOT_COMPLETED_ORDER);
 		}
 
-		User orderUser = order.getUser();
-
 		Long userIdByOrder = order.getUser().getId();
 
 		Long userIdByToken = jwtUtil.getUserIdFromToken(token);
 
-		if (!Objects.equals(userIdByOrder, userIdByToken)) {
-			throw new CustomException(ErrorCode.NO_REVIEW_CREATE_PERMISSION);
-		}
+		// if (!Objects.equals(userIdByOrder, userIdByToken)) {
+		// 	throw new CustomException(ErrorCode.NO_REVIEW_CREATE_PERMISSION);
+		// }
 
 		Review review = Review.builder()
 			.rating(requestDto.getRating())
 			.title(requestDto.getTitle())
 			.content(requestDto.getContent())
 			.order(order)
-			.user(orderUser)
+			.user(order.getUser())
 			.store(order.getStore())
 			.build();
 
@@ -87,49 +85,48 @@ public class ReviewService {
 	3. 가게 ID 기반 리뷰 리스트 가져오기
 	4. N+1 대응 방식 필요함.
 	*/
-	// public Page<StoreReviewResponseDto> getStoreReviews(Long storeId, Pageable pageable) {
-	//
-	// 	boolean exists = storeRepository.existsById(storeId);
-	// 	if (!exists) {
-	// 		throw new CustomException(ErrorCode.STORE_NOT_FOUND);
-	// 	}
-	//
-	// 	// 가져온 가게 아이디에 해당하는 리뷰 page 객체로 받아오기
-	// 	Page<Review> reviewList = reviewRepository.findByIdForStore(storeId, pageable);
-	//
-	// 	List<Review> ownerReviewList = reviewRepository.findByStoreIdAndParentIsNOTNull(storeId);
-	//
-	// 	// 리뷰 DTO로 변환
-	// 	Page<StoreReviewResponseDto> storeReviewResponseList = reviewList.map(review ->
-	// 		StoreReviewResponseDto.builder()
-	// 			.id(review.getId())
-	// 			.nickname(review.getUser().getNickname())
-	// 			.title(review.getTitle())
-	// 			.content(review.getContent())
-	// 			.rating(review.getRating())
-	// 			.createdAt(review.getCreatedAt())
-	// 			.build()
-	// 	);
-	//
-	// 	// 사장님 리뷰 DTO로 변환
-	// 	List<StoreOwnerReviewResponseDto> ownerDtoList = ownerReviewList.stream()
-	// 		.map(review -> StoreOwnerReviewResponseDto.builder()
-	// 			.id(review.getId())
-	// 			.title(review.getTitle())
-	// 			.content(review.getContent())
-	// 			.createdAt(review.getCreatedAt())
-	// 			.parentId(review.getParent().getId())
-	// 			.build()
-	// 		)
-	// 		.toList();
-	//
-	// 	// 통합 dto
-	//
-	// 	// 이제 2개 합쳐야 함.
-	// 	// storeReview의 Id와  OwnerReview의 parentId를 비교해서 같은 경우 storeReview에 넣는 방식
-	// 	// 새로운 Dto 생성여부 등 조립 방식 고민중..
-	// 	return null;
-	// }
+	public Page<StoreReviewResponseDto> getStoreReviews(Long storeId, Pageable pageable) {
+
+		boolean exists = storeRepository.existsById(storeId);
+		if (!exists) {
+			throw new CustomException(ErrorCode.STORE_NOT_FOUND);
+		}
+
+		// 가져온 가게 아이디에 해당하는 리뷰 page 객체로 받아오기
+		//Page<Review> reviewList = reviewRepository.findByStoreIdAndParentIsNull(storeId, pageable);
+
+		// // 사장님 리뷰 리스트로 받아오기
+		// List<Review> ownerReviewList = reviewRepository.findByStoreIdAndParentIsNOTNull(storeId);
+		//
+		// // 리뷰 DTO로 변환
+		// Page<StoreReviewResponseDto> storeReviewResponseList = reviewList.map(review ->
+		// 	StoreReviewResponseDto.builder()
+		// 		.id(review.getId())
+		// 		.nickname(review.getUser().getNickname())
+		// 		.title(review.getTitle())
+		// 		.content(review.getContent())
+		// 		.rating(review.getRating())
+		// 		.createdAt(review.getCreatedAt())
+		// 		.build()
+		// );
+		//
+		// // 사장님 리뷰 DTO로 변환
+		// List<StoreOwnerReviewResponseDto> ownerDtoList = ownerReviewList.stream()
+		// 	.map(review -> StoreOwnerReviewResponseDto.builder()
+		// 		.id(review.getId())
+		// 		.title(review.getTitle())
+		// 		.content(review.getContent())
+		// 		.createdAt(review.getCreatedAt())
+		// 		.parentId(review.getParent().getId())
+		// 		.build()
+		// 	)
+		// 	.toList();
+
+		// 이제 2개 합쳐야 함.
+		// storeReview의 Id와  OwnerReview의 parentId를 비교해서 같은 경우 storeReview에 넣는 방식
+		// 새로운 Dto 생성여부 등 조립 방식 고민중..
+		return null;
+	}
 
 	/* 리뷰 수정
 	1. Transactional 처리
@@ -224,14 +221,14 @@ public class ReviewService {
 		// -> 어차피 밑에서 날릴 쿼리문인데 앞에서 미리 날려서 가게 사장 ID 조회하는 쿼리문을 간단하게 만든 것
 		// 하지만 order 객체의 경우, 가게 사장 ID 조회하는 로직에 필요 없음
 		// 따라서 이후 진행될 유효성 검증 이후에 실제 DB 저장 과정에서 진행하는 편이 메모리 낭비를 방지할 수 있음.
-		//
-		// // token에서 user_id 추출
-		// Long userIdByToken = jwtUtil.getUserIdFromToken(token);
 
-		// // 사장님 리뷰 생성 자격 검증
-		// if (!Objects.equals(ownerIdByReview, userIdByToken)) {
-		// 	throw new CustomException(ErrorCode.NO_OWNER_REVIEW_PERMISSION);
-		// }
+		// token에서 user_id 추출
+		Long userIdByToken = jwtUtil.getUserIdFromToken(token);
+
+		// 사장님 리뷰 생성 자격 검증
+		if (!Objects.equals(ownerIdByReview, userIdByToken)) {
+			throw new CustomException(ErrorCode.NO_OWNER_REVIEW_PERMISSION);
+		}
 
 		// nickname과 title 정보를 여기서 선언하는 이유도 메모리 낭비 방지 목적
 		String nickname = review.getUser().getNickname();

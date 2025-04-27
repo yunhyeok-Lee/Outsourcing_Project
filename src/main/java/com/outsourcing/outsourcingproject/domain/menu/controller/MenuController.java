@@ -22,8 +22,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MenuController {
 
-	private final MenuService menuService;
 	private final JwtUtil jwtUtil;
+	private final MenuService menuService;
 
 	// 메뉴 생성
 	@PostMapping("/{storesId}/menu")
@@ -31,8 +31,8 @@ public class MenuController {
 		@PathVariable Long storesId,
 		@Valid
 		@RequestBody MenuRequestDto requestDto,
-		@RequestHeader("Authorization") String token
-	) {
+		@RequestHeader("Authorization") String token) {
+
 		Long userId = jwtUtil.getUserIdFromToken(token);
 		String authority = jwtUtil.getAuthorityFromToken(token);
 
@@ -65,3 +65,4 @@ public class MenuController {
 		return ResponseEntity.ok("삭제되었습니다.");
 	}
 }
+

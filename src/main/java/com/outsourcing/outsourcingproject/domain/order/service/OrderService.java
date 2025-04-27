@@ -18,7 +18,6 @@ import com.outsourcing.outsourcingproject.domain.order.entity.OrderEntities;
 import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;
-import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,16 +28,14 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 	private final EntityFetcher entityFetcher;
 	private final JwtUtil jwtUtil;
-	private final StoreRepository storeRepository;
+	private Store store;
 
-	private
 	/*
 	1. 주문 요청 생성
 	2. 주문 수락/거절
 	3. 주문 단건 조회
 	4. 주문 요청 취소
 	 */
-
 
 	// 1. 주문 생성
 	@Transactional
@@ -49,25 +46,16 @@ public class OrderService {
 			throw new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT);
 		}
 
-		Store store = storeRepository.findById(orderRequestDto.getStoreId())
-			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
-
+		store = entityFetcher.getStoreOrThrow(orderRequestDto.getStoreId());
 		LocalTime open = store.getOpenTime();
 		LocalTime close = store.getCloseTime();
 		LocalTime now = LocalTime.now();
 
-		// opentime과 closetime 비교해 status 변경
-		StoreStatus getStoreStatus(open, close, now) {
-			if (open.isBefore(now) && close.isAfter(now)) {
-				return StoreStatus.OPEN;
-			}
-			return StoreStatus.PREPARING;
-		}
-
 		// 가게 OPEN 상태일 때만 주문 가능
-		if (!store.getStatus().equals(StoreStatus.OPEN)) {
+		if (!entityFetcher.storeStatus(open, close, now).equals(StoreStatus.OPEN)) {
 			throw new CustomException(ErrorCode.STORE_NOT_OPEN);
 		}
+
 		// 엔티티 조회
 		OrderEntities entities = entityFetcher.fetchOrderEntities(orderRequestDto);
 
@@ -97,9 +85,9 @@ public class OrderService {
 	public OrderStatusResponseDto handleRequest(Long orderId, DeliveryStatus deliveryStatus, String token) {
 		Order order = entityFetcher.getOrderOrThrow(orderId);
 
-		// 사용자가 보낸 deliverytStatus 로 Order 엔티티 수정
+		// 사용자가 보낸 deliveryStatus 로 Order 엔티티 수정
 		order.updateDeliveryStatus(deliveryStatus);
-		return new OrderStatusResponseDto(orderId, deliveryStatus);
+		return new OrderStatusResponseDto(orderId, store.getId(), deliveryStatus, LocalTime.now());
 	}
 
 	// 4. 주문 취소
