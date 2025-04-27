@@ -13,4 +13,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 	Page<Review> findByStoreId(Long storeId, Pageable pageable);
 
 	boolean existsByStore_Id(Long storeId);
+
+	boolean existsByParent(Review review);
 }

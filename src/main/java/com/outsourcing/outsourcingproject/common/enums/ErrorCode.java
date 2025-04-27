@@ -25,6 +25,11 @@ public enum ErrorCode implements BaseCode {
 	// Review
 	REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "리뷰가 존재하지않습니다."),
 	ALREADY_REVIEW_EXISTS(HttpStatus.BAD_REQUEST, "이미 리뷰가 작성된 주문입니다."),
+	ALREADY_RESPONSED_REVIEW(HttpStatus.BAD_REQUEST, "이미 답글을 작성한 리뷰입니다."),
+	NO_REVIEW_CREATE_PERMISSION(HttpStatus.UNAUTHORIZED, "해당 리뷰를 작성할 권한이 없습니다."),
+	NO_REVIEW_UPDATE_PERMISSION(HttpStatus.UNAUTHORIZED, "해당 리뷰를 수정할 권한이 없습니다."),
+	NO_REVIEW_DELETE_PERMISSION(HttpStatus.UNAUTHORIZED, "해당 리뷰를 삭제할 권한이 없습니다."),
+	NO_OWNER_REVIEW_PERMISSION(HttpStatus.UNAUTHORIZED, "사장님 리뷰를 작성할 권한이 없습니다."),
 
 	// Menu
 	UNAUTHORIZED_MENU_ACCESS(HttpStatus.FORBIDDEN, "사장님만 메뉴를 등록할 수 있습니다.");
