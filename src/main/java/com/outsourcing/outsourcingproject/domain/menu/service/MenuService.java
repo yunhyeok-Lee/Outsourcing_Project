@@ -26,7 +26,7 @@ public class MenuService {
 	 */
 	@Transactional
 	public MenuResponseDto createMenu(Long userId, String authority, MenuRequestDto menuRequestDto) {
-
+		// 권한 체크
 		if (!"OWNER".equals(authority)) {
 			throw new CustomException(ErrorCode.NO_AUTHORITY);
 		}
@@ -55,22 +55,26 @@ public class MenuService {
 		);
 	}
 
-	// /*
-	// 메뉴 수정 Service
-	//  */
-	// @Transactional
-	// public MenuResponseDto updateMenu(Long userId, String authoreity, Long id, MenuRequestDto menuRequestDto) {
-	//
-	// 	Menu menu = menuRepository.findById(id)
-	// 		.orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
-	//
-	// 	menu.updateMenu(menuRequestDto.getName(), menuRequestDto.getPrice(), menuRequestDto.getContent());
-	//
-	// 	return new MenuResponseDto(menu.getId(), menu.getName(), menu.getContent(), menu.getPrice());
-	// }
-	//
-	// public void deleteMenu(Long userId, String authoreity, Long id) {
-	//
-	// }
+	/*
+	메뉴 수정 Service
+	 */
+	@Transactional
+	public MenuResponseDto updateMenu(Long userId, String authority, Long id, MenuRequestDto menuRequestDto) {
+
+		if (!"OWNER".equals(authority)) {
+			throw new CustomException(ErrorCode.NO_AUTHORITY);
+		}
+		Menu menu = menuRepository.findById(id)
+			.orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+
+		menu.updateMenu(menuRequestDto);
+
+		return new MenuResponseDto(menu.getId(), menu.getName(), menu.getContent(), menu.getPrice(),
+			menu.getCreatedAt(), menu.getUpdatedAt());
+	}
+
+	public void deleteMenu(Long userId, String authority, Long id) {
+
+	}
 
 }
