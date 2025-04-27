@@ -26,13 +26,13 @@ public class RoleCheckFilter implements Filter {
 		// 예: 메뉴 생성/수정은 OWNER만 허용
 		if ((uri.startsWith("/menus")) && !"OWNER".equals(role)) {
 			httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			httpResponse.getWriter().write("Forbidden: 사장님만 접근할 수 있습니다.");
+			httpResponse.getWriter().write("사장님만 접근할 수 있습니다.");
 			return;
 		}
 
 		if (uri.startsWith("/stores") && !"OWNER".equals(role)) {
 			httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			httpResponse.getWriter().write("Forbidden: 사장님만 가게를 생성할 수 있습니다.");
+			httpResponse.getWriter().write("사장님만 가게를 생성할 수 있습니다.");
 			return;
 		}
 
