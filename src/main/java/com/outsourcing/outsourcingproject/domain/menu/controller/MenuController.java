@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -12,16 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import com.outsourcing.outsourcingproject.common.util.JwtUtil;
-
+import com.outsourcing.outsourcingproject.common.dto.CommonResponse;
+import com.outsourcing.outsourcingproject.common.enums.SuccessCode;
 import com.outsourcing.outsourcingproject.common.util.JwtUtil;
 import com.outsourcing.outsourcingproject.domain.menu.dto.MenuRequestDto;
-import com.outsourcing.outsourcingproject.domain.menu.dto.MenuResponseDto;
 import com.outsourcing.outsourcingproject.domain.menu.service.MenuService;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +28,7 @@ public class MenuController {
 
 	// 메뉴 생성
 	@PostMapping("/{storesId}/menu")
-	public ResponseEntity<MenuResponseDto> createMenu(
+	public ResponseEntity<CommonResponse<Void>> createMenu(
 		@PathVariable Long storesId,
 		@Valid
 		@RequestBody MenuRequestDto requestDto,
@@ -41,12 +37,15 @@ public class MenuController {
 		Long userId = jwtUtil.getUserIdFromToken(token);
 		String authority = jwtUtil.getAuthorityFromToken(token);
 
-		return ResponseEntity.ok(menuService.createMenu(userId, storesId, authority, requestDto));
+		menuService.createMenu(userId, storesId, authority, requestDto);
+
+		return new ResponseEntity<>(CommonResponse.of(SuccessCode.CREATE_MENU), HttpStatus.OK);
+
 	}
 
 	// 메뉴 수정
 	@PatchMapping("/menu/{id}")
-	public ResponseEntity<MenuResponseDto> updateMenu(
+	public ResponseEntity<CommonResponse<Void>> updateMenu(
 		@PathVariable Long id,
 		@Valid
 		@RequestBody MenuRequestDto menuRequestDto,
@@ -55,12 +54,15 @@ public class MenuController {
 		Long userId = jwtUtil.getUserIdFromToken(token);
 		String authority = jwtUtil.getAuthorityFromToken(token);
 
-		return ResponseEntity.ok(menuService.updateMenu(userId, authority, id, menuRequestDto));
+		menuService.updateMenu(userId, authority, id, menuRequestDto);
+
+		return new ResponseEntity<>(CommonResponse.of(SuccessCode.UPDATE_MENU), HttpStatus.OK);
+
 	}
 
 	// 메뉴 삭제
 	@DeleteMapping("/menu/{id}")
-	public ResponseEntity<String> deleteMenu(
+	public ResponseEntity<CommonResponse<Void>> deleteMenu(
 		@PathVariable Long id,
 		@RequestHeader("Authorization") String token) {
 
@@ -68,7 +70,9 @@ public class MenuController {
 		String authority = jwtUtil.getAuthorityFromToken(token);
 
 		menuService.deleteMenu(userId, authority, id);
-		return ResponseEntity.ok("삭제되었습니다.");
+
+		return new ResponseEntity<>(CommonResponse.of(SuccessCode.DELETE_MENU), HttpStatus.OK);
+
 	}
 }
 
