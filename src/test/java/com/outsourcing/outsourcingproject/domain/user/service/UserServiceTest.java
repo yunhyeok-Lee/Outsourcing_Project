@@ -110,4 +110,25 @@ class UserServiceTest {
 		User createdUser = userCaptor.getValue();
 		assertThat(createdUser.getNickname()).isEqualTo("익명의 사용자");
 	}
+
+	@Test
+	void 탈퇴한_회원이_회원탈퇴_요청하면_CustomException() {
+		// given
+		DeactivationRequestDto dto = new DeactivationRequestDto("pw");
+		String token = "token";
+		Long id = 1L;
+		User user = new User("email", "password", "nickname", "010-0000-0000", "address", Authority.USER);
+
+		//Stubbing
+		when(jwtUtil.getUserIdFromToken(token)).thenReturn(id);
+		when(entityFetcher.getUserOrThrow(id)).thenReturn(user);
+		when(passwordEncode.matches(any(), any())).thenReturn(true);
+
+		// when
+		userService.deactivate(dto, token);
+
+		// then
+		assertThatThrownBy(() -> userService.deactivate(dto, token))
+			.isInstanceOf(CustomException.class);
+	}
 }

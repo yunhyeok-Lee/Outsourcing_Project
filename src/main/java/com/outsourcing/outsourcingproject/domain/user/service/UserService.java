@@ -76,7 +76,6 @@ public class UserService {
 
 	/*
 	로그아웃 API
-	1. Todo: 토큰 만료
 	 */
 	public void logout() {
 
@@ -86,8 +85,8 @@ public class UserService {
 	회원 탈퇴 API
 	1. 토큰으로 유저 조회
 	2. 비밀번호 검증
-	3. User 테이블의 isDeleted=true로 변경
-	4. Todo: 토큰 만료
+	3. 이미 탈퇴한 회원이면 예외 발생
+	4. User 테이블의 isDeleted=true로 변경
 	 */
 	@Transactional
 	public void deactivate(DeactivationRequestDto requestDto, String token) {
@@ -96,6 +95,10 @@ public class UserService {
 
 		if (!passwordEncode.matches(requestDto.getPassword(), user.getPassword())) {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
+		}
+
+		if (user.isDeleted()) {
+			throw new CustomException(ErrorCode.ALREADY_DEACTIVATED_USER);
 		}
 
 		user.updateDeletedStatus();
