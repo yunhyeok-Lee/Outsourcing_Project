@@ -52,7 +52,7 @@ public class UserService {
 
 		userRepository.save(user);
 
-		String jwtToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getAuthority());
+		String jwtToken = jwtUtil.createToken(user.getId(), user.getAuthority());
 		return new LoginResponseDto(jwtToken);
 	}
 
@@ -69,7 +69,7 @@ public class UserService {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
 		}
 
-		String jwtToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getAuthority());
+		String jwtToken = jwtUtil.createToken(user.getId(), user.getAuthority());
 
 		return new LoginResponseDto(jwtToken);
 	}
