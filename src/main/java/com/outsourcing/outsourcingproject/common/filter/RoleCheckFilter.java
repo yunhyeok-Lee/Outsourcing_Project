@@ -1,4 +1,4 @@
-package com.outsourcing.outsourcingproject.common.util;
+package com.outsourcing.outsourcingproject.common.filter;
 
 import java.io.IOException;
 
@@ -18,6 +18,7 @@ public class RoleCheckFilter implements Filter {
 
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
 		HttpServletResponse httpResponse = (HttpServletResponse)response;
+		String method = httpRequest.getMethod();
 
 		// 요청 메서드를 확인
 		String method = httpRequest.getMethod();
@@ -38,6 +39,20 @@ public class RoleCheckFilter implements Filter {
 			if (uri.startsWith("/stores") && !"OWNER".equals(role)) {
 				httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
 				httpResponse.getWriter().write("Forbidden: 사장님만 접근할 수 있습니다.");
+				return;
+			}
+		}
+
+		if (uri.startsWith("/orders") && !"USER".equals(role)) {
+			httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			httpResponse.getWriter().write("Forbidden: 사용자만 주문을 생성할 수 있습니다.");
+			return;
+		}
+
+		if ("PATCH".equalsIgnoreCase(method)) {
+			if (uri.startsWith("/orders/{id}") && !"OWNER".equals(role)) {
+				httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				httpResponse.getWriter().write("Forbidden: 사장님만 상태 변경할 수 있습니다.");
 				return;
 			}
 		}
