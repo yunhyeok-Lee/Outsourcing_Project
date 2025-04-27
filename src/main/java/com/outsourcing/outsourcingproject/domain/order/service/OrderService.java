@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
+import com.outsourcing.outsourcingproject.common.util.JwtUtil;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderRequestDto;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderResponseDto;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderStatusResponseDto;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderService {
 	private final OrderRepository orderRepository;
 	private final EntityFetcher entityFetcher;
+	private final JwtUtil jwtUtil;
 
 	/*
 	1. 주문 요청 생성
@@ -36,8 +38,9 @@ public class OrderService {
 	public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, String token) {
 
 		// 주문 요청 중복 확인
-		orderRepository.findOrderByUserId(orderRequestDto.getUserId())
-			.orElseThrow(() -> new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT));
+		if (orderRepository.findOrderByUserId(jwtUtil.getUserIdFromToken(token)).isPresent()) {
+			throw new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT);
+		}
 
 		// 엔티티 조회
 		OrderEntities entities = entityFetcher.fetchOrderEntities(orderRequestDto);
