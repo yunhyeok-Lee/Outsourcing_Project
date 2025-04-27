@@ -6,11 +6,13 @@ import java.util.stream.Collectors;
 
 import com.outsourcing.outsourcingproject.common.enums.ValidEnum;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class EnumValidator implements ConstraintValidator<ValidEnum, Enum<?>> {
+public class EnumValidator implements ConstraintValidator<ValidEnum, String> {
 	private Set<String> values;
+	private String message;
 
 	/*
 	검증 전에 values 필드에 enum의 이름을 미리 저장해두기 위한 메서드
@@ -24,11 +26,21 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, Enum<?>> {
 		values = Arrays.stream(enumClass.getEnumConstants())
 			.map(Enum::name)
 			.collect(Collectors.toSet());
+
+		this.message = validEnum.message();
 	}
 
-	// 전달된 입력값이 대문자로 변환한 값이 enum 이름과 동일한지 검증
+	/*
+	입력값이 null, "", " "인 경우는 검증 통과
+	입력값을 대문자로 변환했을 때 values에 포함된 enum 요소와 동일하다면 검증 통과
+	그 외의 경우는 검증 실패로 에러 메시지 응답
+	 */
 	@Override
-	public boolean isValid(Enum<?> value, ConstraintValidatorContext context) {
-		return value != null && values.contains(value.name().toUpperCase());
+	public boolean isValid(String value, ConstraintValidatorContext context) {
+		if (StringUtils.isBlank(value) || values.contains(value.toUpperCase())) {
+			return true;
+		}
+
+		return false;
 	}
 }

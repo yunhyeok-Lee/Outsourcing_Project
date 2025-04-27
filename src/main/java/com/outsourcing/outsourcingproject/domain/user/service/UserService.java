@@ -16,7 +16,6 @@ import com.outsourcing.outsourcingproject.domain.user.dto.UserResponseDto;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
 import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
-import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +43,7 @@ public class UserService {
 		User user = User.builder()
 			.email(requestDto.getEmail())
 			.password(password)
-			.nickname(StringUtils.isBlank(requestDto.getNickname()) ? "익명의 사용자" : requestDto.getNickname())
+			.nickname(requestDto.getNickname())
 			.phoneNumber(requestDto.getPhoneNumber())
 			.address(requestDto.getAddress())
 			.authority(requestDto.getAuthority())

@@ -44,20 +44,29 @@ public class User extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)//enum 사용시 꼭 필요
 	@Column(nullable = false)
-	private Authority authority = Authority.USER;
+	private Authority authority;
 
 	@Column(nullable = false)
 	private boolean isDeleted = false;
 
 	@Builder
 	public User(String email, String password, String nickname, String phoneNumber, String address,
-		Authority authority) {
+		String authority) {
 		this.email = email;
+
 		this.password = password;
-		this.nickname = nickname;
+
+		this.nickname = StringUtils.isBlank(nickname)
+			? "익명의 사용자"
+			: nickname;
+
 		this.phoneNumber = phoneNumber;
+
 		this.address = address;
-		this.authority = authority;
+
+		this.authority = StringUtils.isBlank(authority)
+			? Authority.USER
+			: Authority.valueOf(authority.toUpperCase());
 	}
 
 	public void updateDeletedStatus() {

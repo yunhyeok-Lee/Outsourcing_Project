@@ -33,5 +33,5 @@ public class UserRequestDto {
 	private final String address;
 
 	@ValidEnum(enumClass = Authority.class, message = "권한 정보가 유효하지 않습니다.")
-	private final Authority authority;
+	private final String authority;
 }
