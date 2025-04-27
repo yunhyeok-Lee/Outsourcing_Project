@@ -35,12 +35,6 @@ public class UserController {
 		LoginResponseDto dto = userService.signup(requestDto);
 		response.setHeader("Authorization", dto.getToken());
 		return new ResponseEntity<>(CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, dto), HttpStatus.OK);
-		// CommonResponse<LoginResponseDto>
-		// return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, dto);
-
-		// 1. commonresponse converter 작업 해주기
-
-		// 2. Filter단 if else 조건 분리
 	}
 
 	@PostMapping("/login")
