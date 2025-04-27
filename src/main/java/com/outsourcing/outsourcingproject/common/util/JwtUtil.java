@@ -4,10 +4,10 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-import jakarta.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
@@ -17,6 +17,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class JwtUtil {
@@ -61,13 +62,23 @@ public class JwtUtil {
 		}
 	}
 
+	// 클라이언트에서 서버로 토큰 전달하면서 자동으로 토큰 앞에 붙어오는 "Bearer " 제거
+	public String substringToken(String token) {
+		if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+			return token.substring(7);
+		}
+		throw new CustomException(ErrorCode.INVALID_SIGNATURE);
+	}
+
 	// 유저 ID 추출
 	public Long getUserIdFromToken(String token) {
-		return Long.parseLong(extractClaims(token).getSubject());
+		String substrToken = substringToken(token);
+		return Long.valueOf(extractClaims(substrToken).getSubject());
 	}
 
 	// 권한 추출
 	public String getAuthorityFromToken(String token) {
-		return extractClaims(token).get("authority", String.class);
+		String substrToken = substringToken(token);
+		return extractClaims(substrToken).get("authority", String.class);
 	}
 }

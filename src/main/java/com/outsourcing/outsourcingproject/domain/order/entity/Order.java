@@ -47,10 +47,11 @@ public class Order extends BaseEntity {
 	private DeliveryStatus deliveryStatus = DeliveryStatus.WAITING;
 
 	@Builder
-	public Order(User user, Store store, Menu menu) {
+	public Order(User user, Store store, Menu menu, DeliveryStatus deliveryStatus) {
 		this.user = user;
 		this.store = store;
 		this.menu = menu;
+		this.deliveryStatus = deliveryStatus;
 	}
 
 	public Order(Long id, User user, Store store, Menu menu, DeliveryStatus deliveryStatus) {

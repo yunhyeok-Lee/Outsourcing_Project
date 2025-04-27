@@ -14,7 +14,6 @@ import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
 import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
-import io.jsonwebtoken.Claims;
 import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -90,8 +89,7 @@ public class UserService {
 	 */
 	@Transactional
 	public void deactivate(DeactivationRequestDto requestDto, String token) {
-		Claims claims = jwtUtil.extractClaims(token);
-		Long userId = Long.valueOf(claims.getSubject());
+		Long userId = jwtUtil.getUserIdFromToken(token);
 		User user = userRepository.findUserById(userId);
 
 		if (!passwordEncode.matches(requestDto.getPassword(), user.getPassword())) {
@@ -109,8 +107,7 @@ public class UserService {
 	 */
 	@Transactional
 	public void update(UpdateRequestDto requestDto, String token) {
-		Claims claims = jwtUtil.extractClaims(token);
-		Long userId = Long.valueOf(claims.getSubject());
+		Long userId = jwtUtil.getUserIdFromToken(token);
 		User user = userRepository.findUserById(userId);
 
 		if (!passwordEncode.matches(requestDto.getPassword(), user.getPassword())) {
