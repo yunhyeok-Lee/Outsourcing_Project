@@ -1,9 +1,5 @@
 package com.outsourcing.outsourcingproject.domain.menu.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -11,9 +7,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.outsourcing.outsourcingproject.domain.menu.dto.MenuRequestDto;
 import com.outsourcing.outsourcingproject.domain.menu.dto.MenuResponseDto;
 import com.outsourcing.outsourcingproject.domain.menu.service.MenuService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class MenuController {
 	private final MenuService menuService;
 
 	// 메뉴 생성
-	@PostMapping("/menu")
+	@PostMapping("/{storesId}/menu")
 	public ResponseEntity<MenuResponseDto> createMenu(
 		@PathVariable Long storesId,
 		@RequestBody MenuRequestDto requestDto,

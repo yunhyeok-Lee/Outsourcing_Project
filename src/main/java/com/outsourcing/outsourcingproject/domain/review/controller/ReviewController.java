@@ -31,7 +31,7 @@ public class ReviewController {
 	private final ReviewService reviewService;
 
 	// 리뷰 생성
-	@PostMapping("/order/{orderId}/reviews")
+	@PostMapping("/orders/{orderId}/reviews")
 	public ResponseEntity<?> createReview(
 		@PathVariable Long orderId,
 		@Valid @RequestBody ReviewRequestDto requestDto,

@@ -15,6 +15,8 @@ import com.outsourcing.outsourcingproject.domain.order.entity.DeliveryStatus;
 import com.outsourcing.outsourcingproject.domain.order.entity.Order;
 import com.outsourcing.outsourcingproject.domain.order.entity.OrderEntities;
 import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
+import com.outsourcing.outsourcingproject.domain.store.entity.Store;
+import com.outsourcing.outsourcingproject.domain.store.entity.StoreSatus;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 	private final EntityFetcher entityFetcher;
 	private final JwtUtil jwtUtil;
+	private Store store;
 
 	/*
 	1. 주문 요청 생성
@@ -42,6 +45,10 @@ public class OrderService {
 			throw new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT);
 		}
 
+		// 가게 OPEN 상태일 때만 주문 가능
+		if (!(store.getStatus() == StoreSatus.OPEN)) {
+			throw new CustomException(ErrorCode.STORE_NOT_OPEN);
+		}
 		// 엔티티 조회
 		OrderEntities entities = entityFetcher.fetchOrderEntities(orderRequestDto);
 

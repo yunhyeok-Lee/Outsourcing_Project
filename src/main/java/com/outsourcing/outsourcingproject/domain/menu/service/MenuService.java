@@ -1,10 +1,7 @@
 package com.outsourcing.outsourcingproject.domain.menu.service;
 
-import jakarta.transaction.Transactional;
-
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
+
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.domain.menu.dto.MenuRequestDto;
@@ -13,6 +10,9 @@ import com.outsourcing.outsourcingproject.domain.menu.entity.Menu;
 import com.outsourcing.outsourcingproject.domain.menu.repository.MenuRepository;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +27,9 @@ public class MenuService {
 	@Transactional
 	public MenuResponseDto createMenu(Long userId, Long storeId, String authority, MenuRequestDto menuRequestDto) {
 		// 권한 체크
-		if (!"OWNER".equals(authority)) {
-			throw new CustomException(ErrorCode.NO_AUTHORITY);
-		}
+		// if (!"OWNER".equals(authority)) {
+		// 	throw new CustomException(ErrorCode.NO_AUTHORITY);
+		// }
 
 		// 존재하는 가게인지
 		Store store = storeRepository.findById(storeId)

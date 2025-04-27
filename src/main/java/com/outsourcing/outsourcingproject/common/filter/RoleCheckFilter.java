@@ -25,17 +25,19 @@ public class RoleCheckFilter implements Filter {
 		// JwtAuthenticationFilter에서 setAttribute("authority") 했던거를 꺼내옴.
 		String role = (String)httpRequest.getAttribute("authority");
 		String uri = httpRequest.getRequestURI();
+		httpResponse.setCharacterEncoding("UTF-8");
+		httpResponse.setContentType("application/json");
 
 		// 예: 메뉴 생성/수정은 OWNER만 허용
-		if ((uri.startsWith("/menus")) && !"OWNER".equals(role)) {
+		if ((uri.endsWith("/menu")) && !"OWNER".equals(role)) {
 			httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			httpResponse.getWriter().write("사장님만 접근할 수 있습니다.");
 			return;
 		}
 
 		// Store
-		if (!"GET".equalsIgnoreCase(method)) {
-			if (uri.startsWith("/stores") && !"OWNER".equals(role)) {
+		if (!"GET".equalsIgnoreCase(method)) { // 1차 조건 : 가게 조회가 아닌 경우에만
+			if (uri.startsWith("/stores") && !"OWNER".equals(role)) { // 2차 조건 : uri가 stores로 시작하고 사장님이 아닌 경우에만
 				httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
 				httpResponse.getWriter().write("사장님만 접근할 수 있습니다.");
 				return;

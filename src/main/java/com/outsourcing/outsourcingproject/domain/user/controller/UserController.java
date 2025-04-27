@@ -1,5 +1,7 @@
 package com.outsourcing.outsourcingproject.domain.user.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,11 +30,17 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping
-	public CommonResponse<LoginResponseDto> signup(@RequestBody @Valid UserRequestDto requestDto,
+	public ResponseEntity<CommonResponse<LoginResponseDto>> signup(@RequestBody @Valid UserRequestDto requestDto,
 		HttpServletResponse response) {
 		LoginResponseDto dto = userService.signup(requestDto);
 		response.setHeader("Authorization", dto.getToken());
-		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, dto);
+		return new ResponseEntity<>(CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, dto), HttpStatus.OK);
+		// CommonResponse<LoginResponseDto>
+		// return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, dto);
+
+		// 1. commonresponse converter 작업 해주기
+
+		// 2. Filter단 if else 조건 분리
 	}
 
 	@PostMapping("/login")

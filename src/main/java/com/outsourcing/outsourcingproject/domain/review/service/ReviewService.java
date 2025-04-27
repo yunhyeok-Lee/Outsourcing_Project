@@ -1,6 +1,5 @@
 package com.outsourcing.outsourcingproject.domain.review.service;
 
-import java.util.List;
 import java.util.Objects;
 
 import org.springframework.data.domain.Page;
@@ -17,7 +16,6 @@ import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepositor
 import com.outsourcing.outsourcingproject.domain.review.dto.OwnerReviewRequestDto;
 import com.outsourcing.outsourcingproject.domain.review.dto.ReviewRequestDto;
 import com.outsourcing.outsourcingproject.domain.review.dto.ReviewUpdateRequestDto;
-import com.outsourcing.outsourcingproject.domain.review.dto.StoreOwnerReviewResponseDto;
 import com.outsourcing.outsourcingproject.domain.review.dto.StoreReviewResponseDto;
 import com.outsourcing.outsourcingproject.domain.review.entity.Review;
 import com.outsourcing.outsourcingproject.domain.review.repository.ReviewRepository;
@@ -47,14 +45,10 @@ public class ReviewService {
 	@Transactional
 	public void createReview(Long orderId, ReviewRequestDto requestDto, String token) {
 
+		// boolean exists = reviewRepository.existsByOrderId();
+
 		Order order = orderRepository.findById(orderId)
 			.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
-
-		boolean exists = reviewRepository.existsByOrder_Id(orderId);
-
-		if (exists) {
-			throw new CustomException(ErrorCode.ALREADY_REVIEW_EXISTS);
-		}
 
 		if (!order.getDeliveryStatus().equals(DeliveryStatus.COMPLETED)) {
 			throw new CustomException(ErrorCode.NOT_COMPLETED_ORDER);
@@ -102,37 +96,37 @@ public class ReviewService {
 		// 가져온 가게 아이디에 해당하는 리뷰 page 객체로 받아오기
 		Page<Review> reviewList = reviewRepository.findByStoreIdAndParentIsNull(storeId, pageable);
 
-		// 사장님 리뷰 리스트로 받아오기
-		List<Review> ownerReviewList = reviewRepository.findByStoreIdAndParentIsNOTNull(storeId, pageable);
-
-		// 리뷰 DTO로 변환
-		Page<StoreReviewResponseDto> storeReviewResponseList = reviewList.map(review ->
-			StoreReviewResponseDto.builder()
-				.id(review.getId())
-				.nickname(review.getUser().getNickname())
-				.title(review.getTitle())
-				.content(review.getContent())
-				.rating(review.getRating())
-				.createdAt(review.getCreatedAt())
-				.build()
-		);
-
-		// 사장님 리뷰 DTO로 변환
-		List<StoreOwnerReviewResponseDto> ownerDtoList = ownerReviewList.stream()
-			.map(review -> StoreOwnerReviewResponseDto.builder()
-				.id(review.getId())
-				.title(review.getTitle())
-				.content(review.getContent())
-				.createdAt(review.getCreatedAt())
-				.parentId(review.getParent().getId())
-				.build()
-			)
-			.toList();
+		// // 사장님 리뷰 리스트로 받아오기
+		// List<Review> ownerReviewList = reviewRepository.findByStoreIdAndParentIsNOTNull(storeId);
+		//
+		// // 리뷰 DTO로 변환
+		// Page<StoreReviewResponseDto> storeReviewResponseList = reviewList.map(review ->
+		// 	StoreReviewResponseDto.builder()
+		// 		.id(review.getId())
+		// 		.nickname(review.getUser().getNickname())
+		// 		.title(review.getTitle())
+		// 		.content(review.getContent())
+		// 		.rating(review.getRating())
+		// 		.createdAt(review.getCreatedAt())
+		// 		.build()
+		// );
+		//
+		// // 사장님 리뷰 DTO로 변환
+		// List<StoreOwnerReviewResponseDto> ownerDtoList = ownerReviewList.stream()
+		// 	.map(review -> StoreOwnerReviewResponseDto.builder()
+		// 		.id(review.getId())
+		// 		.title(review.getTitle())
+		// 		.content(review.getContent())
+		// 		.createdAt(review.getCreatedAt())
+		// 		.parentId(review.getParent().getId())
+		// 		.build()
+		// 	)
+		// 	.toList();
 
 		// 이제 2개 합쳐야 함.
 		// storeReview의 Id와  OwnerReview의 parentId를 비교해서 같은 경우 storeReview에 넣는 방식
 		// 새로운 Dto 생성여부 등 조립 방식 고민중..
-		return storeReviewResponseList;
+		return null;
 	}
 
 	/* 리뷰 수정

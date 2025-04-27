@@ -14,7 +14,7 @@ public class WebConfig {
 	public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilter(JwtUtil jwtUtil) {
 		FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new JwtAuthenticationFilter(jwtUtil));
-		registrationBean.addUrlPatterns("/api/*");
+		registrationBean.addUrlPatterns("/*");
 		registrationBean.setOrder(1); // 인증 먼저
 		return registrationBean;
 	}
@@ -23,7 +23,7 @@ public class WebConfig {
 	public FilterRegistrationBean<RoleCheckFilter> roleCheckFilter() {
 		FilterRegistrationBean<RoleCheckFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new RoleCheckFilter());
-		registrationBean.addUrlPatterns("/api/*");
+		registrationBean.addUrlPatterns("/*");
 		registrationBean.setOrder(2); // 권한 다음
 		return registrationBean;
 	}

@@ -21,6 +21,7 @@ public enum ErrorCode implements BaseCode {
 	STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "가게가 존재하지 않습니다."),
 	NO_STORE_PERMISSION(HttpStatus.UNAUTHORIZED, "가게를 등록할 권한이 없습니다."),
 	STORE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "생성 가능한 가게 수를 초과하였습니다."),
+	STORE_NOT_OPEN(HttpStatus.NOT_ACCEPTABLE, "가게 오픈 시간에 주문을 접수해주세요."),
 
 	// Review
 	REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "리뷰가 존재하지않습니다."),
