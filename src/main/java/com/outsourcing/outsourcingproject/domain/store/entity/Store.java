@@ -53,8 +53,8 @@ public class Store extends BaseEntity {
 	@Column(nullable = false)
 	private String address;
 
-	// @Column(nullable = false)
-	// private Integer reviewCounts;
+	@Column(nullable = false)
+	private Integer reviewCounts = 0;
 
 	// isDeleted의 디폴트 값 false
 	@Column(nullable = false)
@@ -73,13 +73,14 @@ public class Store extends BaseEntity {
 	// id를 제외한 생성자
 	@Builder
 	public Store(String name, LocalTime openTime, LocalTime closeTime, int minOrderAmount,
-		String address,
+		String address, Integer reviewCounts,
 		Boolean isDeleted, User user) {
 		this.name = name;
 		this.openTime = openTime;
 		this.closeTime = closeTime;
 		this.minOrderAmount = minOrderAmount;
 		this.address = address;
+		this.reviewCounts = reviewCounts;
 		this.isDeleted = isDeleted;
 		this.user = user;
 	}

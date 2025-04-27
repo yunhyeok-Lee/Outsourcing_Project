@@ -75,7 +75,6 @@ public class StoreService {
 			.closeTime(closeTime)
 			.minOrderAmount(storeRequest.getMinOrderAmount())
 			.address(storeRequest.getAddress())
-			.isDeleted(false)
 			.user(user)
 			.build();
 
@@ -91,7 +90,8 @@ public class StoreService {
 			savedStore.getOpenTime(),
 			savedStore.getCloseTime(),
 			savedStore.getMinOrderAmount(),
-			savedStore.getAddress()
+			savedStore.getAddress(),
+			savedStore.getReviewCounts()
 		);
 	}
 
@@ -111,7 +111,8 @@ public class StoreService {
 				return new FindStoreResponseDto(
 					store.getId(),
 					status,
-					store.getName()
+					store.getName(),
+					store.getReviewCounts()
 				);
 			})
 			.collect(Collectors.toList());
@@ -142,6 +143,7 @@ public class StoreService {
 			.closeTime(store.getCloseTime())
 			.minOrderAmount(store.getMinOrderAmount())
 			.address(store.getAddress())
+			.reviewCounts(store.getReviewCounts())
 			.build();
 
 		// menu 정보 list로 조회
@@ -181,7 +183,8 @@ public class StoreService {
 			updatedStore.getOpenTime(),
 			updatedStore.getCloseTime(),
 			updatedStore.getMinOrderAmount(),
-			updatedStore.getAddress()
+			updatedStore.getAddress(),
+			updatedStore.getReviewCounts()
 		);
 
 	}
@@ -202,7 +205,8 @@ public class StoreService {
 			deleteStore.getOpenTime(),
 			deleteStore.getCloseTime(),
 			deleteStore.getMinOrderAmount(),
-			deleteStore.getAddress()
+			deleteStore.getAddress(),
+			deleteStore.getReviewCounts()
 		);
 
 	}
