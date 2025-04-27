@@ -58,12 +58,14 @@ public class Menu extends BaseEntity {
 		this.isDeleted = isDeleted;
 	}
 
+	// menu update 메서드
 	public void updateMenu(MenuRequestDto requestDto) {
 		this.name = requestDto.getName();
 		this.content = requestDto.getContent();
 		this.price = requestDto.getPrice();
 	}
 
+	// menu delete 메서드
 	public void deleteMenu() {
 		this.isDeleted = true;
 	}

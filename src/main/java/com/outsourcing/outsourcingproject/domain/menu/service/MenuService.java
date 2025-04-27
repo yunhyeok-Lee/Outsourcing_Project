@@ -25,21 +25,27 @@ public class MenuService {
 	 * 메뉴 생성 Service
 	 */
 	@Transactional
-	public MenuResponseDto createMenu(Long userId, String authority, MenuRequestDto menuRequestDto) {
+	public MenuResponseDto createMenu(Long userId, Long storeId, String authority, MenuRequestDto menuRequestDto) {
 		// 권한 체크
 		if (!"OWNER".equals(authority)) {
 			throw new CustomException(ErrorCode.NO_AUTHORITY);
 		}
 
+		// 존재하는 가게인지
 		Store store = storeRepository.findById(storeId)
 			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+
+		// // 본인 인증
+		// if (!store.getOwnerId().equals(userId)){
+		// 	throw new CustomException(ErrorCode.NO_AUTHORITY);
+		// }
 
 		Menu menu = Menu.builder()
 			.store(store)
 			.name(menuRequestDto.getName())
 			.price(menuRequestDto.getPrice())
 			.content(menuRequestDto.getContent())
-			.menuType()
+			.menuType(menuRequestDto.getContent())
 			.isDeleted(false)
 			.build();
 
@@ -78,6 +84,7 @@ public class MenuService {
 	 */
 	@Transactional
 	public void deleteMenu(Long userId, String authority, Long id) {
+
 		if (!"OWNER".equals(authority)) {
 			throw new CustomException(ErrorCode.NO_AUTHORITY);
 		}
