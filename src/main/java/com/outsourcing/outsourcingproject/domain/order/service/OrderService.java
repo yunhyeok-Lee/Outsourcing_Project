@@ -2,8 +2,11 @@ package com.outsourcing.outsourcingproject.domain.order.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
+import jakarta.transaction.Transactional;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Service;
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
@@ -16,10 +19,7 @@ import com.outsourcing.outsourcingproject.domain.order.entity.Order;
 import com.outsourcing.outsourcingproject.domain.order.entity.OrderEntities;
 import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
-import com.outsourcing.outsourcingproject.domain.store.entity.StoreSatus;
-
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +46,7 @@ public class OrderService {
 		}
 
 		// 가게 OPEN 상태일 때만 주문 가능
-		if (!(store.getStatus() == StoreSatus.OPEN)) {
+		if (!(store.getStatus() == StoreStatus.OPEN)) {
 			throw new CustomException(ErrorCode.STORE_NOT_OPEN);
 		}
 		// 엔티티 조회
