@@ -143,6 +143,27 @@ public class StoreService {
 
 	}
 
+	public StoreResponseDto deleteStore(Long id) {
+		Store store = entityFetcher.getStoreOrThrow(id);
+
+		Store newStore = store.builder()
+			.isDeleted(true)
+			.build();
+
+		Store deleteStore = storeRepository.save(newStore);
+
+		return new StoreResponseDto(
+			deleteStore.getId(),
+			StoreSatus.CLOSED,
+			deleteStore.getName(),
+			deleteStore.getOpenTime(),
+			deleteStore.getCloseTime(),
+			deleteStore.getMinOrderAmount(),
+			deleteStore.getAddress()
+		);
+
+	}
+
 	// opentime과 closetime 비교해 status 변경
 	private StoreSatus getStoreStatus(LocalTime open, LocalTime close, LocalTime now) {
 		if (open.isBefore(now) && close.isAfter(now)) {
