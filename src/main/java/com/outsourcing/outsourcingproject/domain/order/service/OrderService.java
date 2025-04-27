@@ -1,5 +1,6 @@
 package com.outsourcing.outsourcingproject.domain.order.service;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -45,10 +46,16 @@ public class OrderService {
 			throw new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT);
 		}
 
+		store = entityFetcher.getStoreOrThrow(orderRequestDto.getStoreId());
+		LocalTime open = store.getOpenTime();
+		LocalTime close = store.getCloseTime();
+		LocalTime now = LocalTime.now();
+
 		// 가게 OPEN 상태일 때만 주문 가능
-		if (!(store.getStatus() == StoreStatus.OPEN)) {
+		if (!entityFetcher.storeStatus(open, close, now).equals(StoreStatus.OPEN)) {
 			throw new CustomException(ErrorCode.STORE_NOT_OPEN);
 		}
+
 		// 엔티티 조회
 		OrderEntities entities = entityFetcher.fetchOrderEntities(orderRequestDto);
 
@@ -78,9 +85,9 @@ public class OrderService {
 	public OrderStatusResponseDto handleRequest(Long orderId, DeliveryStatus deliveryStatus, String token) {
 		Order order = entityFetcher.getOrderOrThrow(orderId);
 
-		// 사용자가 보낸 deliverytStatus 로 Order 엔티티 수정
+		// 사용자가 보낸 deliveryStatus 로 Order 엔티티 수정
 		order.updateDeliveryStatus(deliveryStatus);
-		return new OrderStatusResponseDto(orderId, deliveryStatus);
+		return new OrderStatusResponseDto(orderId, store.getId(), deliveryStatus, LocalTime.now());
 	}
 
 	// 4. 주문 취소

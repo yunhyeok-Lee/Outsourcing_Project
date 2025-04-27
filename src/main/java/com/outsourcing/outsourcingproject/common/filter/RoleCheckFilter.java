@@ -45,7 +45,7 @@ public class RoleCheckFilter implements Filter {
 		}
 
 		// USER만 주문 생성 가능
-		if (uri.startsWith("/orders") && !"USER".equals(role)) {
+		if (uri.endsWith("/orders") && !"USER".equals(role)) {
 			httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			httpResponse.getWriter().write("사용자만 주문을 생성할 수 있습니다.");
 			return;

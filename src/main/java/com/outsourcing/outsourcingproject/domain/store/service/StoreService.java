@@ -189,20 +189,20 @@ public class StoreService {
 	public StoreResponseDto deleteStore(Long id) {
 		Store store = entityFetcher.getStoreOrThrow(id);
 
-		if (store.getIsDeleted()) {
-			throw new CustomException(ErrorCode.STORE_ALREADY_DELETED);
-		}
+		Store newStore = store.builder()
+			.isDeleted(true)
+			.build();
 
-		store.deleteStore();
+		Store deleteStore = storeRepository.save(newStore);
 
 		return new StoreResponseDto(
-			store.getId(),
-			store.getStatus(),
-			store.getName(),
-			store.getOpenTime(),
-			store.getCloseTime(),
-			store.getMinOrderAmount(),
-			store.getAddress()
+			deleteStore.getId(),
+			StoreStatus.CLOSED,
+			deleteStore.getName(),
+			deleteStore.getOpenTime(),
+			deleteStore.getCloseTime(),
+			deleteStore.getMinOrderAmount(),
+			deleteStore.getAddress()
 		);
 
 	}
