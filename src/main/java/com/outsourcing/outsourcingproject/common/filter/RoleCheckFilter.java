@@ -18,6 +18,8 @@ public class RoleCheckFilter implements Filter {
 
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
 		HttpServletResponse httpResponse = (HttpServletResponse)response;
+
+		// 요청 메서드를 확인
 		String method = httpRequest.getMethod();
 
 		// JwtAuthenticationFilter에서 setAttribute("authority") 했던거를 꺼내옴.
@@ -31,10 +33,13 @@ public class RoleCheckFilter implements Filter {
 			return;
 		}
 
-		if (uri.startsWith("/stores") && !"OWNER".equals(role)) {
-			httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			httpResponse.getWriter().write("Forbidden: 사장님만 가게를 생성할 수 있습니다.");
-			return;
+		// Store
+		if ("POST".equalsIgnoreCase(method) || "PATCH".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method)) {
+			if (uri.startsWith("/stores") && !"OWNER".equals(role)) {
+				httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				httpResponse.getWriter().write("Forbidden: 사장님만 접근할 수 있습니다.");
+				return;
+			}
 		}
 
 		if (uri.startsWith("/orders") && !"USER".equals(role)) {

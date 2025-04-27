@@ -4,6 +4,7 @@ import java.time.LocalTime;
 
 import com.outsourcing.outsourcingproject.domain.store.entity.StoreSatus;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -16,6 +17,7 @@ public class StoreResponseDto {
 	private final Integer minOrderAmount;
 	private final String address;
 
+	@Builder
 	public StoreResponseDto(Long id, StoreSatus status, String name, LocalTime openTime,
 		LocalTime closeTime, Integer minOrderAmount, String address) {
 		this.id = id;
