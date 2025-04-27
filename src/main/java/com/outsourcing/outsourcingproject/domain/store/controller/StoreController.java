@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.outsourcing.outsourcingproject.common.enums.SuccessCode;
 import com.outsourcing.outsourcingproject.common.util.JwtUtil;
+import com.outsourcing.outsourcingproject.domain.store.dto.StoreAndMenuListResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreListResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
@@ -51,6 +52,7 @@ public class StoreController {
 	}
 
 	/*
+	 * Todo : isDelete 시 조회불가(status.CLOSE)
 	 * 가게 조회 api
 	 * name을 통해 사용자 조회
 	 * 가게명으로 여러건의 가게 조회
@@ -66,6 +68,12 @@ public class StoreController {
 	 * id을 통해 사용자 조회
 	 * 해당 가게의 메뉴 출력
 	 */
+	@GetMapping("/{id}")
+	public ResponseEntity<StoreAndMenuListResponseDto> findStoreAndMenu(@PathVariable Long id) {
+		StoreAndMenuListResponseDto findstore = storeService.findStore(id);
+
+		return ResponseEntity.ok(findstore);
+	}
 
 	/*
 	 * 가게 정보 수정 api

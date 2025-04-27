@@ -10,7 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
+import com.outsourcing.outsourcingproject.domain.menu.dto.MenuResponseDto;
+import com.outsourcing.outsourcingproject.domain.menu.entity.Menu;
+import com.outsourcing.outsourcingproject.domain.menu.repository.MenuRepository;
 import com.outsourcing.outsourcingproject.domain.store.dto.FindStoreResponseDto;
+import com.outsourcing.outsourcingproject.domain.store.dto.StoreAndMenuListResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreListResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
@@ -32,6 +36,7 @@ public class StoreService {
 	private final EntityFetcher entityFetcher;
 
 	private static final int MAX_STORE = 3;
+	private final MenuRepository menuRepository;
 
 	/*
 	 * 가게를 생성
@@ -112,6 +117,35 @@ public class StoreService {
 			.collect(Collectors.toList());
 
 		return new StoreListResponseDto(responseDtoList);
+	}
+
+	/*
+	 * 가게 id로 단건 조회
+	 * 가게와 연결관 모든 메뉴 포함
+	 * */
+	public StoreAndMenuListResponseDto findStore(Long id) {
+		Store store = entityFetcher.getStoreOrThrow(id);
+		List<Menu> menuList = menuRepository.findByStore_Id(id);
+		StoreResponseDto storeResponseDto = StoreResponseDto.builder()
+			.id(store.getId())
+			.status(store.getStatus())
+			.name(store.getName())
+			.openTime(store.getOpenTime())
+			.closeTime(store.getCloseTime())
+			.minOrderAmount(store.getMinOrderAmount())
+			.address(store.getAddress())
+			.build();
+
+		List<MenuResponseDto> menuResponseDtos = menuList.stream()
+			.map(menu -> MenuResponseDto.builder()
+				.id(menu.getId())
+				.name(menu.getName())
+				.content(menu.getContent())
+				.price(menu.getPrice())
+				.build())
+			.collect(Collectors.toList());
+
+		return new StoreAndMenuListResponseDto(storeResponseDto, menuResponseDtos);
 	}
 
 	/*
