@@ -39,7 +39,7 @@ public class Store extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private StoreSatus status = StoreSatus.PREPARING;
+	private StoreStatus status = StoreStatus.PREPARING;
 
 	@Column(nullable = false)
 	private LocalTime openTime;

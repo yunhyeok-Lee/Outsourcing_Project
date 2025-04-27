@@ -6,33 +6,37 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.outsourcing.outsourcingproject.common.util.JwtUtil;
 import com.outsourcing.outsourcingproject.domain.menu.dto.MenuRequestDto;
 import com.outsourcing.outsourcingproject.domain.menu.dto.MenuResponseDto;
 import com.outsourcing.outsourcingproject.domain.menu.service.MenuService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 public class MenuController {
 
+	private final JwtUtil jwtUtil;
 	private final MenuService menuService;
 
 	// 메뉴 생성
 	@PostMapping("/{storesId}/menu")
 	public ResponseEntity<MenuResponseDto> createMenu(
 		@PathVariable Long storesId,
+		@Valid
 		@RequestBody MenuRequestDto requestDto,
-		HttpServletRequest httpServletRequest) {
+		@RequestHeader("Authorization") String token) {
 
-		Long userId = (Long)httpServletRequest.getAttribute("userId");
-		String authority = (String)httpServletRequest.getAttribute("authority");
+		Long userId = jwtUtil.getUserIdFromToken(token);
+		String authority = jwtUtil.getAuthorityFromToken(token);
 
 		return ResponseEntity.ok(menuService.createMenu(userId, storesId, authority, requestDto));
-
 	}
 
 	// 메뉴 수정

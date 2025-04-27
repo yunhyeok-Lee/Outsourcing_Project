@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
+import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
 import com.outsourcing.outsourcingproject.common.util.JwtUtil;
 import com.outsourcing.outsourcingproject.domain.order.entity.DeliveryStatus;
 import com.outsourcing.outsourcingproject.domain.order.entity.Order;
@@ -34,6 +35,7 @@ public class ReviewService {
 	private final StoreRepository storeRepository;
 	private final UserRepository userRepository;
 	private final JwtUtil jwtUtil;
+	private final EntityFetcher entityFetcher;
 
 	/* 리뷰 생성
 	1. Order 객체 생성(주문 유효성 검사)  // 입력받은 주문이 DB에 존재하는지 검사하면서 객체 생성 <- 주문 배달 상태와 리뷰 생성 자격 검증 위해 객체 꺼내야 함
@@ -47,29 +49,26 @@ public class ReviewService {
 
 		// boolean exists = reviewRepository.existsByOrderId();
 
-		Order order = orderRepository.findById(orderId)
-			.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+		Order order = entityFetcher.getOrderOrThrow(orderId);
 
 		if (!order.getDeliveryStatus().equals(DeliveryStatus.COMPLETED)) {
 			throw new CustomException(ErrorCode.NOT_COMPLETED_ORDER);
 		}
 
-		User orderUser = order.getUser();
-
-		Long userIdByOrder = orderUser.getId();
+		Long userIdByOrder = order.getUser().getId();
 
 		Long userIdByToken = jwtUtil.getUserIdFromToken(token);
 
-		if (!Objects.equals(userIdByOrder, userIdByToken)) {
-			throw new CustomException(ErrorCode.NO_REVIEW_CREATE_PERMISSION);
-		}
+		// if (!Objects.equals(userIdByOrder, userIdByToken)) {
+		// 	throw new CustomException(ErrorCode.NO_REVIEW_CREATE_PERMISSION);
+		// }
 
 		Review review = Review.builder()
 			.rating(requestDto.getRating())
 			.title(requestDto.getTitle())
 			.content(requestDto.getContent())
 			.order(order)
-			.user(orderUser)
+			.user(order.getUser())
 			.store(order.getStore())
 			.build();
 
