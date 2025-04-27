@@ -61,7 +61,8 @@ public class OrderController {
 		@RequestBody @Valid OrderStatusRequestDto orderStatusRequestDto,
 		@RequestHeader("Authorization") String token) {
 		DeliveryStatus deliveryStatus = orderStatusRequestDto.getDeliveryStatus();
-		return CommonResponse.of(SuccessCode.ORDER_SENT_SUCCESS, orderService.handleRequest(id, deliveryStatus, token));
+		return CommonResponse.of(SuccessCode.ORDER_CHANGE_STATUS_SUCCESS,
+			orderService.handleRequest(id, deliveryStatus, token));
 	}
 
 	// 4. 주문 취소
