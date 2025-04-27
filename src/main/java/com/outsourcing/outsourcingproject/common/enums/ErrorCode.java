@@ -32,8 +32,9 @@ public enum ErrorCode implements BaseCode {
 	NO_OWNER_REVIEW_PERMISSION(HttpStatus.UNAUTHORIZED, "사장님 리뷰를 작성할 권한이 없습니다."),
 
 	// Menu
+	MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴가 존재하지 않습니다."),
 	UNAUTHORIZED_MENU_ACCESS(HttpStatus.FORBIDDEN, "사장님만 메뉴를 등록할 수 있습니다."),
-	MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴가 존재하지 않습니다.");
+	NO_AUTHORITY(HttpStatus.FORBIDDEN, "권한이 없습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;
