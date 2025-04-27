@@ -14,7 +14,7 @@ public enum ErrorCode implements BaseCode {
 
 	// Order
 	ORDER_REQUEST_ALREADY_SENT(HttpStatus.BAD_REQUEST, "이미 주문이 접수되었습니다."),
-	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "접수된 주문이 존재하지 않습니다."),
+	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 주문 번호는 접수되지 않은 주문 번호입니다."),
 	INVALID_ORDER_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 주문 접수 요청입니다."),
 	NOT_COMPLETED_ORDER(HttpStatus.BAD_REQUEST, "배달이 완료되지 않았습니다."),
 
@@ -22,14 +22,21 @@ public enum ErrorCode implements BaseCode {
 	STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "가게가 존재하지 않습니다."),
 	NO_STORE_PERMISSION(HttpStatus.UNAUTHORIZED, "가게를 등록할 권한이 없습니다."),
 	STORE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "생성 가능한 가게 수를 초과하였습니다."),
+	STORE_NOT_OPEN(HttpStatus.NOT_ACCEPTABLE, "가게 오픈 시간에 주문을 접수해주세요."),
 
 	// Review
 	REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "리뷰가 존재하지않습니다."),
 	ALREADY_REVIEW_EXISTS(HttpStatus.BAD_REQUEST, "이미 리뷰가 작성된 주문입니다."),
+	ALREADY_RESPONSED_REVIEW(HttpStatus.BAD_REQUEST, "이미 답글을 작성한 리뷰입니다."),
+	NO_REVIEW_CREATE_PERMISSION(HttpStatus.UNAUTHORIZED, "해당 리뷰를 작성할 권한이 없습니다."),
+	NO_REVIEW_UPDATE_PERMISSION(HttpStatus.UNAUTHORIZED, "해당 리뷰를 수정할 권한이 없습니다."),
+	NO_REVIEW_DELETE_PERMISSION(HttpStatus.UNAUTHORIZED, "해당 리뷰를 삭제할 권한이 없습니다."),
+	NO_OWNER_REVIEW_PERMISSION(HttpStatus.UNAUTHORIZED, "사장님 리뷰를 작성할 권한이 없습니다."),
 
 	// Menu
+	MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴가 존재하지 않습니다."),
 	UNAUTHORIZED_MENU_ACCESS(HttpStatus.FORBIDDEN, "사장님만 메뉴를 등록할 수 있습니다."),
-	MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴가 존재하지 않습니다.");
+	NO_AUTHORITY(HttpStatus.FORBIDDEN, "권한이 없습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;

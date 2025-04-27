@@ -8,9 +8,24 @@ import com.outsourcing.outsourcingproject.domain.review.entity.Review;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-	boolean existsByOrder_Id(Long orderId);
-
 	Page<Review> findByStoreId(Long storeId, Pageable pageable);
 
-	boolean existsByStore_Id(Long storeId);
+	boolean existsByParent(Review review);
+
+	// findbyid 메서드 사용 위치 별로 구분
+	// (N+1 문제 해결 위해 EntityGraph 사용할건데
+	// 매번 모든 테이블 조인한 채로 가져오면 결국 즉시 Join과 다를 게 없으므로
+	// 사용 용도에 맞게 테이블을 각각 조인한 메서드로 분리)
+	// OrElse 처리
+
+	// 0. findById <- join x (default findById 메서드)
+	// 1. findByIdforUser <- user join (review 수정, 삭제)
+	// 2. findByIdforStore <- store join (reviewcounts 증감)
+	// 3. findByIdforOwnwer <- store.user join (가게 사장 ID 뽑아오기, 이중 join)
+
+	Page<Review> findByStoreIdAndParentIsNull(Long storeId, Pageable pageable);
+
+	boolean existsByOrder_Id(Long orderId);
+
+	// List<Review> findByStoreIdAndParentIsNOTNull(Long storeId);
 }

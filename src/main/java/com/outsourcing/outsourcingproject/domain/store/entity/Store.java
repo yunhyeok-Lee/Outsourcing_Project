@@ -53,6 +53,9 @@ public class Store extends BaseEntity {
 	@Column(nullable = false)
 	private String address;
 
+	// @Column(nullable = false)
+	// private Integer reviewCounts;
+
 	// isDeleted의 디폴트 값 false
 	@Column(nullable = false)
 	private Boolean isDeleted = false;
@@ -81,10 +84,12 @@ public class Store extends BaseEntity {
 		this.user = user;
 	}
 
-	public void updateStore(LocalTime openTime, LocalTime closeTime, Integer minOrderAmount) {
+	public Store updateStore(LocalTime openTime, LocalTime closeTime, Integer minOrderAmount) {
 		this.openTime = openTime;
 		this.closeTime = closeTime;
 		this.minOrderAmount = minOrderAmount;
+
+		return this;
 	}
 
 }
