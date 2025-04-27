@@ -1,6 +1,9 @@
-package com.outsourcing.outsourcingproject.common.util;
+package com.outsourcing.outsourcingproject.common.filter;
 
 import java.io.IOException;
+
+import com.outsourcing.outsourcingproject.common.exception.CustomException;
+import com.outsourcing.outsourcingproject.common.util.JwtUtil;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -9,8 +12,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import com.outsourcing.outsourcingproject.common.exception.CustomException;
 
 public class JwtAuthenticationFilter implements Filter {
 
