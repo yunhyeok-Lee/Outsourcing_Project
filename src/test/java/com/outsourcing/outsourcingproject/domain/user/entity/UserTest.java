@@ -11,7 +11,7 @@ class UserTest {
 		String nickname = "nick";
 		String password = "Abc1234!";
 		String address = "대한민국 어딘가";
-		User user = new User("email", password, nickname, "010-0000-0000", address, Authority.USER);
+		User user = new User("email", password, nickname, "010-0000-0000", address, "USER");
 
 		// when
 		user.updateUserInfo("john", "Def1234!", "대한민국 서울시");
@@ -28,7 +28,7 @@ class UserTest {
 		String nickname = "nick";
 		String password = "Abc1234!";
 		String address = "대한민국 어딘가";
-		User user = new User("email", password, nickname, "010-0000-0000", address, Authority.USER);
+		User user = new User("email", password, nickname, "010-0000-0000", address, "USER");
 
 		// when
 		user.updateUserInfo(" ", " ", " ");
