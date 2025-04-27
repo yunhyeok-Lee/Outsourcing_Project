@@ -29,9 +29,9 @@ public class EntityFetcher {
 	private final MenuRepository menuRepository;
 	private final ReviewRepository reviewRepository;
 
-	public User getUserOrThrow(Long userId) {
-		return userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+	public Order getOrderOrThrow(Long orderId) {
+		return orderRepository.findById(orderId)
+			.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 	}
 
 	public Store getStoreOrThrow(Long storeId) {
@@ -39,9 +39,14 @@ public class EntityFetcher {
 			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 	}
 
-	public Order getOrderOrThrow(Long orderId) {
-		return orderRepository.findById(orderId)
-			.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+	public User getUserOrThrow(Long userId) {
+		return userRepository.findUserById(userId)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+	}
+
+	public User getUserOrThrow(String email, boolean deleted) {
+		return userRepository.findUserByEmailAndIsDeleted(email, deleted)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 	}
 
 	public Menu getMenuOrThrow(Long menuId) {
