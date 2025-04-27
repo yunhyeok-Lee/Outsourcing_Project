@@ -44,20 +44,29 @@ public class User extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)//enum 사용시 꼭 필요
 	@Column(nullable = false)
-	private Authority authority = Authority.USER;
+	private Authority authority;
 
 	@Column(nullable = false)
 	private boolean isDeleted = false;
 
 	@Builder
 	public User(String email, String password, String nickname, String phoneNumber, String address,
-		Authority authority) {
+		String authority) {
 		this.email = email;
+
 		this.password = password;
-		this.nickname = nickname;
+
+		this.nickname = StringUtils.isBlank(nickname)
+			? "익명의 사용자"
+			: nickname;
+
 		this.phoneNumber = phoneNumber;
+
 		this.address = address;
-		this.authority = authority;
+
+		this.authority = StringUtils.isBlank(authority)
+			? Authority.USER
+			: Authority.valueOf(authority.toUpperCase());
 	}
 
 	public void updateDeletedStatus() {
@@ -68,13 +77,13 @@ public class User extends BaseEntity {
 		if (!StringUtils.isBlank(nickname)) {
 			this.nickname = nickname;
 		}
-		// Todo: 단순히 검증용 비밀번호였는지, 변경의사가 있는지 구분하기 위한 필드 필요
+
 		if (!StringUtils.isBlank(password)) {
-			this.nickname = password;
+			this.password = password;
 		}
 
 		if (!StringUtils.isBlank(address)) {
-			this.nickname = address;
+			this.address = address;
 		}
 	}
 }

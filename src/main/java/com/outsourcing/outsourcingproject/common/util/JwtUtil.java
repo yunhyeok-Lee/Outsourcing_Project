@@ -36,12 +36,11 @@ public class JwtUtil {
 	}
 
 	// 토큰 생성
-	public String createToken(Long userId, String email, Authority authority) {
+	public String createToken(Long userId, Authority authority) {
 		Date date = new Date();
 
 		return Jwts.builder()
 			.setSubject(String.valueOf(userId))
-			.claim("email", email)
 			.claim("authority", authority)
 			.setIssuedAt(date)
 			.setExpiration(new Date(date.getTime() + TOKEN_TIME))
