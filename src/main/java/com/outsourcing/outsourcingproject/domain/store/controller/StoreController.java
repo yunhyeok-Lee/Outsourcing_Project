@@ -1,5 +1,6 @@
 package com.outsourcing.outsourcingproject.domain.store.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.outsourcing.outsourcingproject.common.dto.CommonResponse;
 import com.outsourcing.outsourcingproject.common.enums.SuccessCode;
 import com.outsourcing.outsourcingproject.common.util.JwtUtil;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreAndMenuListResponseDto;
@@ -37,7 +39,7 @@ public class StoreController {
 	 */
 	//user 테이블의 id 필요 입력받지 않으니 token에서 id 추출
 	@PostMapping
-	public ResponseEntity<String> createStore(
+	public ResponseEntity<CommonResponse<Void>> createStore(
 		// 인증된 사용자 정보 가저오기
 		@RequestHeader("Authorization") String token,
 		@Valid @RequestBody StoreRequestDto storeRequestDto) {
@@ -46,9 +48,7 @@ public class StoreController {
 
 		storeService.createStore(userId, storeRequestDto);
 
-		return ResponseEntity
-			.status(SuccessCode.CREATE_STORE.getStatus())
-			.body(SuccessCode.CREATE_STORE.getMessage());
+		return new ResponseEntity<>(CommonResponse.of(SuccessCode.CREATE_STORE), HttpStatus.OK);
 	}
 
 	/*
@@ -58,9 +58,11 @@ public class StoreController {
 	 * 가게명으로 여러건의 가게 조회
 	 */
 	@GetMapping("/{name}")
-	public ResponseEntity<StoreListResponseDto> findByName(@PathVariable String name) {
-		StoreListResponseDto storeListResponseDto = storeService.findByName(name);
-		return ResponseEntity.ok(storeListResponseDto);
+	public ResponseEntity<CommonResponse<StoreListResponseDto>> findByName(@PathVariable String name) {
+		// StoreListResponseDto storeListResponseDto = storeService.findByName(name);
+		return new ResponseEntity<>(CommonResponse.of(SuccessCode.GET_STORE_LIST, storeService.findByName(name)),
+			HttpStatus.OK);
+		// return ResponseEntity.ok(storeListResponseDto);
 	}
 
 	/* Todo : 가게 단건조회
@@ -69,31 +71,37 @@ public class StoreController {
 	 * 해당 가게의 메뉴 출력
 	 */
 	@GetMapping("/{id}")
-	public ResponseEntity<StoreAndMenuListResponseDto> findStoreAndMenu(@PathVariable Long id) {
-		StoreAndMenuListResponseDto findstore = storeService.findStore(id);
-
-		return ResponseEntity.ok(findstore);
+	public ResponseEntity<CommonResponse<StoreAndMenuListResponseDto>> findStoreAndMenu(@PathVariable Long id) {
+		// StoreAndMenuListResponseDto findstore = storeService.findStore(id);
+		return new ResponseEntity<>(CommonResponse.of(SuccessCode.GET_STORE_LIST, storeService.findStore(id)),
+			HttpStatus.OK);
+		// return ResponseEntity.ok(findstore);
 	}
 
 	/*
 	 * 가게 정보 수정 api
 	 */
 	@PatchMapping("/{id}")
-	public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long id,
+	public ResponseEntity<CommonResponse<StoreResponseDto>> updateStore(@PathVariable Long id,
 		@RequestBody UpdateStoreRequestDto updateStoreRequestDto) {
-		StoreResponseDto updatestore = storeService.updateStore(id, updateStoreRequestDto);
+		return new ResponseEntity<>(
+			CommonResponse.of(SuccessCode.UPDATE_STORE, storeService.updateStore(id, updateStoreRequestDto)),
+			HttpStatus.OK);
 
-		return ResponseEntity.ok(updatestore);
+		// StoreResponseDto updatestore = storeService.updateStore(id, updateStoreRequestDto);
+		//
+		// return ResponseEntity.ok(updatestore);
 	}
 
 	/*
 	 * 가게 삭제 api
 	 */
 	@DeleteMapping("/{id}")
-	public ResponseEntity<StoreResponseDto> deleteStore(@PathVariable Long id) {
-		StoreResponseDto deletestore = storeService.deleteStore(id);
-
-		return ResponseEntity.ok(deletestore);
+	public ResponseEntity<CommonResponse<String>> deleteStore(@PathVariable Long id) {
+		storeService.deleteStore(id);
+		return new ResponseEntity<>(CommonResponse.of(SuccessCode.DELETE_STORE), HttpStatus.OK);
+		// 	return ResponseEntity
+		// 		.status(SuccessCode.CREATE_STORE.getStatus())
+		// 		.body(SuccessCode.CREATE_STORE.getMessage());
 	}
-
 }

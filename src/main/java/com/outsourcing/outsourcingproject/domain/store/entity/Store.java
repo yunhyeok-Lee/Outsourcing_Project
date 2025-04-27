@@ -39,7 +39,7 @@ public class Store extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private StoreSatus status = StoreSatus.PREPARING;
+	private StoreStatus status = StoreStatus.PREPARING;
 
 	@Column(nullable = false)
 	private LocalTime openTime;
@@ -94,7 +94,7 @@ public class Store extends BaseEntity {
 
 	public void deleteStore() {
 		this.isDeleted = true;
-		this.status = StoreSatus.CLOSED;
+		this.status = StoreStatus.CLOSED;
 	}
 
 }
