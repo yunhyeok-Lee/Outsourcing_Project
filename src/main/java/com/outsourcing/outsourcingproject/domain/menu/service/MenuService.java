@@ -84,8 +84,8 @@ public class MenuService {
 
 		Menu menu = menuRepository.findById(id)
 			.orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
-	}
 
-	menu.deleteMenu();
+		menu.deleteMenu();
+	}
 
 }
