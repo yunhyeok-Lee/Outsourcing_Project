@@ -13,7 +13,7 @@ public enum ErrorCode implements BaseCode {
 
 	// Order
 	ORDER_REQUEST_ALREADY_SENT(HttpStatus.BAD_REQUEST, "이미 주문이 접수되었습니다."),
-	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "접수된 주문이 존재하지 않습니다."),
+	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 주문 번호는 접수되지 않은 주문 번호입니다."),
 	INVALID_ORDER_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 주문 접수 요청입니다."),
 	NOT_COMPLETED_ORDER(HttpStatus.BAD_REQUEST, "배달이 완료되지 않았습니다."),
 
