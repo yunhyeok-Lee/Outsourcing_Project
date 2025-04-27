@@ -100,7 +100,7 @@ public class StoreService {
 	 * */
 	public StoreListResponseDto findByName(String name) {
 
-		List<Store> storeList = storeRepository.findByName(name);
+		List<Store> storeList = storeRepository.findByNameAndIsDeletedFalse(name);
 
 		LocalTime now = LocalTime.now();
 
@@ -121,11 +121,19 @@ public class StoreService {
 
 	/*
 	 * 가게 id로 단건 조회
-	 * 가게와 연결관 모든 메뉴 포함
+	 * 가게와 연결된 모든 메뉴 포함
 	 * */
 	public StoreAndMenuListResponseDto findStore(Long id) {
 		Store store = entityFetcher.getStoreOrThrow(id);
+
+		if (store.getIsDeleted()) {
+			throw new CustomException(ErrorCode.STORE_NOT_FOUND);
+		}
+
+		// store id로 menu list 형태로 조회
 		List<Menu> menuList = menuRepository.findByStore_Id(id);
+
+		// store 정보 조회
 		StoreResponseDto storeResponseDto = StoreResponseDto.builder()
 			.id(store.getId())
 			.status(store.getStatus())
@@ -136,6 +144,7 @@ public class StoreService {
 			.address(store.getAddress())
 			.build();
 
+		// menu 정보 list로 조회
 		List<MenuResponseDto> menuResponseDtos = menuList.stream()
 			.map(menu -> MenuResponseDto.builder()
 				.id(menu.getId())
