@@ -18,7 +18,6 @@ public class RoleCheckFilter implements Filter {
 
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
 		HttpServletResponse httpResponse = (HttpServletResponse)response;
-		String method = httpRequest.getMethod();
 
 		// 요청 메서드를 확인
 		String method = httpRequest.getMethod();
