@@ -22,7 +22,7 @@ public class MenuService {
 	private final StoreRepository storeRepository;
 
 	/*
-	 메뉴 생성 Service
+	 * 메뉴 생성 Service
 	 */
 	@Transactional
 	public MenuResponseDto createMenu(Long userId, String authority, MenuRequestDto menuRequestDto) {
@@ -56,7 +56,7 @@ public class MenuService {
 	}
 
 	/*
-	메뉴 수정 Service
+	 * 메뉴 수정 Service
 	 */
 	@Transactional
 	public MenuResponseDto updateMenu(Long userId, String authority, Long id, MenuRequestDto menuRequestDto) {
@@ -73,8 +73,19 @@ public class MenuService {
 			menu.getCreatedAt(), menu.getUpdatedAt());
 	}
 
+	/*
+	 * 메뉴 삭제 Service
+	 */
+	@Transactional
 	public void deleteMenu(Long userId, String authority, Long id) {
+		if (!"OWNER".equals(authority)) {
+			throw new CustomException(ErrorCode.NO_AUTHORITY);
+		}
 
+		Menu menu = menuRepository.findById(id)
+			.orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 	}
+
+	menu.deleteMenu();
 
 }
