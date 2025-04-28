@@ -18,9 +18,9 @@ import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepositor
 class OrderEntityFetcherTest {
 
 	/* ✏️
-	1. given : 주어진 상황
-	2. when : 행동
-	3. then : 검증
+	1. given: 주어진 상황
+	2. when: 행동
+	3. then: 검증
 	 */
 
 	@Mock

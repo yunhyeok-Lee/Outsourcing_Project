@@ -26,6 +26,9 @@ class OrderServiceTest {
 	@Mock
 	private JwtUtil jwtUtil;
 
+	@Mock
+	private EntityFetcher entityFetcher;
+
 	@InjectMocks
 	private OrderService orderService;
 
@@ -57,18 +60,36 @@ class OrderServiceTest {
 	}
 
 	@Test
-	void 주문_삭제_실패하면_CustomException() {
+	void 주문_존재시_deleteOrder_검증() {
 
-		// given : 취소하려는 주문의 ID
+		// given: 취소하려는 주문의 ID
 		Long orderId = 1L;
 
-		// Stubbing : 주문 객체를 Mock 으로 생성
+		// Stubbing: 주문 객체를 Mock 으로 생성
 		Order mockOrder = mock(Order.class);
 
 		// EntityFetcher 의 getOrderOrThrow 메서드 호출될 때, mockOrder 를 반환하도록 설정
 		when(entityFetcher.getOrderOrThrow(orderId)).thenReturn(mockOrder);
 
-		// when : 주문 취소 메서드 호출
+		// when: 주문 취소 메서드 호출
+		orderService.deleteOrder(orderId);
+
+		// then: OrderRepository.delete()가 한 번 호출되었는지 검증
+		verify(orderRepository, times(1)).delete(mockOrder);
+	}
+
+	@Test
+	void 주문_미존재시_deleteOrder하면_CustomException() {
+
+		// given: 존재하지 않는 주문 ID
+		Long orderId = 999L;
+
+		// Stubbing: 주문이 존재하지 않으면 CustomException 발생
+		when(entityFetcher.getOrderOrThrow(orderId)).thenThrow(CustomException.class);
+
+		// when & then: 예외가 발생하는지 검증
+		assertThatThrownBy(() -> orderService.deleteOrder(orderId))
+			.isInstanceOf(CustomException.class);
 	}
 
 }
