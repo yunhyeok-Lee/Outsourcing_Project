@@ -16,7 +16,7 @@ import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepositor
 import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
-class EntityFetcherTest {
+class UserEntityFetcherTest {
 	@Mock
 	private UserRepository userRepository;
 
@@ -49,19 +49,6 @@ class EntityFetcherTest {
 
 		// when & then
 		assertThatThrownBy(() -> entityFetcher.getUserOrThrow(email, false))
-			.isInstanceOf(CustomException.class);
-	}
-
-	@Test
-	void 일치하는_가게id_없으면_CustomException() {
-		// given
-		Long id = 1L;
-
-		// Stubbing
-		when(storeRepository.findById(id)).thenReturn(Optional.empty());
-
-		// when & then
-		assertThatThrownBy(() -> entityFetcher.getStoreOrThrow(id))
 			.isInstanceOf(CustomException.class);
 	}
 }

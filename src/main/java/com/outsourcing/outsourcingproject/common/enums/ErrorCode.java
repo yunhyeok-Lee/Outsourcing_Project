@@ -14,15 +14,15 @@ public enum ErrorCode implements BaseCode {
 
 	// Order
 	ORDER_REQUEST_ALREADY_SENT(HttpStatus.BAD_REQUEST, "이미 주문이 접수되었습니다."),
-	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 주문 번호는 접수되지 않은 주문 번호입니다."),
+	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "접수되지 않은 주문 번호입니다."),
 	INVALID_ORDER_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 주문 접수 요청입니다."),
 	NOT_COMPLETED_ORDER(HttpStatus.BAD_REQUEST, "배달이 완료되지 않았습니다."),
+	STORE_NOT_OPEN(HttpStatus.NOT_ACCEPTABLE, "가게 오픈 시간에 주문을 접수해주세요."),
 
 	// Store
 	STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "가게가 존재하지 않습니다."),
 	NO_STORE_PERMISSION(HttpStatus.UNAUTHORIZED, "가게를 등록할 권한이 없습니다."),
 	STORE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "생성 가능한 가게 수를 초과하였습니다."),
-	STORE_NOT_OPEN(HttpStatus.NOT_ACCEPTABLE, "가게 오픈 시간에 주문을 접수해주세요."),
 	STORE_ALREADY_DELETED(HttpStatus.NOT_FOUND, "가게가 이미 폐업처리 되었습니다."),
 	INVALID_TIME_FORMAT(HttpStatus.BAD_REQUEST, "잘못된 시간 형식입니다."),
 

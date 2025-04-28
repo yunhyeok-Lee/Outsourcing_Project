@@ -1,0 +1,74 @@
+package com.outsourcing.outsourcingproject.common.util;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.outsourcing.outsourcingproject.common.exception.CustomException;
+import com.outsourcing.outsourcingproject.domain.order.dto.OrderRequestDto;
+import com.outsourcing.outsourcingproject.domain.order.entity.Order;
+import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
+import com.outsourcing.outsourcingproject.domain.order.service.OrderService;
+
+@ExtendWith(MockitoExtension.class)
+class OrderServiceTest {
+
+	@Mock
+	private OrderRepository orderRepository;
+
+	@Mock
+	private JwtUtil jwtUtil;
+
+	@InjectMocks
+	private OrderService orderService;
+
+	@Test
+	void 중복으로_접수된_주문이면_CustomException() {
+
+		// given
+		Long userId = 1L;
+		String token = "mockToken";
+		Long storeId = 10L;
+		Long menuId = 100L;
+		OrderRequestDto orderRequestDto = new OrderRequestDto(storeId, menuId);
+
+		/*
+		jwtUtil.getUserIdFromToken(token) ➔ userId 뽑아야 하고
+
+		orderRepository.findOrderByUserId(userId) ➔ 이미 주문 존재하는 상황 만들기
+
+		그런 다음 CustomException 이 터지는지 검증하기
+		 */
+		// Stubbing
+		when(jwtUtil.getUserIdFromToken(token)).thenReturn(userId);
+		when(orderRepository.findOrderByUserId(userId)).thenReturn(Optional.of(mock(Order.class)));
+
+		// when & then
+		assertThatThrownBy(() -> orderService.createOrder(orderRequestDto, token))
+			.isInstanceOf(CustomException.class)
+			.hasMessageContaining("이미 주문이 접수되었습니다.");
+	}
+
+	@Test
+	void 주문_삭제_실패하면_CustomException() {
+
+		// given : 취소하려는 주문의 ID
+		Long orderId = 1L;
+
+		// Stubbing : 주문 객체를 Mock 으로 생성
+		Order mockOrder = mock(Order.class);
+
+		// EntityFetcher 의 getOrderOrThrow 메서드 호출될 때, mockOrder 를 반환하도록 설정
+		when(entityFetcher.getOrderOrThrow(orderId)).thenReturn(mockOrder);
+
+		// when : 주문 취소 메서드 호출
+	}
+
+}
