@@ -16,10 +16,11 @@ public class StoreResponseDto {
 	private final LocalTime closeTime;
 	private final Integer minOrderAmount;
 	private final String address;
+	private final Integer reviewCounts;
 
 	@Builder
 	public StoreResponseDto(Long id, StoreStatus status, String name, LocalTime openTime,
-		LocalTime closeTime, Integer minOrderAmount, String address) {
+		LocalTime closeTime, Integer minOrderAmount, String address, Integer reviewCounts) {
 		this.id = id;
 		this.status = status;
 		this.name = name;
@@ -27,5 +28,6 @@ public class StoreResponseDto {
 		this.closeTime = closeTime;
 		this.minOrderAmount = minOrderAmount;
 		this.address = address;
+		this.reviewCounts = reviewCounts;
 	}
 }

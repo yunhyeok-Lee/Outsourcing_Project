@@ -23,6 +23,8 @@ public enum ErrorCode implements BaseCode {
 	NO_STORE_PERMISSION(HttpStatus.UNAUTHORIZED, "가게를 등록할 권한이 없습니다."),
 	STORE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "생성 가능한 가게 수를 초과하였습니다."),
 	STORE_NOT_OPEN(HttpStatus.NOT_ACCEPTABLE, "가게 오픈 시간에 주문을 접수해주세요."),
+	STORE_ALREADY_DELETED(HttpStatus.NOT_FOUND, "가게가 이미 폐업처리 되었습니다."),
+	INVALID_TIME_FORMAT(HttpStatus.BAD_REQUEST, "잘못된 시간 형식입니다."),
 
 	// Review
 	REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "리뷰가 존재하지않습니다."),
@@ -36,7 +38,8 @@ public enum ErrorCode implements BaseCode {
 	// Menu
 	MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴가 존재하지 않습니다."),
 	UNAUTHORIZED_MENU_ACCESS(HttpStatus.FORBIDDEN, "사장님만 메뉴를 등록할 수 있습니다."),
-	NO_AUTHORITY(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+	NO_AUTHORITY(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
+	DUPLICATE_MENU_NAME(HttpStatus.BAD_REQUEST, "이미 추가 된 메뉴 이름입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;

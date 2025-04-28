@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
-import com.outsourcing.outsourcingproject.domain.menu.dto.MenuRequestDto;
+import com.outsourcing.outsourcingproject.domain.menu.dto.MenuUpdateRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 
 @Entity
@@ -41,25 +41,25 @@ public class Menu extends BaseEntity {
 	@Column(nullable = false)
 	private int price;
 
-	@Column(nullable = false)
-	private String menuType;
+	// @Column(nullable = false)
+	// private String menuType;
 
 	@Column(nullable = false)
 	private Boolean isDeleted = false;
 
 	// id 제외한 생성자
 	@Builder
-	public Menu(Store store, String name, String content, int price, String menuType, Boolean isDeleted) {
+	public Menu(Store store, String name, String content, int price, Boolean isDeleted) {
 		this.store = store;
 		this.name = name;
 		this.content = content;
 		this.price = price;
-		this.menuType = menuType;
+		// this.menuType = menuType;
 		this.isDeleted = isDeleted;
 	}
 
 	// menu update 메서드
-	public void updateMenu(MenuRequestDto requestDto) {
+	public void updateMenu(MenuUpdateRequestDto requestDto) {
 		this.name = requestDto.getName();
 		this.content = requestDto.getContent();
 		this.price = requestDto.getPrice();
