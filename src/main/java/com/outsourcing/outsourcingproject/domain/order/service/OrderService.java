@@ -73,35 +73,58 @@ public class OrderService {
 
 	}
 
+	/* ✏️
+	메서드 설명:
+	storeId 로 가게 찾고
+	→ 가게에 속한 주문들 찾고
+	→ 주문 하나하나를 OrderResponseDto 로 변환해서
+	→ 리스트에 담고
+	→ 리스트에 반환하는 메서드
+	 */
 	// 2. storeId 로 주문 목록 조회 with 상태
 	@Transactional
 	public List<OrderResponseDto> getOrderList(Long storeId) {
+
+		// storeId 로 store 객체를 하나 가져온다. 없으면 예외 던진다
 		Store store = entityFetcher.getStoreOrThrow(storeId);
-		// List<Order> orderList = orderService.getOrderList(storeId);
+
+		// 가져온 store 에 있는 모든 주문을 DB 에서 가져온다 → orderList 안에 Order 객체들이 담긴다
 		List<Order> orderList = orderRepository.findAllByStore(store);
 
-		/* ✏️
-		1. stream 으로 하는 방법
-		List<OrderResponseDto> collect = orderList.stream()
-			.map(order -> new OrderResponseDto(order))
-			.collect(Collectors.toList());
-		 */
-
+		// OrderResponseDto 타입으로 결과를 담을 빈 리스트를 만든다
 		List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
 
 		/* ✏️
-		2. 향상된 for 문으로 하는 방법
-		for 문이 돌 때마다 orderList 가 order 로 들어가고
-		→ order 가 orderResponseDto 형태로 바뀌고
-		→ orderResponseDto 가 orderResponseDtoList 로 들어간다
+		1. 향상된 for 문으로 하는 방법
+		OrderList 안에 있는 각 Order 객체를 하나씩 꺼내서 Order 라는 이름으로 사용하겠다는 뜻
+		→ Order 객체 하나를 OrderResponseDto 라는 DTO 객체로 변환한다
+		→ 새로 변환해서 만든 OrderResponseDto 를 아까 만들어둔 빈 리스트 orderResponseDtoList 에 추가한다
+		→ 반복될 때마다 orderResponseDto 가 하나씩 orderResponseDtoList 에 쌓인다
 		 */
 		for (Order order : orderList) {
-			// order 로 OrderResponseDto 만들기
 			OrderResponseDto orderResponseDto = new OrderResponseDto(order);
 			orderResponseDtoList.add(orderResponseDto);
 		}
 		return orderResponseDtoList;
 	}
+
+	/* ✏️
+		2. 향상된 for 문 대신 stream 으로 하는 방법
+		public List<OrderResponseDto> getOrderList(Long storeId) {
+
+		Store store = entityFetcher.getStoreOrThrow(storeId);
+
+		List<Order> orderList = orderRepository.findAllByStore(store);
+
+		List<OrderResponseDto> orderResponseDtoList = orderList.stream()
+        // 하나씩 꺼내서 OrderResponseDto로 변환
+        .map(order -> new OrderResponseDto(order))
+        // 변환한 것들을 리스트로 모음
+        .collect(Collectors.toList());
+
+        return orderResponseDtoList;
+    }
+		 */
 
 	// 3. 주문 상태 변경 API
 	@Transactional
