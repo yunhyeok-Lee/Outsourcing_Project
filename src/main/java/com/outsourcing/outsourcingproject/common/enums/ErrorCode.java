@@ -24,6 +24,7 @@ public enum ErrorCode implements BaseCode {
 	STORE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "생성 가능한 가게 수를 초과하였습니다."),
 	STORE_NOT_OPEN(HttpStatus.NOT_ACCEPTABLE, "가게 오픈 시간에 주문을 접수해주세요."),
 	STORE_ALREADY_DELETED(HttpStatus.NOT_FOUND, "가게가 이미 폐업처리 되었습니다."),
+	INVALID_TIME_FORMAT(HttpStatus.BAD_REQUEST, "잘못된 시간 형식입니다."),
 
 	// Review
 	REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "리뷰가 존재하지않습니다."),
