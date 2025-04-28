@@ -4,8 +4,11 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
+import jakarta.transaction.Transactional;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Service;
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
@@ -19,9 +22,6 @@ import com.outsourcing.outsourcingproject.domain.order.entity.OrderEntities;
 import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;
-
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -73,14 +73,6 @@ public class OrderService {
 
 	}
 
-	/* ✏️
-	메서드 설명:
-	storeId 로 가게 찾고
-	→ 가게에 속한 주문들 찾고
-	→ 주문 하나하나를 OrderResponseDto 로 변환해서
-	→ 리스트에 담고
-	→ 리스트에 반환하는 메서드
-	 */
 	// 2. storeId 로 주문 목록 조회 with 상태
 	@Transactional
 	public List<OrderResponseDto> getOrderList(Long storeId) {
@@ -94,37 +86,12 @@ public class OrderService {
 		// OrderResponseDto 타입으로 결과를 담을 빈 리스트를 만든다
 		List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
 
-		/* ✏️
-		1. 향상된 for 문으로 하는 방법
-		OrderList 안에 있는 각 Order 객체를 하나씩 꺼내서 Order 라는 이름으로 사용하겠다는 뜻
-		→ Order 객체 하나를 OrderResponseDto 라는 DTO 객체로 변환한다
-		→ 새로 변환해서 만든 OrderResponseDto 를 아까 만들어둔 빈 리스트 orderResponseDtoList 에 추가한다
-		→ 반복될 때마다 orderResponseDto 가 하나씩 orderResponseDtoList 에 쌓인다
-		 */
 		for (Order order : orderList) {
 			OrderResponseDto orderResponseDto = new OrderResponseDto(order);
 			orderResponseDtoList.add(orderResponseDto);
 		}
 		return orderResponseDtoList;
 	}
-
-	/* ✏️
-		2. 향상된 for 문 대신 stream 으로 하는 방법
-		public List<OrderResponseDto> getOrderList(Long storeId) {
-
-		Store store = entityFetcher.getStoreOrThrow(storeId);
-
-		List<Order> orderList = orderRepository.findAllByStore(store);
-
-		List<OrderResponseDto> orderResponseDtoList = orderList.stream()
-        // 하나씩 꺼내서 OrderResponseDto로 변환
-        .map(order -> new OrderResponseDto(order))
-        // 변환한 것들을 리스트로 모음
-        .collect(Collectors.toList());
-
-        return orderResponseDtoList;
-    }
-		 */
 
 	// 3. 주문 상태 변경 API
 	@Transactional
