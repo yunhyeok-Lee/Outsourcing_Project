@@ -4,6 +4,8 @@ import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;
 
 import lombok.Getter;
 
+import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;
+
 @Getter
 public class FindStoreResponseDto {
 	private final Long id;
