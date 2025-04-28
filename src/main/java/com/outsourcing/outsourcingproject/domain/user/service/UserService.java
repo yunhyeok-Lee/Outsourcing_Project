@@ -49,10 +49,12 @@ public class UserService {
 			.authority(requestDto.getAuthority())
 			.build();
 
-		userRepository.save(user);
+		User savedUser = userRepository.save(user);
 
-		String jwtToken = jwtUtil.createToken(user.getId(), user.getAuthority());
-		return new LoginResponseDto(jwtToken);
+		String accessToken = jwtUtil.createAccessToken(savedUser.getId(), savedUser.getAuthority());
+		String refreshToken = jwtUtil.createRefreshToken();
+
+		return new LoginResponseDto(accessToken, refreshToken);
 	}
 
 	/*
@@ -68,9 +70,10 @@ public class UserService {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
 		}
 
-		String jwtToken = jwtUtil.createToken(user.getId(), user.getAuthority());
+		String accessToken = jwtUtil.createAccessToken(user.getId(), user.getAuthority());
+		String refreshToken = jwtUtil.createRefreshToken();
 
-		return new LoginResponseDto(jwtToken);
+		return new LoginResponseDto(accessToken, refreshToken);
 	}
 
 	/*

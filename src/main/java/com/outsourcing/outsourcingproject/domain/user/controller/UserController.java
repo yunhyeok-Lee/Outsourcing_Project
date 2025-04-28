@@ -1,6 +1,10 @@
 package com.outsourcing.outsourcingproject.domain.user.controller;
 
+import java.time.Duration;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,44 +37,56 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping
-	public ResponseEntity<CommonResponse<LoginResponseDto>> signup(@RequestBody @Valid UserRequestDto requestDto,
+	public CommonResponse<Void> signup(@RequestBody @Valid UserRequestDto requestDto,
 		HttpServletResponse response) {
 		LoginResponseDto dto = userService.signup(requestDto);
-		response.setHeader("Authorization", dto.getToken());
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, dto), HttpStatus.OK);
+		setToken(response, dto);
+		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<CommonResponse<Void>> login(@RequestBody @Valid LoginRequestDto requestDto,
+	public CommonResponse<Void> login(@RequestBody @Valid LoginRequestDto requestDto,
 		HttpServletResponse response) {
 		LoginResponseDto dto = userService.login(requestDto);
-		response.setHeader("Authorization", dto.getToken());
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.LOGIN_SUCCESS), HttpStatus.OK);
+		setToken(response, dto);
+		return CommonResponse.of(SuccessCode.LOGIN_SUCCESS);
 	}
 
 	@PostMapping("/logout")
-	public ResponseEntity<CommonResponse<Void>> logout() {
+	public CommonResponse<Void> logout() {
 		userService.logout();
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.LOGOUT_SUCCESS), HttpStatus.OK);
+		return CommonResponse.of(SuccessCode.LOGOUT_SUCCESS);
 	}
 
 	@DeleteMapping
-	public ResponseEntity<CommonResponse<Void>> deactivate(@RequestBody @Valid DeactivationRequestDto requestDto,
+	public CommonResponse<Void> deactivate(@RequestBody @Valid DeactivationRequestDto requestDto,
 		@RequestHeader("Authorization") String token) {
 		userService.deactivate(requestDto, token);
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.USER_DEACTIVATE_SUCCESS), HttpStatus.OK);
+		return CommonResponse.of(SuccessCode.USER_DEACTIVATE_SUCCESS);
 	}
 
 	@PatchMapping
-	public ResponseEntity<CommonResponse<Void>> update(@RequestBody @Valid UpdateRequestDto requestDto,
+	public CommonResponse<Void> update(@RequestBody @Valid UpdateRequestDto requestDto,
 		@RequestHeader("Authorization") String token) {
 		userService.update(requestDto, token);
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.USER_UPDATE_SUCCESS), HttpStatus.OK);
+		return CommonResponse.of(SuccessCode.USER_UPDATE_SUCCESS);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<CommonResponse<UserResponseDto>> findById(@PathVariable Long id) {
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.FIND_USER_SUCCESS, userService.findById(id)),
-			HttpStatus.OK);
+	public CommonResponse<UserResponseDto> findById(@PathVariable Long id) {
+		return CommonResponse.of(SuccessCode.FIND_USER_SUCCESS, userService.findById(id));
+	}
+
+	private void setToken(HttpServletResponse response, LoginResponseDto dto) {
+		ResponseCookie cookie = ResponseCookie.from("refreshToken", dto.getRefreshToken())
+			.httpOnly(true) // JS 접근 방지
+			.secure(true)   // HTTPS 환경에서만 전송
+			.sameSite("Strict")  // 다른 사이트 요청에서는 이 쿠키를 전송하지 않음
+			.path("/")
+			.maxAge(Duration.ofMinutes(60 * 24 * 7))
+			.build();
+
+		response.setHeader("Authorization", dto.getAccessToken());
+		response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 	}
 }
