@@ -3,10 +3,6 @@ package com.outsourcing.outsourcingproject.domain.store.entity;
 import java.time.LocalTime;
 import java.util.List;
 
-import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
-import com.outsourcing.outsourcingproject.domain.menu.entity.Menu;
-import com.outsourcing.outsourcingproject.domain.user.entity.User;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,9 +15,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import com.outsourcing.outsourcingproject.common.entity.BaseEntity;
+import com.outsourcing.outsourcingproject.domain.menu.entity.Menu;
+import com.outsourcing.outsourcingproject.domain.user.entity.User;
 
 @Entity
 @Getter
@@ -53,8 +54,8 @@ public class Store extends BaseEntity {
 	@Column(nullable = false)
 	private String address;
 
-	// @Column(nullable = false)
-	// private Integer reviewCounts;
+	@Column(nullable = false)
+	private Integer reviewCounts = 0;
 
 	// isDeleted의 디폴트 값 false
 	@Column(nullable = false)
@@ -73,13 +74,14 @@ public class Store extends BaseEntity {
 	// id를 제외한 생성자
 	@Builder
 	public Store(String name, LocalTime openTime, LocalTime closeTime, int minOrderAmount,
-		String address,
+		String address, Integer reviewCounts,
 		Boolean isDeleted, User user) {
 		this.name = name;
 		this.openTime = openTime;
 		this.closeTime = closeTime;
 		this.minOrderAmount = minOrderAmount;
 		this.address = address;
+		this.reviewCounts = reviewCounts;
 		this.isDeleted = isDeleted;
 		this.user = user;
 	}
@@ -90,6 +92,11 @@ public class Store extends BaseEntity {
 		this.minOrderAmount = minOrderAmount;
 
 		return this;
+	}
+
+	public void deleteStore() {
+		this.isDeleted = true;
+		this.status = StoreStatus.CLOSED;
 	}
 
 }

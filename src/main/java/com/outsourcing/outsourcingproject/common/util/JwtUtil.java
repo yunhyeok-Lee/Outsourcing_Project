@@ -74,6 +74,9 @@ public class JwtUtil {
 		String substrToken = substringToken(token);
 		return Long.valueOf(extractClaims(substrToken).getSubject());
 	}
+
+	//
+
 	// extractClaims(substrToken).getSubject()
 
 	// 권한 추출

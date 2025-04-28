@@ -16,13 +16,26 @@ public enum SuccessCode implements BaseCode {
 	// Store
 	CREATE_STORE(HttpStatus.OK, "가게가 생성되었습니다."),
 	GET_STORE_LIST(HttpStatus.OK, "가게가 조회되었습니다."),
+	UPDATE_STORE(HttpStatus.OK, "가게 정보가 수정되었습니다."),
 	DELETE_STORE(HttpStatus.OK, "가게가 폐업 처리되었습니다."),
 
 	// Order
 	SENDING_ORDER_SUCCESS(HttpStatus.CREATED, "주문 요청이 완료되었습니다. 주문 수락 전까지 대기 상태입니다."),
 	ORDER_CHANGE_STATUS_SUCCESS(HttpStatus.OK, "주문 상태 변경이 완료되었습니다."),
 	GET_ORDER_LIST_SUCCESS(HttpStatus.FOUND, "주문 목록을 조회합니다."),
-	CANCEL_ORDER_SUCCESS(HttpStatus.OK, "주문이 취소되었습니다.");
+	CANCEL_ORDER_SUCCESS(HttpStatus.OK, "주문이 취소되었습니다."),
+
+	// Review
+	CREATE_REVIEW(HttpStatus.OK, "리뷰가 생성되었습니다."),
+	CREATE_OWNER_REVIEW(HttpStatus.OK, "사장님 리뷰가 생성되었습니다."),
+	REVIEW_UPDATE_SUCCESS(HttpStatus.OK, "리뷰가 수정되었습니다."),
+	REVIEW_DELETE_SUCCESS(HttpStatus.OK, "리뷰가 삭제되었습니다."),
+	GET_STORE_REVIEW_LIST(HttpStatus.OK, "가게 리뷰가 조회되었습니다."),
+
+	// Menu
+	CREATE_MENU(HttpStatus.OK, "메뉴가 생성되었습니다."),
+	UPDATE_MENU(HttpStatus.OK, "메뉴가 수정되었습니다."),
+	DELETE_MENU(HttpStatus.OK, "메뉴가 삭제되었습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;

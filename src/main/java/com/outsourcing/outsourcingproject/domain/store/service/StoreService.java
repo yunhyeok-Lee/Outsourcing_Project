@@ -4,9 +4,11 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
@@ -24,9 +26,6 @@ import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;
 import com.outsourcing.outsourcingproject.domain.store.entity.TimeUtil;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +75,7 @@ public class StoreService {
 			.minOrderAmount(storeRequest.getMinOrderAmount())
 			.address(storeRequest.getAddress())
 			.isDeleted(false)
+			.reviewCounts(0)
 			.user(user)
 			.build();
 
@@ -91,7 +91,8 @@ public class StoreService {
 			savedStore.getOpenTime(),
 			savedStore.getCloseTime(),
 			savedStore.getMinOrderAmount(),
-			savedStore.getAddress()
+			savedStore.getAddress(),
+			savedStore.getReviewCounts()
 		);
 	}
 
@@ -111,7 +112,8 @@ public class StoreService {
 				return new FindStoreResponseDto(
 					store.getId(),
 					status,
-					store.getName()
+					store.getName(),
+					store.getReviewCounts()
 				);
 			})
 			.collect(Collectors.toList());
@@ -142,6 +144,7 @@ public class StoreService {
 			.closeTime(store.getCloseTime())
 			.minOrderAmount(store.getMinOrderAmount())
 			.address(store.getAddress())
+			.reviewCounts(store.getReviewCounts())
 			.build();
 
 		// menu 정보 list로 조회
@@ -181,13 +184,18 @@ public class StoreService {
 			updatedStore.getOpenTime(),
 			updatedStore.getCloseTime(),
 			updatedStore.getMinOrderAmount(),
-			updatedStore.getAddress()
+			updatedStore.getAddress(),
+			updatedStore.getReviewCounts()
 		);
 
 	}
 
 	public StoreResponseDto deleteStore(Long id) {
 		Store store = entityFetcher.getStoreOrThrow(id);
+
+		if (store.getIsDeleted()) {
+			throw new CustomException(ErrorCode.STORE_ALREADY_DELETED);
+		}
 
 		Store newStore = store.builder()
 			.isDeleted(true)
@@ -202,7 +210,8 @@ public class StoreService {
 			deleteStore.getOpenTime(),
 			deleteStore.getCloseTime(),
 			deleteStore.getMinOrderAmount(),
-			deleteStore.getAddress()
+			deleteStore.getAddress(),
+			deleteStore.getReviewCounts()
 		);
 
 	}

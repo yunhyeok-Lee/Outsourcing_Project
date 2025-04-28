@@ -8,9 +8,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class OrderRequestDto {
 
-	@NotNull(message = "주문할 유저 id를 입력해주세요.")
-	private final Long userId;
-
 	@NotNull(message = "가게 id를 입력해주세요.")
 	private final Long storeId;
 
