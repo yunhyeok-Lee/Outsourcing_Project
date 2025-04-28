@@ -87,57 +87,6 @@ public class ReviewService {
 		// 이거 review가 아니라 order.getStore로 받아도 될 것 같기는 함. N+1 고려할 필요 X
 	}
 
-
-	/*
-		TODO :
-		refactor :
-		- 리뷰 조회 기능 수정하기 (사장닙 답글 딸려오게 수정) << 질문
-		&&
-		입력받는 Path값이 가게 ID,
-		parent라는 자기참조 필드 존재
-		기존에는 custom 쿼리 작성으로
-		사용자 리뷰 [parent = null인 FindBy가게ID] where parent = null
-		사장님 리뷰 [parent != null인 FindBy가게ID] where parent != null
-		두 가지 리뷰 리스트를 각각의 DTO로 각각 받아와서 통합 DTO에 조립하는 방식으로 구현하려 했음
-		리스트는 reviewId = 1부터 쌓이고 parent id=1 인 사장님 리뷰가 있다면 해당 리뷰와 리스트로 묶이게 구현
-		ex) {[(reviewId:1, parent: null), (reviewId : 2, parent :1)], [(reviewId:3, parent : null), (reviewId:5, parent : 3)],[(reviewId:4, parent:null)]...}
-		구현하려고 보니 로직이 너무 복잡함, 이걸 또 페이징 처리해야 하는데 어떻게 구현할 지 벽에 가로막힌 느낌.
-		결론 : 구현 못하겠음 [ 거의 심화 알고리즘 문제 같음 ]
-		&&
-
-
-		1. FindBy 가게ID로 리뷰 리스트를 받아옴.
-		2. 해당 데이터를 가공하는 게 낫다.
-		3. 같은 orderId별로 묶어서. 정렬 순은 최신 작성일
-		4. FindBy가게IDOrderbyOrderIdANDCREATED_AT [ 가게 ID를 ORDERID로 검색 ]
-		일단 ORDERID로 검색하는게 사용자 리뷰와 사장님 답글의 공통분모이기에 모을 수 있고, ORDER 자체가 시간 순으로 작성되기에 최신 순 정렬까지 가능하다.
-		5. 각 ORDERID별 주문을 한 배열에 같이 받아오고 그 배열에 대한 리스트를 받아오게 설정한다.
-		6. 그 리스트에 대한 페이지를 받으면 구현 완료다.
-
-		- N+1 문제 EntityGraph 방식으로 대응 << EntityFetcher에 작성하면 되는지 혹은 Repository에 작성하면 되는지 튜터님께 질문
-		1. 리뷰 수정, 삭제 / 사장님 리뷰에서 기존 리뷰 작성자 nickname 가져오기 위해서도 사용
-		@EntityGraph[ attributePaths = user ]
-		findByIdForUserValidation
-
-		2. storeReviews 증감을 위해 store 테이블만 조인
-		@EntityGraph[ attributePaths = store ]
-		findByIdForStoreUpdate
-
-		3. 가게 사장님 객체 가져오기 위해 store, store.user 테이블조인
-		@EntityGraph[ attributePaths = store, store.user ]
-		findByIdForOwnerValidation
-
-		- Review CREATE UserId 경로 검증(Path , Token) 관련 에러 해결 << 질문
-
-		↑ 오전 전에 끝내기
-		------------------------------------------------------------
-
-		TEST CODE 작성
-		리뷰 수 동시성 문제 해결 (Lock 기능을 통해) < 고민 중
-
-
-	*/
-
 	/* 가게 리뷰 조회
 	1. 가게 유효성 검사 - 존재하는지
 	2. 가게 리뷰 유효성 검사 - 존재하는지  <<- review not found 예외 처리가 맞을지 그냥 빈 리스트 조회가 맞을지 고민 <- 빈 리스트 조회 하기로 함

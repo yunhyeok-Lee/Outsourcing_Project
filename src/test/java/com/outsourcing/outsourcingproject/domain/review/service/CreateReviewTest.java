@@ -26,7 +26,7 @@ import com.outsourcing.outsourcingproject.domain.user.entity.User;
 import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
-class ReviewCreateServiceTest {
+class CreateReviewTest {
 
 	@Mock
 	private UserRepository userRepository;
