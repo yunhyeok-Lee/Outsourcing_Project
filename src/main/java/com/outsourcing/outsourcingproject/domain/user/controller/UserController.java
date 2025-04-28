@@ -37,45 +37,44 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping
-	public ResponseEntity<CommonResponse<Void>> signup(@RequestBody @Valid UserRequestDto requestDto,
+	public CommonResponse<Void> signup(@RequestBody @Valid UserRequestDto requestDto,
 		HttpServletResponse response) {
 		LoginResponseDto dto = userService.signup(requestDto);
 		setToken(response, dto);
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.SIGNUP_SUCCESS), HttpStatus.OK);
+		return CommonResponse.of(SuccessCode.SIGNUP_SUCCESS);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<CommonResponse<Void>> login(@RequestBody @Valid LoginRequestDto requestDto,
+	public CommonResponse<Void> login(@RequestBody @Valid LoginRequestDto requestDto,
 		HttpServletResponse response) {
 		LoginResponseDto dto = userService.login(requestDto);
 		setToken(response, dto);
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.LOGIN_SUCCESS), HttpStatus.OK);
+		return CommonResponse.of(SuccessCode.LOGIN_SUCCESS);
 	}
 
 	@PostMapping("/logout")
-	public ResponseEntity<CommonResponse<Void>> logout() {
+	public CommonResponse<Void> logout() {
 		userService.logout();
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.LOGOUT_SUCCESS), HttpStatus.OK);
+		return CommonResponse.of(SuccessCode.LOGOUT_SUCCESS);
 	}
 
 	@DeleteMapping
-	public ResponseEntity<CommonResponse<Void>> deactivate(@RequestBody @Valid DeactivationRequestDto requestDto,
+	public CommonResponse<Void> deactivate(@RequestBody @Valid DeactivationRequestDto requestDto,
 		@RequestHeader("Authorization") String token) {
 		userService.deactivate(requestDto, token);
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.USER_DEACTIVATE_SUCCESS), HttpStatus.OK);
+		return CommonResponse.of(SuccessCode.USER_DEACTIVATE_SUCCESS);
 	}
 
 	@PatchMapping
-	public ResponseEntity<CommonResponse<Void>> update(@RequestBody @Valid UpdateRequestDto requestDto,
+	public CommonResponse<Void> update(@RequestBody @Valid UpdateRequestDto requestDto,
 		@RequestHeader("Authorization") String token) {
 		userService.update(requestDto, token);
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.USER_UPDATE_SUCCESS), HttpStatus.OK);
+		return CommonResponse.of(SuccessCode.USER_UPDATE_SUCCESS);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<CommonResponse<UserResponseDto>> findById(@PathVariable Long id) {
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.FIND_USER_SUCCESS, userService.findById(id)),
-			HttpStatus.OK);
+	public CommonResponse<UserResponseDto> findById(@PathVariable Long id) {
+		return CommonResponse.of(SuccessCode.FIND_USER_SUCCESS, userService.findById(id));
 	}
 
 	private void setToken(HttpServletResponse response, LoginResponseDto dto) {
