@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "review")
 @NoArgsConstructor
 @SQLRestriction("is_deleted = false")
-@SQLDelete(sql = "UPDATE REVIEW SET REVIEW.is_deleted = true where REVIEW.review_id = ?")
+@SQLDelete(sql = "UPDATE REVIEW SET is_deleted = true where id = ?")
 public class Review extends BaseEntity {
 
 	@Id
@@ -49,15 +49,15 @@ public class Review extends BaseEntity {
 	@JoinColumn(name = "parent_id")
 	private Review parent;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id")
 	private Order order;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_id")
 	private Store store;
 

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.outsourcing.outsourcingproject.common.enums.SuccessCode;
@@ -57,8 +58,8 @@ public class StoreController {
 	 * name을 통해 사용자 조회
 	 * 가게명으로 여러건의 가게 조회
 	 */
-	@GetMapping("/{name}")
-	public ResponseEntity<StoreListResponseDto> findByName(@PathVariable String name) {
+	@GetMapping
+	public ResponseEntity<StoreListResponseDto> findByName(@RequestParam String name) {
 		StoreListResponseDto storeListResponseDto = storeService.findByName(name);
 		return ResponseEntity.ok(storeListResponseDto);
 	}

@@ -53,8 +53,8 @@ public class Store extends BaseEntity {
 	@Column(nullable = false)
 	private String address;
 
-	// @Column(nullable = false)
-	// private Integer reviewCounts;
+	@Column(nullable = false)
+	private Integer reviewCounts = 0;
 
 	// isDeleted의 디폴트 값 false
 	@Column(nullable = false)
@@ -91,5 +91,4 @@ public class Store extends BaseEntity {
 
 		return this;
 	}
-
 }

@@ -1,16 +1,36 @@
 package com.outsourcing.outsourcingproject.domain.review.repository;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.outsourcing.outsourcingproject.domain.review.entity.Review;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-	boolean existsByOrderId(Long orderId);
+	// boolean existsByOrderId(Long orderId);
 
 	// Page<Review> findByStoreId(Long storeId, Pageable pageable);
 
 	boolean existsByParent(Review review);
+
+	@Query("SELECT r FROM Review r " +
+		"WHERE r.order.id IN :orderIds " +
+		"AND r.isDeleted = false " +
+		"AND (:minRating IS NULL OR r.rating >= :minRating) " +
+		"AND (:maxRating IS NULL OR r.rating <= :maxRating)")
+	Page<Review> findReviewsByOrderIdsWithRatingFilter(
+		@Param("orderIds") List<Long> orderIds,
+		@Param("minRating") Integer minRating,
+		@Param("maxRating") Integer maxRating,
+		Pageable pageable
+	);
+
+	boolean existsByOrder_Id(Long orderId);
 
 	// findbyid 메서드 사용 위치 별로 구분
 	// (N+1 문제 해결 위해 EntityGraph 사용할건데
@@ -23,10 +43,4 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 	// 2. findByIdforStore <- store join (reviewcounts 증감)
 	// 3. findByIdforOwnwer <- store.user join (가게 사장 ID 뽑아오기, 이중 join)
 
-	//
-	// Page<Review> findByStoreId(Long storeId, Pageable pageable);
-	//
-	// List<Review> findByStoreIdAndParentIsNotNull(Long storeId);
-
-	// List<Review> findByStoreIdAndParentIsNOTNull(Long storeId);
 }
