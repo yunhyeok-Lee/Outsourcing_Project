@@ -2,8 +2,6 @@ package com.outsourcing.outsourcingproject.domain.order.controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.outsourcing.outsourcingproject.common.dto.CommonResponse;
@@ -21,7 +18,6 @@ import com.outsourcing.outsourcingproject.domain.order.dto.OrderResponseDto;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderStatusRequestDto;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderStatusResponseDto;
 import com.outsourcing.outsourcingproject.domain.order.entity.DeliveryStatus;
-import com.outsourcing.outsourcingproject.domain.order.entity.Order;
 import com.outsourcing.outsourcingproject.domain.order.service.OrderService;
 
 import jakarta.validation.Valid;
@@ -29,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/orders")
 public class OrderController {
 
 	private final OrderService orderService;
@@ -42,23 +37,21 @@ public class OrderController {
 	 */
 
 	// 1. 주문 요청 생성 API (사용자만 권한 있음)
-	@PostMapping
-	public ResponseEntity<CommonResponse<OrderResponseDto>> createOrder(@RequestBody @Valid OrderRequestDto requestDto,
+	@PostMapping("/orders")
+	public CommonResponse<OrderResponseDto> createOrder(@RequestBody @Valid OrderRequestDto requestDto,
 		@RequestHeader("Authorization") String token) {
-		return new ResponseEntity<>(
-			CommonResponse.of(SuccessCode.SENDING_ORDER_SUCCESS, orderService.createOrder(requestDto, token)),
-			HttpStatus.OK);
+		return CommonResponse.of(SuccessCode.SENDING_ORDER_SUCCESS,
+			orderService.createOrder(requestDto, token));
 	}
 
 	// 2. storeId 로 주문 목록 조회 with 상태
-	@GetMapping("/{storeId}")
-	public CommonResponse<List<Order>> findOrderByStoreId(Long storeId) {
-		List<Order> orderList = orderService.getOrderList(storeId);
-		return CommonResponse.of(SuccessCode.GET_ORDER_LIST_SUCCESS, orderList);
+	@GetMapping("/{storeId}/orders")
+	public CommonResponse<List<OrderResponseDto>> findOrderByStoreId(@PathVariable Long storeId) {
+		return CommonResponse.of(SuccessCode.GET_ORDER_LIST_SUCCESS, orderService.getOrderList(storeId));
 	}
 
 	// 3. 주문 상태 변경 API (사장님만 권한 있음)
-	@PatchMapping("/{id}")
+	@PatchMapping("/orders/{id}")
 	public CommonResponse<OrderStatusResponseDto> handleRequest(
 		@PathVariable Long id,
 		@RequestBody @Valid OrderStatusRequestDto orderStatusRequestDto,
@@ -69,7 +62,7 @@ public class OrderController {
 	}
 
 	// 4. 주문 취소
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/orders/{id}")
 	public CommonResponse cancelOrder(@PathVariable Long id) {
 		orderService.deleteOrder(id);
 		return CommonResponse.of(SuccessCode.CANCEL_ORDER_SUCCESS);
