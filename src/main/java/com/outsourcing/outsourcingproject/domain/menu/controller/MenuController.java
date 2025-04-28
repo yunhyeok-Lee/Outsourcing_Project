@@ -27,7 +27,7 @@ public class MenuController {
 	private final MenuService menuService;
 
 	// 메뉴 생성
-	@PostMapping("/{storesId}/menu")
+	@PostMapping("/{storeId}/menus")
 	public ResponseEntity<CommonResponse<Void>> createMenu(
 		@PathVariable Long storesId,
 		@Valid
@@ -44,7 +44,7 @@ public class MenuController {
 	}
 
 	// 메뉴 수정
-	@PatchMapping("/menu/{id}")
+	@PatchMapping("/menus/{id}")
 	public ResponseEntity<CommonResponse<Void>> updateMenu(
 		@PathVariable Long id,
 		@Valid
@@ -61,7 +61,7 @@ public class MenuController {
 	}
 
 	// 메뉴 삭제
-	@DeleteMapping("/menu/{id}")
+	@DeleteMapping("/menus/{id}")
 	public ResponseEntity<CommonResponse<Void>> deleteMenu(
 		@PathVariable Long id,
 		@RequestHeader("Authorization") String token) {
