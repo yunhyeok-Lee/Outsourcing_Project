@@ -9,6 +9,7 @@ import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.domain.menu.dto.MenuRequestDto;
 import com.outsourcing.outsourcingproject.domain.menu.dto.MenuResponseDto;
+import com.outsourcing.outsourcingproject.domain.menu.dto.MenuUpdateRequestDto;
 import com.outsourcing.outsourcingproject.domain.menu.entity.Menu;
 import com.outsourcing.outsourcingproject.domain.menu.repository.MenuRepository;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
@@ -54,7 +55,7 @@ public class MenuService {
 			.name(menuRequestDto.getName())
 			.price(menuRequestDto.getPrice())
 			.content(menuRequestDto.getContent())
-			.menuType(menuRequestDto.getContent())
+			// .menuType(menuRequestDto.getContent())
 			.isDeleted(false)
 			.build();
 
@@ -76,7 +77,8 @@ public class MenuService {
 	 * 수정 할 메뉴 존재 여부 확인
 	 */
 	@Transactional
-	public MenuResponseDto updateMenu(Long userId, String authority, Long id, MenuRequestDto menuRequestDto) {
+	public MenuResponseDto updateMenu(Long userId, String authority, Long id,
+		MenuUpdateRequestDto menuUpdateRequestDto) {
 
 		if (!"OWNER".equals(authority)) {
 			throw new CustomException(ErrorCode.NO_AUTHORITY);
@@ -84,7 +86,7 @@ public class MenuService {
 		Menu menu = menuRepository.findById(id)
 			.orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
-		menu.updateMenu(menuRequestDto);
+		menu.updateMenu(menuUpdateRequestDto);
 
 		return new MenuResponseDto(menu.getId(), menu.getName(), menu.getContent(), menu.getPrice(),
 			menu.getCreatedAt(), menu.getUpdatedAt());

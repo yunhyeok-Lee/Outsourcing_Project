@@ -17,6 +17,7 @@ import com.outsourcing.outsourcingproject.common.dto.CommonResponse;
 import com.outsourcing.outsourcingproject.common.enums.SuccessCode;
 import com.outsourcing.outsourcingproject.common.util.JwtUtil;
 import com.outsourcing.outsourcingproject.domain.menu.dto.MenuRequestDto;
+import com.outsourcing.outsourcingproject.domain.menu.dto.MenuUpdateRequestDto;
 import com.outsourcing.outsourcingproject.domain.menu.service.MenuService;
 
 @RestController
@@ -29,7 +30,7 @@ public class MenuController {
 	// 메뉴 생성
 	@PostMapping("/{storeId}/menus")
 	public ResponseEntity<CommonResponse<Void>> createMenu(
-		@PathVariable Long storesId,
+		@PathVariable Long storeId,
 		@Valid
 		@RequestBody MenuRequestDto requestDto,
 		@RequestHeader("Authorization") String token) {
@@ -37,7 +38,7 @@ public class MenuController {
 		Long userId = jwtUtil.getUserIdFromToken(token);
 		String authority = jwtUtil.getAuthorityFromToken(token);
 
-		menuService.createMenu(userId, storesId, authority, requestDto);
+		menuService.createMenu(userId, storeId, authority, requestDto);
 
 		return new ResponseEntity<>(CommonResponse.of(SuccessCode.CREATE_MENU), HttpStatus.OK);
 
@@ -48,13 +49,13 @@ public class MenuController {
 	public ResponseEntity<CommonResponse<Void>> updateMenu(
 		@PathVariable Long id,
 		@Valid
-		@RequestBody MenuRequestDto menuRequestDto,
+		@RequestBody MenuUpdateRequestDto menuUpdateRequestDto,
 		@RequestHeader("Authorization") String token) {
 
 		Long userId = jwtUtil.getUserIdFromToken(token);
 		String authority = jwtUtil.getAuthorityFromToken(token);
 
-		menuService.updateMenu(userId, authority, id, menuRequestDto);
+		menuService.updateMenu(userId, authority, id, menuUpdateRequestDto);
 
 		return new ResponseEntity<>(CommonResponse.of(SuccessCode.UPDATE_MENU), HttpStatus.OK);
 
