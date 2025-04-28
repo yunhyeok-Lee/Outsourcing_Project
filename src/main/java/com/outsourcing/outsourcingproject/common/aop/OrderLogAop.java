@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderLogAop {
 
 	// Service 클래스에 handleRequest 메서드(매개변수 상관 없이)를 대상으로 한다
-	@Pointcut("execution(* com.outsourcing.outsourcingproject.domain.order..Service.handleRequest(..))")
+	@Pointcut("execution(* com.outsourcing.outsourcingproject.domain.order.service.OrderService.handleRequest(..))")
 	private void orderHandleRequest() {
 	}
 

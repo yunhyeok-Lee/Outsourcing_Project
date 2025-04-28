@@ -1,6 +1,7 @@
 package com.outsourcing.outsourcingproject.domain.order.service;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -28,7 +29,6 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 	private final EntityFetcher entityFetcher;
 	private final JwtUtil jwtUtil;
-	private Store store;
 
 	/*
 	1. 주문 요청 생성
@@ -46,7 +46,7 @@ public class OrderService {
 			throw new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT);
 		}
 
-		store = entityFetcher.getStoreOrThrow(orderRequestDto.getStoreId());
+		Store store = entityFetcher.getStoreOrThrow(orderRequestDto.getStoreId());
 		LocalTime open = store.getOpenTime();
 		LocalTime close = store.getCloseTime();
 		LocalTime now = LocalTime.now();
@@ -75,9 +75,32 @@ public class OrderService {
 
 	// 2. storeId 로 주문 목록 조회 with 상태
 	@Transactional
-	public List<Order> getOrderList(Long storeId) {
-		entityFetcher.getStoreOrThrow(storeId);
-		return orderRepository.findAll();
+	public List<OrderResponseDto> getOrderList(Long storeId) {
+		Store store = entityFetcher.getStoreOrThrow(storeId);
+		// List<Order> orderList = orderService.getOrderList(storeId);
+		List<Order> orderList = orderRepository.findAllByStore(store);
+
+		/* ✏️
+		1. stream 으로 하는 방법
+		List<OrderResponseDto> collect = orderList.stream()
+			.map(order -> new OrderResponseDto(order))
+			.collect(Collectors.toList());
+		 */
+
+		List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
+
+		/* ✏️
+		2. 향상된 for 문으로 하는 방법
+		for 문이 돌 때마다 orderList 가 order 로 들어가고
+		→ order 가 orderResponseDto 형태로 바뀌고
+		→ orderResponseDto 가 orderResponseDtoList 로 들어간다
+		 */
+		for (Order order : orderList) {
+			// order 로 OrderResponseDto 만들기
+			OrderResponseDto orderResponseDto = new OrderResponseDto(order);
+			orderResponseDtoList.add(orderResponseDto);
+		}
+		return orderResponseDtoList;
 	}
 
 	// 3. 주문 상태 변경 API
@@ -87,7 +110,7 @@ public class OrderService {
 
 		// 사용자가 보낸 deliveryStatus 로 Order 엔티티 수정
 		order.updateDeliveryStatus(deliveryStatus);
-		return new OrderStatusResponseDto(orderId, store.getId(), deliveryStatus, LocalTime.now());
+		return new OrderStatusResponseDto(orderId, order.getStore().getId(), deliveryStatus, LocalTime.now());
 	}
 
 	// 4. 주문 취소
