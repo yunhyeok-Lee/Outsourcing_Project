@@ -192,6 +192,10 @@ public class StoreService {
 	public StoreResponseDto deleteStore(Long id) {
 		Store store = entityFetcher.getStoreOrThrow(id);
 
+		if (store.getIsDeleted()) {
+			throw new CustomException(ErrorCode.STORE_ALREADY_DELETED);
+		}
+
 		Store newStore = store.builder()
 			.isDeleted(true)
 			.build();
