@@ -11,10 +11,12 @@ public class FindStoreResponseDto {
 	private final Long id;
 	private final StoreStatus status;
 	private final String name;
+	private final Integer reviewCounts;
 
-	public FindStoreResponseDto(Long id, StoreStatus status, String name) {
+	public FindStoreResponseDto(Long id, StoreStatus status, String name, Integer reviewCounts) {
 		this.id = id;
 		this.status = status;
 		this.name = name;
+		this.reviewCounts = reviewCounts;
 	}
 }

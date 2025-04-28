@@ -16,6 +16,7 @@ public enum SuccessCode implements BaseCode {
 	// Store
 	CREATE_STORE(HttpStatus.OK, "가게가 생성되었습니다."),
 	GET_STORE_LIST(HttpStatus.OK, "가게가 조회되었습니다."),
+	UPDATE_STORE(HttpStatus.OK, "가게 정보가 수정되었습니다."),
 	DELETE_STORE(HttpStatus.OK, "가게가 폐업 처리되었습니다."),
 
 	// Order

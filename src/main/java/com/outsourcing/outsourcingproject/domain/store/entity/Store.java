@@ -74,13 +74,14 @@ public class Store extends BaseEntity {
 	// id를 제외한 생성자
 	@Builder
 	public Store(String name, LocalTime openTime, LocalTime closeTime, int minOrderAmount,
-		String address,
+		String address, Integer reviewCounts,
 		Boolean isDeleted, User user) {
 		this.name = name;
 		this.openTime = openTime;
 		this.closeTime = closeTime;
 		this.minOrderAmount = minOrderAmount;
 		this.address = address;
+		this.reviewCounts = reviewCounts;
 		this.isDeleted = isDeleted;
 		this.user = user;
 	}
@@ -92,4 +93,10 @@ public class Store extends BaseEntity {
 
 		return this;
 	}
+
+	public void deleteStore() {
+		this.isDeleted = true;
+		this.status = StoreStatus.CLOSED;
+	}
+
 }
