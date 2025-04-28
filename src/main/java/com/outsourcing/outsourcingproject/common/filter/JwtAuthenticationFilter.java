@@ -74,11 +74,7 @@ public class JwtAuthenticationFilter implements Filter {
 			// access token 만료 시, refresh token 검증
 		} catch (ExpiredJwtException e) {
 			// 요청 헤더에서 refreshToken 추출
-			String refreshToken = Arrays.stream(httpRequest.getCookies())
-				.filter(cookie -> "refreshToken".equals(cookie.getName()))
-				.findFirst()
-				.map(Cookie::getValue)
-				.orElseThrow(() -> new CustomException(ErrorCode.INVALID_SIGNATURE));
+			String refreshToken = getRefreshToken(httpRequest);
 
 			// refresh token 만료 시 예외처리
 			if (jwtUtil.getRefreshExpiration(refreshToken).before(new Date())) {
@@ -99,5 +95,13 @@ public class JwtAuthenticationFilter implements Filter {
 		httpResponse.setContentType("application/json");
 
 		chain.doFilter(request, response);
+	}
+
+	private String getRefreshToken(HttpServletRequest httpRequest) {
+		return Arrays.stream(httpRequest.getCookies())
+			.filter(cookie -> "refreshToken".equals(cookie.getName()))
+			.findFirst()
+			.map(Cookie::getValue)
+			.orElseThrow(() -> new CustomException(ErrorCode.INVALID_SIGNATURE));
 	}
 }
