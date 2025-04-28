@@ -26,9 +26,15 @@ public class MenuService {
 	 */
 	@Transactional
 	public MenuResponseDto createMenu(Long userId, Long storeId, String authority, MenuRequestDto menuRequestDto) {
+
 		// 권한 체크 (OWNER 가 아니면 생성 못하게 막음)
 		if (!"OWNER".equals(authority)) {
 			throw new CustomException(ErrorCode.NO_AUTHORITY);
+		}
+
+		// 같은 이름의 메뉴를 등록 할 때
+		if (menuRepository.existsByStoreIdAndName(storeId, menuRequestDto.getName())) {
+			throw new CustomException(ErrorCode.DUPLICATE_MENU_NAME);
 		}
 
 		/*
