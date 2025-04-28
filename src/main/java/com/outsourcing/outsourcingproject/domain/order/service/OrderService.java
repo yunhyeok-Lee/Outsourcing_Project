@@ -4,11 +4,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.transaction.Transactional;
-
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
+
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
@@ -22,6 +19,9 @@ import com.outsourcing.outsourcingproject.domain.order.entity.OrderEntities;
 import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -41,8 +41,10 @@ public class OrderService {
 	@Transactional
 	public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, String token) {
 
+		Long userId = jwtUtil.getUserIdFromToken(token);
+
 		// 주문 요청 중복 확인
-		if (orderRepository.findOrderByUserId(jwtUtil.getUserIdFromToken(token)).isPresent()) {
+		if (orderRepository.findOrderByUserId(userId).isPresent()) {
 			throw new CustomException(ErrorCode.ORDER_REQUEST_ALREADY_SENT);
 		}
 
@@ -57,7 +59,7 @@ public class OrderService {
 		}
 
 		// 엔티티 조회
-		OrderEntities entities = entityFetcher.fetchOrderEntities(orderRequestDto);
+		OrderEntities entities = entityFetcher.fetchOrderEntities(userId, orderRequestDto);
 
 		// 새로운 주문 생성
 		Order order = Order.builder()

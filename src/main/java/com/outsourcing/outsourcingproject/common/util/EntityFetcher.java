@@ -63,8 +63,8 @@ public class EntityFetcher {
 	}
 
 	// 엔티티 한번에 조회할 메서드
-	public OrderEntities fetchOrderEntities(OrderRequestDto dto) {
-		User user = getUserOrThrow(dto.getUserId());
+	public OrderEntities fetchOrderEntities(Long id, OrderRequestDto dto) {
+		User user = getUserOrThrow(id);
 		Store store = getStoreOrThrow(dto.getStoreId());
 		Menu menu = getMenuOrThrow(dto.getMenuId());
 
