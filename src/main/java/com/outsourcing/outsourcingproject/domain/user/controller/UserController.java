@@ -22,6 +22,7 @@ import com.outsourcing.outsourcingproject.domain.user.dto.UserRequestDto;
 import com.outsourcing.outsourcingproject.domain.user.dto.UserResponseDto;
 import com.outsourcing.outsourcingproject.domain.user.service.UserService;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,14 +37,15 @@ public class UserController {
 	public ResponseEntity<CommonResponse<Void>> signup(@RequestBody @Valid UserRequestDto requestDto,
 		HttpServletResponse response) {
 		LoginResponseDto dto = userService.signup(requestDto);
-		response.setHeader("Authorization", dto.getToken());
+		setToken(response, dto);
 		return new ResponseEntity<>(CommonResponse.of(SuccessCode.SIGNUP_SUCCESS), HttpStatus.OK);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<CommonResponse<Void>> login(@RequestBody @Valid LoginRequestDto requestDto, HttpServletResponse response) {
+	public ResponseEntity<CommonResponse<Void>> login(@RequestBody @Valid LoginRequestDto requestDto,
+		HttpServletResponse response) {
 		LoginResponseDto dto = userService.login(requestDto);
-		response.setHeader("Authorization", dto.getToken());
+		setToken(response, dto);
 		return new ResponseEntity<>(CommonResponse.of(SuccessCode.LOGIN_SUCCESS), HttpStatus.OK);
 	}
 
@@ -69,6 +71,19 @@ public class UserController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<CommonResponse<UserResponseDto>> findById(@PathVariable Long id) {
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.FIND_USER_SUCCESS, userService.findById(id)), HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.of(SuccessCode.FIND_USER_SUCCESS, userService.findById(id)),
+			HttpStatus.OK);
+	}
+
+	private void setToken(HttpServletResponse response, LoginResponseDto dto) {
+		Cookie cookie = new Cookie("refreshToken", dto.getRefreshToken());
+
+		cookie.setHttpOnly(true);
+		cookie.setSecure(false);
+		cookie.setPath("/");
+		cookie.setMaxAge(7 * 24 * 60 * 60);
+
+		response.setHeader("Authorization", dto.getAccessToken());
+		response.addCookie(cookie);
 	}
 }

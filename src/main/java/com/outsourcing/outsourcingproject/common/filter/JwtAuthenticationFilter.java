@@ -1,17 +1,23 @@
 package com.outsourcing.outsourcingproject.common.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
 
 import org.springframework.util.PatternMatchUtils;
 
+import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.common.util.JwtUtil;
+import com.outsourcing.outsourcingproject.domain.user.entity.Authority;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -47,36 +53,51 @@ public class JwtAuthenticationFilter implements Filter {
 			return;
 		}
 
-		// 요청 Header에서 "Authorization"에 저장된 토큰을 꺼낸다.
-		String authHeader = httpRequest.getHeader("Authorization");
+		// 요청 헤더에서 access token 추출
+		String accessToken = httpRequest.getHeader("Authorization");
 
-		if (authHeader != null) {
-			try {
-				//Todo: Access Token
-
-				//유효성 검사 + 정보 꺼냄
-				Long userId = jwtUtil.getUserIdFromToken(authHeader);
-				String authority = jwtUtil.getAuthorityFromToken(authHeader);
-
-				// 정보를 request에 저장해서 다음 필터로 전달
-				httpRequest.setAttribute("userId", userId);
-				httpRequest.setAttribute("authority", authority);
-
-				// 응답 설정
-				httpResponse.setCharacterEncoding("UTF-8");
-				httpResponse.setContentType("application/json");
-
-				// 다음 필터 수행
-				chain.doFilter(request, response);
-
-				// 토큰에 문제가 있다면 401, UNAUTHORIZED 응답
-			} catch (CustomException e) {
-				httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				httpResponse.getWriter().write("Invalid token");
-			}
-		} else { // 토큰 없음
+		// 토큰이 없으면 예외처리
+		if (accessToken == null) {
 			httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			httpResponse.getWriter().write("Missing Authorization header");
+			return;
 		}
+
+		Long userId = null;
+		String authority = null;
+
+		try {
+			// access 토큰에서 정보 추출 & 토큰 서명 위조 여부 검증
+			userId = jwtUtil.getUserIdFromToken(accessToken);
+			authority = jwtUtil.getAuthorityFromToken(accessToken);
+
+			// access token 만료 시, refresh token 검증
+		} catch (ExpiredJwtException e) {
+			// 요청 헤더에서 refreshToken 추출
+			String refreshToken = Arrays.stream(httpRequest.getCookies())
+				.filter(cookie -> "refreshToken".equals(cookie.getName()))
+				.findFirst()
+				.map(Cookie::getValue)
+				.orElseThrow(() -> new CustomException(ErrorCode.INVALID_SIGNATURE));
+
+			// refresh token 만료 시 예외처리
+			if (jwtUtil.getRefreshExpiration(refreshToken).before(new Date())) {
+				throw new CustomException(ErrorCode.INVALID_SIGNATURE);
+			}
+
+			// access token 재발급
+			String newAccessToken = jwtUtil.createAccessToken(userId, Authority.valueOf(authority));
+			httpResponse.setHeader("Authorization", newAccessToken);
+		}
+
+		// 정보를 request 에 저장해서 다음 필터로 전달
+		httpRequest.setAttribute("userId", userId);
+		httpRequest.setAttribute("authority", authority);
+
+		// 응답 설정
+		httpResponse.setCharacterEncoding("UTF-8");
+		httpResponse.setContentType("application/json");
+
+		chain.doFilter(request, response);
 	}
 }
