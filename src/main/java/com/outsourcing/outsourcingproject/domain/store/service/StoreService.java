@@ -20,7 +20,7 @@ import com.outsourcing.outsourcingproject.domain.store.dto.StoreRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.StoreResponseDto;
 import com.outsourcing.outsourcingproject.domain.store.dto.UpdateStoreRequestDto;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
-import com.outsourcing.outsourcingproject.domain.store.entity.StoreSatus;
+import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;
 import com.outsourcing.outsourcingproject.domain.store.entity.TimeUtil;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
@@ -86,7 +86,7 @@ public class StoreService {
 
 		return new StoreResponseDto(
 			savedStore.getId(),
-			StoreSatus.PREPARING,
+			StoreStatus.PREPARING,
 			savedStore.getName(),
 			savedStore.getOpenTime(),
 			savedStore.getCloseTime(),
@@ -107,7 +107,7 @@ public class StoreService {
 		List<FindStoreResponseDto> responseDtoList = storeList.stream()
 			.map(store -> {
 				// status 변경
-				StoreSatus status = getStoreStatus(store.getOpenTime(), store.getCloseTime(), now);
+				StoreStatus status = getStoreStatus(store.getOpenTime(), store.getCloseTime(), now);
 				return new FindStoreResponseDto(
 					store.getId(),
 					status,
@@ -172,7 +172,7 @@ public class StoreService {
 
 		Store updatedStore = storeRepository.save(newStore);
 		LocalTime now = LocalTime.now();
-		StoreSatus status = getStoreStatus(store.getOpenTime(), store.getCloseTime(), now);
+		StoreStatus status = getStoreStatus(store.getOpenTime(), store.getCloseTime(), now);
 
 		return new StoreResponseDto(
 			updatedStore.getId(),
@@ -197,7 +197,7 @@ public class StoreService {
 
 		return new StoreResponseDto(
 			deleteStore.getId(),
-			StoreSatus.CLOSED,
+			StoreStatus.CLOSED,
 			deleteStore.getName(),
 			deleteStore.getOpenTime(),
 			deleteStore.getCloseTime(),
@@ -208,11 +208,11 @@ public class StoreService {
 	}
 
 	// opentime과 closetime 비교해 status 변경
-	private StoreSatus getStoreStatus(LocalTime open, LocalTime close, LocalTime now) {
+	private StoreStatus getStoreStatus(LocalTime open, LocalTime close, LocalTime now) {
 		if (open.isBefore(now) && close.isAfter(now)) {
-			return StoreSatus.OPEN;
+			return StoreStatus.OPEN;
 		}
-		return StoreSatus.PREPARING;
+		return StoreStatus.PREPARING;
 	}
 
 }
