@@ -33,15 +33,16 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping
-	public ResponseEntity<CommonResponse<Void>> signup(@RequestBody @Valid UserRequestDto requestDto,
+	public ResponseEntity<CommonResponse<LoginResponseDto>> signup(@RequestBody @Valid UserRequestDto requestDto,
 		HttpServletResponse response) {
 		LoginResponseDto dto = userService.signup(requestDto);
 		response.setHeader("Authorization", dto.getToken());
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.SIGNUP_SUCCESS), HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.of(SuccessCode.SIGNUP_SUCCESS, dto), HttpStatus.OK);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<CommonResponse<Void>> login(@RequestBody @Valid LoginRequestDto requestDto, HttpServletResponse response) {
+	public ResponseEntity<CommonResponse<Void>> login(@RequestBody @Valid LoginRequestDto requestDto,
+		HttpServletResponse response) {
 		LoginResponseDto dto = userService.login(requestDto);
 		response.setHeader("Authorization", dto.getToken());
 		return new ResponseEntity<>(CommonResponse.of(SuccessCode.LOGIN_SUCCESS), HttpStatus.OK);
@@ -69,6 +70,7 @@ public class UserController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<CommonResponse<UserResponseDto>> findById(@PathVariable Long id) {
-		return new ResponseEntity<>(CommonResponse.of(SuccessCode.FIND_USER_SUCCESS, userService.findById(id)), HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.of(SuccessCode.FIND_USER_SUCCESS, userService.findById(id)),
+			HttpStatus.OK);
 	}
 }

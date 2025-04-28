@@ -24,6 +24,13 @@ public enum SuccessCode implements BaseCode {
 	GET_ORDER_LIST_SUCCESS(HttpStatus.FOUND, "주문 목록을 조회합니다."),
 	CANCEL_ORDER_SUCCESS(HttpStatus.OK, "주문이 취소되었습니다."),
 
+	// Review
+	CREATE_REVIEW(HttpStatus.OK, "리뷰가 생성되었습니다."),
+	CREATE_OWNER_REVIEW(HttpStatus.OK, "사장님 리뷰가 생성되었습니다."),
+	REVIEW_UPDATE_SUCCESS(HttpStatus.OK, "리뷰가 수정되었습니다."),
+	REVIEW_DELETE_SUCCESS(HttpStatus.OK, "리뷰가 삭제되었습니다."),
+	GET_STORE_REVIEW_LIST(HttpStatus.OK, "가게 리뷰가 조회되었습니다."),
+
 	// Menu
 	CREATE_MENU(HttpStatus.OK, "메뉴가 생성되었습니다."),
 	UPDATE_MENU(HttpStatus.OK, "메뉴가 수정되었습니다."),

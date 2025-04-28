@@ -9,5 +9,4 @@ public enum StoreStatus {
 	OPEN,
 	PREPARING,
 	CLOSED
-
 }
