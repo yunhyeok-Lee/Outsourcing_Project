@@ -74,6 +74,8 @@ public class StoreService {
 			.closeTime(closeTime)
 			.minOrderAmount(storeRequest.getMinOrderAmount())
 			.address(storeRequest.getAddress())
+			.isDeleted(false)
+			.reviewCounts(0)
 			.user(user)
 			.build();
 
