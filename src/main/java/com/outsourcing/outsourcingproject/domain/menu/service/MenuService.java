@@ -1,7 +1,10 @@
 package com.outsourcing.outsourcingproject.domain.menu.service;
 
-import org.springframework.stereotype.Service;
+import jakarta.transaction.Transactional;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Service;
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.domain.menu.dto.MenuRequestDto;
@@ -10,9 +13,6 @@ import com.outsourcing.outsourcingproject.domain.menu.entity.Menu;
 import com.outsourcing.outsourcingproject.domain.menu.repository.MenuRepository;
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
-
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +26,15 @@ public class MenuService {
 	 */
 	@Transactional
 	public MenuResponseDto createMenu(Long userId, Long storeId, String authority, MenuRequestDto menuRequestDto) {
-		// 권한 체크
-		// if (!"OWNER".equals(authority)) {
-		// 	throw new CustomException(ErrorCode.NO_AUTHORITY);
-		// }
+		// 권한 체크 (OWNER 가 아니면 생성 못하게 막음)
+		if (!"OWNER".equals(authority)) {
+			throw new CustomException(ErrorCode.NO_AUTHORITY);
+		}
 
-		// 존재하는 가게인지
+		/*
+		 * 존재하는 가게인지 확인
+		 * 가게 존재 X -> ErrorCode 출력
+		 */
 		Store store = storeRepository.findById(storeId)
 			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
@@ -63,6 +66,8 @@ public class MenuService {
 
 	/*
 	 * 메뉴 수정 Service
+	 * 권한 체크
+	 * 수정 할 메뉴 존재 여부 확인
 	 */
 	@Transactional
 	public MenuResponseDto updateMenu(Long userId, String authority, Long id, MenuRequestDto menuRequestDto) {
@@ -81,6 +86,7 @@ public class MenuService {
 
 	/*
 	 * 메뉴 삭제 Service
+	 * 권한 체크 후 OWNER 일 때, 삭제 가능
 	 */
 	@Transactional
 	public void deleteMenu(Long userId, String authority, Long id) {
