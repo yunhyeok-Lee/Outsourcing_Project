@@ -60,6 +60,7 @@ class CreateReviewTest {
 			User user = mock(User.class);
 			Store store = mock(Store.class);
 
+			// When
 			when(reviewRepository.existsByOrder_Id(orderId)).thenReturn(false);
 			when(entityFetcher.getOrderOrThrow(orderId)).thenReturn(order);
 			when(order.getDeliveryStatus()).thenReturn(DeliveryStatus.COMPLETED);
@@ -69,10 +70,10 @@ class CreateReviewTest {
 			when(order.getStore()).thenReturn(store);
 			when(store.getId()).thenReturn(1L);
 
-			// When
+			// Then
 			reviewService.createReview(orderId, requestDto, token);
 
-			// Then
+			// verify
 			verify(reviewRepository, times(1)).save(any(Review.class));
 			verify(storeRepository, times(1)).increaseReviewCounts(anyLong());
 		}
@@ -83,12 +84,12 @@ class CreateReviewTest {
 			// Given
 			Long orderId = 1L;
 			String token = "valid.token";
-
-			when(reviewRepository.existsByOrder_Id(orderId)).thenReturn(true);
-
 			ReviewRequestDto requestDto = new ReviewRequestDto(5.0, "맛있어요", "최고!");
 
-			// When & Then
+			// When
+			when(reviewRepository.existsByOrder_Id(orderId)).thenReturn(true);
+
+			// Then
 			assertThatThrownBy(() -> reviewService.createReview(orderId, requestDto, token))
 				.isInstanceOf(CustomException.class)
 				.extracting("errorCode")
@@ -102,14 +103,15 @@ class CreateReviewTest {
 			Long orderId = 1L;
 			String token = "valid.token";
 
-			ReviewRequestDto requestDto = new ReviewRequestDto(5.0, "맛있어요", "최고!");
 			Order order = mock(Order.class);
+			ReviewRequestDto requestDto = new ReviewRequestDto(5.0, "맛있어요", "최고!");
 
+			// When
 			when(reviewRepository.existsByOrder_Id(orderId)).thenReturn(false);
 			when(entityFetcher.getOrderOrThrow(orderId)).thenReturn(order);
 			when(order.getDeliveryStatus()).thenReturn(DeliveryStatus.CONFIRMED); // 완료 아님
 
-			// When & Then
+			// Then
 			assertThatThrownBy(() -> reviewService.createReview(orderId, requestDto, token))
 				.isInstanceOf(CustomException.class)
 				.extracting("errorCode")
@@ -127,6 +129,7 @@ class CreateReviewTest {
 			Order order = mock(Order.class);
 			User user = mock(User.class);
 
+			// When
 			when(reviewRepository.existsByOrder_Id(orderId)).thenReturn(false);
 			when(entityFetcher.getOrderOrThrow(orderId)).thenReturn(order);
 			when(order.getDeliveryStatus()).thenReturn(DeliveryStatus.COMPLETED);
@@ -134,7 +137,7 @@ class CreateReviewTest {
 			when(user.getId()).thenReturn(100L);            // 주문 유저 ID
 			when(jwtUtil.getUserIdFromToken(token)).thenReturn(200L); // 토큰 유저 ID
 
-			// When & Then
+			// Then
 			assertThatThrownBy(() -> reviewService.createReview(orderId, requestDto, token))
 				.isInstanceOf(CustomException.class)
 				.extracting("errorCode")

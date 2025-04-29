@@ -63,6 +63,10 @@ class CreateOwnerReviewTest {
 			Store reviewStore = mock(Store.class);
 			User ownerUser = mock(User.class);
 			Order order = mock(Order.class);
+
+			OwnerReviewRequestDto requestDto = new OwnerReviewRequestDto("리뷰 감사합니다!");
+
+			// When
 			when(entityFetcher.getReviewOrThrow(id)).thenReturn(review);
 			when(reviewRepository.existsByParent(review)).thenReturn(false);
 			when(review.getStore()).thenReturn(reviewStore);
@@ -74,12 +78,8 @@ class CreateOwnerReviewTest {
 
 			when(jwtUtil.getUserIdFromToken(token)).thenReturn(userId);
 
-			OwnerReviewRequestDto requestDto = new OwnerReviewRequestDto("리뷰 감사합니다!");
-
-			// When
-			reviewService.createOwnerReview(id, requestDto, token);
-
 			// Then
+			reviewService.createOwnerReview(id, requestDto, token);
 			verify(reviewRepository, times(1)).save(any(Review.class));
 
 		}
@@ -92,11 +92,13 @@ class CreateOwnerReviewTest {
 			String token = "valid.token";
 
 			Review review = mock(Review.class);
-
-			when(entityFetcher.getReviewOrThrow(id)).thenReturn(review);
-			when(reviewRepository.existsByParent(review)).thenReturn(true);
 			OwnerReviewRequestDto requestDto = new OwnerReviewRequestDto("리뷰 감사합니다!");
 
+			// When
+			when(entityFetcher.getReviewOrThrow(id)).thenReturn(review);
+			when(reviewRepository.existsByParent(review)).thenReturn(true);
+
+			// Then
 			assertThatThrownBy(() -> reviewService.createOwnerReview(id, requestDto, token))
 				.isInstanceOf(CustomException.class)
 				.extracting("ErrorCode")
@@ -106,6 +108,7 @@ class CreateOwnerReviewTest {
 		@Test
 		@DisplayName("토큰에서 추출한 userId와 reviewId에서 추출한 userId가 일치하지 않으면 NO_PERMISSION 예외 처리")
 		void shouldCreateOwnerReview_NO_PERMISSION() {
+			//Given
 			Long id = 1L;
 			String token = "valid.token";
 			Long userId = 100L;
@@ -113,7 +116,9 @@ class CreateOwnerReviewTest {
 			Review review = mock(Review.class);
 			Store reviewStore = mock(Store.class);
 			User ownerUser = mock(User.class);
+			OwnerReviewRequestDto requestDto = new OwnerReviewRequestDto("리뷰 감사합니다!");
 
+			// When
 			when(entityFetcher.getReviewOrThrow(id)).thenReturn(review);
 			when(reviewRepository.existsByParent(review)).thenReturn(false);
 			when(review.getStore()).thenReturn(reviewStore);
@@ -121,8 +126,7 @@ class CreateOwnerReviewTest {
 			when(ownerUser.getId()).thenReturn(userId);
 			when(jwtUtil.getUserIdFromToken(token)).thenReturn(200L);
 
-			OwnerReviewRequestDto requestDto = new OwnerReviewRequestDto("리뷰 감사합니다!");
-
+			// Then
 			assertThatThrownBy(() -> reviewService.createOwnerReview(id, requestDto, token))
 				.isInstanceOf(CustomException.class)
 				.extracting("ErrorCode")

@@ -57,6 +57,7 @@ class GetStoreReviewsTest {
 			Review review2 = mock(Review.class);
 			Page<Review> reviewPage = new PageImpl<>(List.of(review1, review2));
 
+			// When
 			when(review1.getUser()).thenReturn(user);
 			when(review2.getUser()).thenReturn(user);
 			when(user.getNickname()).thenReturn("길동");
@@ -65,18 +66,18 @@ class GetStoreReviewsTest {
 			when(reviewRepository.findReviewsByOrderIdsWithRatingFilter(orderIds, null, null, pageable))
 				.thenReturn(reviewPage);
 
-			// When
+			// Then
 			Page<StoreReviewResponseDto> result = reviewService.getStoreReviews(storeId, null, null, pageable);
 
-			// Then
 			assertThat(result).isNotNull();
 			assertThat(result.getContent()).hasSize(2); // 리뷰 2개 반환되는지
+
+			// verify
 			verify(storeRepository).existsById(storeId);
 			verify(orderRepository).findOrderIdsByStoreId(storeId);
 			verify(reviewRepository).findReviewsByOrderIdsWithRatingFilter(orderIds, null, null, pageable);
 		}
 
-		@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 		@Test
 		@DisplayName("정상 응답")
 		void shouldGetStoreReviews_STORE_NOT_FOUND() {
@@ -84,15 +85,15 @@ class GetStoreReviewsTest {
 			Long storeId = 1L;
 			Pageable pageable = PageRequest.of(0, 10);
 
+			// When & Then
 			when(storeRepository.existsById(storeId)).thenReturn(false);
 
-			// When & Then
 			assertThatThrownBy(() -> reviewService.getStoreReviews(storeId, null, null, pageable))
 				.isInstanceOf(CustomException.class)
-				.extracting("errorCode")
+				.extracting("ErrorCode")
 				.isEqualTo(ErrorCode.STORE_NOT_FOUND);
 
-			// 추가 검증
+			// verify
 			verify(orderRepository, never()).findOrderIdsByStoreId(any());
 			verify(reviewRepository, never()).findReviewsByOrderIdsWithRatingFilter(any(), any(), any(), any());
 		}
