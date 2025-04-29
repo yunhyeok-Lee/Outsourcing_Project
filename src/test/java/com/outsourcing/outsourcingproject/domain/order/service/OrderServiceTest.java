@@ -1,4 +1,4 @@
-package com.outsourcing.outsourcingproject.common.util;
+package com.outsourcing.outsourcingproject.domain.order.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -12,10 +12,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
+import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
+import com.outsourcing.outsourcingproject.common.util.JwtUtil;
 import com.outsourcing.outsourcingproject.domain.order.dto.OrderRequestDto;
 import com.outsourcing.outsourcingproject.domain.order.entity.Order;
 import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
-import com.outsourcing.outsourcingproject.domain.order.service.OrderService;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
