@@ -52,10 +52,12 @@ public class JwtUtil {
 	}
 
 	// refresh token 생성
-	public String createRefreshToken() {
+	public String createRefreshToken(Long userId, Authority authority) {
 		Date date = new Date();
 
 		return Jwts.builder()
+			.setSubject(String.valueOf(userId))
+			.claim("authority", authority)
 			.setIssuedAt(date)
 			.setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
 			.signWith(key, signatureAlgorithm)
@@ -75,15 +77,14 @@ public class JwtUtil {
 		}
 	}
 
-	// refresh token 에서 만료시간 추출
-	public Date getRefreshExpiration(String token) {
+	// refresh token 에서 데이터 추출
+	public Claims extractRefreshClaims(String token) {
 		try {
 			return Jwts.parserBuilder()
 				.setSigningKey(key)
 				.build()
 				.parseClaimsJws(token)
-				.getBody()
-				.getExpiration();
+				.getBody();
 			// 토큰 만료 시 RefreshToken 검증
 		} catch (JwtException e) {
 			throw new CustomException(ErrorCode.INVALID_SIGNATURE);
