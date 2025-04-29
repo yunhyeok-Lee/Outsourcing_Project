@@ -4,11 +4,9 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
 import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
@@ -26,6 +24,9 @@ import com.outsourcing.outsourcingproject.domain.store.entity.StoreStatus;
 import com.outsourcing.outsourcingproject.domain.store.entity.TimeUtil;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -197,15 +198,13 @@ public class StoreService {
 			throw new CustomException(ErrorCode.STORE_ALREADY_DELETED);
 		}
 
-		Store newStore = store.builder()
-			.isDeleted(true)
-			.build();
+		store.deleteStore();
 
-		Store deleteStore = storeRepository.save(newStore);
+		Store deleteStore = storeRepository.save(store);
 
 		return new StoreResponseDto(
 			deleteStore.getId(),
-			StoreStatus.CLOSED,
+			deleteStore.getStatus(),
 			deleteStore.getName(),
 			deleteStore.getOpenTime(),
 			deleteStore.getCloseTime(),

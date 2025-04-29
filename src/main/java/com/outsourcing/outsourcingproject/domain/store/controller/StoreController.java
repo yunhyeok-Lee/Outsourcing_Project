@@ -75,10 +75,8 @@ public class StoreController {
 	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<CommonResponse<StoreAndMenuListResponseDto>> findStoreAndMenu(@PathVariable Long id) {
-		// StoreAndMenuListResponseDto findstore = storeService.findStore(id);
 		return new ResponseEntity<>(CommonResponse.of(SuccessCode.GET_STORE_LIST, storeService.findStore(id)),
 			HttpStatus.OK);
-		// return ResponseEntity.ok(findstore);
 	}
 
 	/*
@@ -90,10 +88,6 @@ public class StoreController {
 		return new ResponseEntity<>(
 			CommonResponse.of(SuccessCode.UPDATE_STORE, storeService.updateStore(id, updateStoreRequestDto)),
 			HttpStatus.OK);
-
-		// StoreResponseDto updatestore = storeService.updateStore(id, updateStoreRequestDto);
-		//
-		// return ResponseEntity.ok(updatestore);
 	}
 
 	/*
@@ -103,8 +97,5 @@ public class StoreController {
 	public ResponseEntity<CommonResponse<String>> deleteStore(@PathVariable Long id) {
 		storeService.deleteStore(id);
 		return new ResponseEntity<>(CommonResponse.of(SuccessCode.DELETE_STORE), HttpStatus.OK);
-		// 	return ResponseEntity
-		// 		.status(SuccessCode.CREATE_STORE.getStatus())
-		// 		.body(SuccessCode.CREATE_STORE.getMessage());
 	}
 }
