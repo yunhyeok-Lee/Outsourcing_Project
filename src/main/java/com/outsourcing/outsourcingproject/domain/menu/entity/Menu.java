@@ -41,9 +41,6 @@ public class Menu extends BaseEntity {
 	@Column(nullable = false)
 	private int price;
 
-	// @Column(nullable = false)
-	// private String menuType;
-
 	@Column(nullable = false)
 	private Boolean isDeleted = false;
 
@@ -54,7 +51,6 @@ public class Menu extends BaseEntity {
 		this.name = name;
 		this.content = content;
 		this.price = price;
-		// this.menuType = menuType;
 		this.isDeleted = isDeleted;
 	}
 

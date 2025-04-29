@@ -33,7 +33,7 @@ public enum SuccessCode implements BaseCode {
 	GET_STORE_REVIEW_LIST(HttpStatus.OK, "가게 리뷰가 조회되었습니다."),
 
 	// Menu
-	CREATE_MENU(HttpStatus.OK, "메뉴가 생성되었습니다."),
+	CREATE_MENU(HttpStatus.CREATED, "메뉴가 생성되었습니다."),
 	UPDATE_MENU(HttpStatus.OK, "메뉴가 수정되었습니다."),
 	DELETE_MENU(HttpStatus.OK, "메뉴가 삭제되었습니다.");
 

@@ -45,8 +45,8 @@ public class MenuService {
 		Store store = storeRepository.findById(storeId)
 			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
-		// // 본인 인증
-		// if (!store.getOwnerId().equals(userId)){
+		// 본인 인증
+		// if (!store.getOwnerId().equals(userId)) {
 		// 	throw new CustomException(ErrorCode.NO_AUTHORITY);
 		// }
 
