@@ -3,9 +3,7 @@ package com.outsourcing.outsourcingproject.domain.user.controller;
 import java.time.Duration;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -54,7 +52,7 @@ public class UserController {
 
 	@PostMapping("/logout")
 	public CommonResponse<Void> logout() {
-		userService.logout();
+		//userService.logout();
 		return CommonResponse.of(SuccessCode.LOGOUT_SUCCESS);
 	}
 

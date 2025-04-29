@@ -52,7 +52,7 @@ public class UserService {
 		User savedUser = userRepository.save(user);
 
 		String accessToken = jwtUtil.createAccessToken(savedUser.getId(), savedUser.getAuthority());
-		String refreshToken = jwtUtil.createRefreshToken();
+		String refreshToken = jwtUtil.createRefreshToken(savedUser.getId(), savedUser.getAuthority());
 
 		return new LoginResponseDto(accessToken, refreshToken);
 	}
@@ -71,16 +71,9 @@ public class UserService {
 		}
 
 		String accessToken = jwtUtil.createAccessToken(user.getId(), user.getAuthority());
-		String refreshToken = jwtUtil.createRefreshToken();
+		String refreshToken = jwtUtil.createRefreshToken(user.getId(), user.getAuthority());
 
 		return new LoginResponseDto(accessToken, refreshToken);
-	}
-
-	/*
-	로그아웃 API
-	 */
-	public void logout() {
-
 	}
 
 	/*
