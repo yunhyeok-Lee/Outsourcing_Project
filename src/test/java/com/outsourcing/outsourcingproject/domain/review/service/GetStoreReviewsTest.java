@@ -19,21 +19,15 @@ import org.springframework.data.domain.Pageable;
 
 import com.outsourcing.outsourcingproject.common.enums.ErrorCode;
 import com.outsourcing.outsourcingproject.common.exception.CustomException;
-import com.outsourcing.outsourcingproject.common.util.EntityFetcher;
-import com.outsourcing.outsourcingproject.common.util.JwtUtil;
 import com.outsourcing.outsourcingproject.domain.order.repository.OrderRepository;
 import com.outsourcing.outsourcingproject.domain.review.dto.StoreReviewResponseDto;
 import com.outsourcing.outsourcingproject.domain.review.entity.Review;
 import com.outsourcing.outsourcingproject.domain.review.repository.ReviewRepository;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
-import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class GetStoreReviewsTest {
-
-	@Mock
-	private UserRepository userRepository;
 
 	@Mock
 	private OrderRepository orderRepository;
@@ -43,12 +37,6 @@ class GetStoreReviewsTest {
 
 	@Mock
 	private ReviewRepository reviewRepository;
-
-	@Mock
-	private EntityFetcher entityFetcher;
-
-	@Mock
-	private JwtUtil jwtUtil;
 
 	@InjectMocks
 	private ReviewService reviewService;

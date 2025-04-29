@@ -23,13 +23,9 @@ import com.outsourcing.outsourcingproject.domain.review.repository.ReviewReposit
 import com.outsourcing.outsourcingproject.domain.store.entity.Store;
 import com.outsourcing.outsourcingproject.domain.store.repository.StoreRepository;
 import com.outsourcing.outsourcingproject.domain.user.entity.User;
-import com.outsourcing.outsourcingproject.domain.user.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class CreateReviewTest {
-
-	@Mock
-	private UserRepository userRepository;
 
 	@Mock
 	private StoreRepository storeRepository;
@@ -51,7 +47,7 @@ class CreateReviewTest {
 	class CreateReview {
 
 		@Test
-		@DisplayName("주문이 완료되고, 사용자 인증이 정상일 때 리뷰를 성공적으로 등록한다")
+		@DisplayName("정상 응답")
 		void shouldCreateReview_WhenOrderCompletedAndUserMatches() {
 			// Given
 			Long orderId = 1L;
@@ -82,7 +78,7 @@ class CreateReviewTest {
 		}
 
 		@Test
-		@DisplayName("이미 리뷰가 존재하면 ALREADY_REVIEW_EXISTS 예외를 던진다")
+		@DisplayName("이미 리뷰가 존재하면 ALREADY_REVIEW_EXISTS 예외 처리")
 		void shouldThrowException_WhenReviewAlreadyExists() {
 			// Given
 			Long orderId = 1L;
@@ -100,7 +96,7 @@ class CreateReviewTest {
 		}
 
 		@Test
-		@DisplayName("주문이 완료되지 않은 경우 NOT_COMPLETED_ORDER 예외를 던진다")
+		@DisplayName("주문이 완료되지 않은 경우 NOT_COMPLETED_ORDER 예외 처리")
 		void shouldThrowException_WhenOrderIsNotCompleted() {
 			// Given
 			Long orderId = 1L;
@@ -121,7 +117,7 @@ class CreateReviewTest {
 		}
 
 		@Test
-		@DisplayName("토큰 사용자와 주문 사용자가 다르면 NO_REVIEW_CREATE_PERMISSION 예외를 던진다")
+		@DisplayName("토큰 사용자와 주문 사용자가 다르면 NO_REVIEW_CREATE_PERMISSION 예외 처리")
 		void shouldThrowException_WhenUserIdMismatch() {
 			// Given
 			Long orderId = 1L;
